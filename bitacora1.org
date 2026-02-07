@@ -1,0 +1,110 @@
+#+TITLE: Bitácora Semanal: Administración de Sistemas Unix
+#+AUTHOR: Equipo Alpine White
+#+DATE: [2026-02-09 lun]
+#+OPTIONS: toc:2
+
+* Información General
+- *Semana:* Del 3 de Febrero 2026 al 6 de Febrero 2026
+- *Equipo:*
+  - Arreguín Salgado Gael Emiliano
+  - López Pérez Mariana
+  - Nieto Gallegos Isaac Julián
+
+* Sesión 1: 3 de Febrero 2026
+
+Esta sesión fue una introducción general a la clase y a conceptos iniciales de Linux.
+
+** Conceptos nuevos
+
+- El comando ls nos permite listar los contenidos del directorio en el que nos encontramos actualmente. Usando los parámetros -la, podemos colocarlos en forma de lista y mostrar archivos ocultos para tener una vista más general y completa del directorio. Por ejemplo:
+
+#+begin_src bash :results verbatim
+ls -la
+#+end_src
+
+#+RESULTS:
+: total 8
+: drwxr-xr-x 1 mrtaichi mrtaichi   48 Feb  7 11:58 .
+: drwxr-xr-x 1 mrtaichi mrtaichi   32 Feb  4 09:26 ..
+: -rw-r--r-- 1 mrtaichi mrtaichi 2014 Feb  6 09:40 apuntes.org
+: -rw-r--r-- 1 mrtaichi mrtaichi  407 Feb  7 12:08 bitacora1.org
+
+- Ventoy es una herramienta que nos permite poder arrancar varias imágenes ISO desde una misma memoria USB. Se instala sobre la memoria USB, y recursivamente busca las imágenes ISO que contenga para mostrarlas en el menú de arranque. Se nos queda de tarea para la próxima semana traer una memoria USB con Ventoy instalado.
+
+  [[./ventoy_boot.jpg]]
+
+- Existen dos formas de referenciar un archivo en Linux: Mediante su ruta relativa y mediante su ruta absoluta. Generalmente una ruta relativa empieza por un ./ o ../, mientras que una ruta absoluta empieza por /, ya que es la ruta completa al archivo desde la raíz del sistema de archivos. Por ejemplo:
+
+#+begin_src bash :results verbatim
+echo este es el mismo archivo > test.txt
+cat /home/mrtaichi/Documents/escuela/adminUnix/test.txt # Ruta absoluta
+cat ./test.txt # Ruta relativa
+#+end_src
+
+#+RESULTS:
+: este es el mismo archivo
+: este es el mismo archivo
+
+- LAN? (en proceso)
+
+- En Linux, [[Todo es un archivo]]. Esto incluye a los dispositivos, ya que la carpeta /dev guarda representaciones en archivo de todos los dispositivos que están conectados a la computadora. Esto incluye desde los mismos dispositivos de almacenamiento, hasta cosas más "virtuales" como las terminales y pseudoterminales del sistema.
+
+- Dispositivo psar? (en proceso)
+
+- Gparted es una herramienta con interfaz gráfica para crear y modificar particiones en un disco.
+
+** Conceptos de repaso
+N/A (primera clase)
+
+** Máximas
+
+*** Todo es un archivo
+En los sistemas derivados de Unix, como Linux
+
+
+** Sección libre
+
+
+* Sesión 2: 4 de Febrero 2026
+
+** Conceptos nuevos
+
+- Estuvimos hablando de la importancia de la redundancia para preservar la información. Como ejemplo usamos el sistema RAID, que utiliza varios discos duros para crear replicación de información y tolerancia a fallos.
+
+- La necesidad principal de tener redundancia en la información es para no tener un sólo punto de falla en nuestros sistemas que pueda fallar. Si alguna parte de nuestro sistema falla, siempre existe otro componente listo para tomar el lugar y mantener el sistema funcionando.
+
+- Generalmente la emulación es más lenta que la virtualización. El primer sistema de WSL usaba emulación de Linux, ahora el segundo utiliza virtualización.
+
+- El propósito de que cada quien utilice una distribución distinta es demostrar la máxima: "[[Todos los Linux son iguales]]". Vamos a observar como -en esencia- todos las distribuciones de Linux tienen tantas cosas en común que podemos hacer cualquier cosa en cualquier distro.
+
+- Distrowatch es un sitio web en el que se pueden observar todas las distribuciones de Linux y muchos datos acerca de ellas. Lo que resulta interesante es que incluso un ranking de cuáles son las distros más usadas hasta el mometo.
+
+- SCSI (que se pronuncia "scuzzy") es una interfaz de intercambio de datos que se utiliza sobre todo en servidores y computadoras de alto desempeño. Hablando del sistema RAID, es generalmente sobre esta interfaz sobre la que se construyen varios controladores RAID que están en la industria.
+
+** Conceptos de repaso
+
+** Máximas
+*** Todos los Linux son iguales
+En cualquier distribución de Linux podemos -a final de cuentas- hacer cualquier cosa. Todas funcionan esencialmente para lo mismo, y aunque evidentemente hay diferencias, se puede trabajar con ellas sin problema.
+
+** Sección libre
+
+* Sesión 3: 5 de Febrero 2026
+
+** Conceptos nuevos
+
+- Unix nace en 1969 como un sistema operativo desarrollado en Bell Labs, al principio con fines académicos y distribuido para varias universidades. De ahí nace BSD cuando se vuelve comercial
+
+- Y de ahí también nace Linux, como un kernel Unix-like desarrollado en 1991 por Linus Torvalds, el cual se termina fusionando con GNU para formar un sistema operativo completo.
+
+- Un proceso es un programa que se está ejecutando en el sistema y constantemente le está pidiendo recursos al kernel. Los procesos se comunican con el kernel a través de syscalls
+
+** Conceptos de repaso
+
+** Máximas
+
+** Sección libre
+
+Aquí quiero meter lo de la struct en en el source del kernel de linux que representa un proceso jaja, luego lo busco.
+
+* Sesión 4: 6 de Febrero 2026

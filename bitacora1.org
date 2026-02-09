@@ -2,6 +2,13 @@
 #+AUTHOR: Equipo Alpine White
 #+DATE: [2026-02-09 lun]
 #+OPTIONS: toc:2
+#+PROPERTY: header-args :exports both
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [11pt, letterpaper]
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage{palatino}                   % Tipografía elegante
+#+LATEX_HEADER: \usepackage{xcolor}                     % Colores personalizados
 
 * Información General
 - *Semana:* Del 3 de Febrero 2026 al 6 de Febrero 2026

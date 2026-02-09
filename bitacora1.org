@@ -24,6 +24,20 @@ Esta sesión fue una introducción general a la clase y a conceptos iniciales de
 
 ** Conceptos nuevos
 
+- *GRUB (bootloader):* GRUB (GNU GRand Unified Bootloader) es un *cargador de arranque*; es el programa que aparece al iniciar y se encarga de cargar el sistema operativo (o una ISO) y pasarle el control.
+  - *Ventoy y su GRUB:* Ventoy no usa exactamente el mismo GRUB que el del sistema instalado; incluye y arranca con su propia varainte de *GRUB2* para poder gestionar el menú y el arranque de múltiples ISOs desde una sola USB.
+  - *Consola de GRUB en Ventoy:* En el menú de Ventoy/GRUB, al presionar la tecla ~C~ se abre la *consola* (tipo terminal) de GRUB.
+    - En esta consola podemos inspeccionar y explorar qué ve el bootloader (discos/particiones/archivos) y consultar variables o configuración.
+    - Comandos:
+      #+begin_src
+      ls
+      help
+      set
+      ls (hd0,gpt1)/
+      cat (hd0,gpt1)/boot/grub/grub.cfg
+      #+end_src
+    - Esto sirve para tipo depurar, inspeccionar por qué algo no arranca como debe, confirmar rutas, o entender cómo Ventoy/GRUB está resolviendo la configuración.
+
 - El comando ls nos permite listar los contenidos del directorio en el que nos encontramos actualmente. Usando los parámetros -la, podemos colocarlos en forma de lista y mostrar archivos ocultos para tener una vista más general y completa del directorio. Por ejemplo:
 
 #+begin_src bash :results verbatim
@@ -62,7 +76,26 @@ cat ./test.txt # Ruta relativa
 - Gparted es una herramienta con interfaz gráfica para crear y modificar particiones en un disco.
 
 ** Conceptos de repaso
-N/A (primera clase)
+
+- *Proceso de arranque (boot process):*
+  Secuencia general: BIOS/UEFI → bootloader (GRUB) → kernel → init/systemd.
+  Punto clave: el sistema operativo *no existe* mientras estamos en GRUB; solo existe firmware con bootloader.
+
+- *Bootloader vs Kernel:*
+  GRUB no es el sistema operativo ni el kernel.
+  Su única responsabilidad es localizar, cargar el kernel (y el initramfs) en memoria y cederle el control.
+  No ejecuta procesos ni gestiona recursos del sistema.
+
+- *Separación de responsabilidades:*
+  Ventoy delega completamente el arranque a GRUB y evita modificar el disco.
+  Ejemplo de buen diseño: cada componente hace una sola cosa bien definida.
+
+- *Acceso a disco antes del kernel:*
+  GRUB puede leer sistemas de archivos (FAT, EXT, ISO) sin drivers del kernel.
+
+- *Lectura de archivos sin montaje:*
+  El bootloader accede directamente a estructuras del sistema de archivos.
+  Montar un FS es una abstracción que pertenece al kernel, no al bootloader.
 
 ** Máximas
 

@@ -18,65 +18,57 @@
   - López Pérez Mariana
   - Nieto Gallegos Isaac Julián
 
-* Sesión 1: 3 de Febrero 2026
+En esta nuestra primera semana de clases, el enfoque fue particularmente en entender el arranque del sistema operativo, el sistema de archivos y comenzar a prepararnos para elegir la distribución con la que iremos trabajando en el semestre.
 
-Esta sesión fue una introducción general a la clase y a conceptos iniciales de Linux.
+* GRUB Y SISTEMAS DE ARRANQUE
 
 ** Conceptos nuevos
 
-- *GRUB (bootloader):* GRUB (GNU GRand Unified Bootloader) es un *cargador de arranque*; es el programa que aparece al iniciar y se encarga de cargar el sistema operativo (o una ISO) y pasarle el control.
-  - *Ventoy y su GRUB:* Ventoy no usa exactamente el mismo GRUB que el del sistema instalado; incluye y arranca con su propia varainte de *GRUB2* para poder gestionar el menú y el arranque de múltiples ISOs desde una sola USB.
-  - *Consola de GRUB en Ventoy:* En el menú de Ventoy/GRUB, al presionar la tecla ~C~ se abre la *consola* (tipo terminal) de GRUB.
-    - En esta consola podemos inspeccionar y explorar qué ve el bootloader (discos/particiones/archivos) y consultar variables o configuración.
-    - Comandos:
-      #+begin_src
-      ls
-      help
-      set
-      ls (hd0,gpt1)/
-      cat (hd0,gpt1)/boot/grub/grub.cfg
-      #+end_src
-    - Esto sirve para tipo depurar, inspeccionar por qué algo no arranca como debe, confirmar rutas, o entender cómo Ventoy/GRUB está resolviendo la configuración.
+*** Proceso de arranque
+- Ejecucion de firmware
+- Localizacion de la EFI System Partition
+- Carga del bootloader
+- Selección y carga de kernel
+- Inicio del sistema operativo
 
-- El comando ls nos permite listar los contenidos del directorio en el que nos encontramos actualmente. Usando los parámetros -la, podemos colocarlos en forma de lista y mostrar archivos ocultos para tener una vista más general y completa del directorio. Por ejemplo:
+*** Firmware definicion
+- BIOS y UEFI ( y sus diferencias )
 
-#+begin_src bash :results verbatim
-ls -la
-#+end_src
+*** Bootloader / Gestores de arranque definicion
 
-#+RESULTS:
-: total 8
-: drwxr-xr-x 1 mrtaichi mrtaichi   48 Feb  7 11:58 .
-: drwxr-xr-x 1 mrtaichi mrtaichi   32 Feb  4 09:26 ..
-: -rw-r--r-- 1 mrtaichi mrtaichi 2014 Feb  6 09:40 apuntes.org
-: -rw-r--r-- 1 mrtaichi mrtaichi  407 Feb  7 12:08 bitacora1.org
+**** GRUB
+GRUB (GNU GRand Unified Bootloader) es un *cargador de arranque*; es el programa que aparece al iniciar y se encarga de cargar el sistema operativo (o una ISO) y pasarle el control.
 
-- Ventoy es una herramienta que nos permite poder arrancar varias imágenes ISO desde una misma memoria USB. Se instala sobre la memoria USB, y recursivamente busca las imágenes ISO que contenga para mostrarlas en el menú de arranque. Se nos queda de tarea para la próxima semana traer una memoria USB con Ventoy instalado.
+**** Windows boot manager
+
+**** Secure boot
+
+MOK database
+
+**** Ventoy
+
+Ventoy es una herramienta que nos permite poder arrancar varias imágenes ISO desde una misma memoria USB. Se instala sobre la memoria USB, y recursivamente busca las imágenes ISO que contenga para mostrarlas en el menú de arranque. Se nos queda de tarea para la próxima semana traer una memoria USB con Ventoy instalado.
 
   [[./ventoy_boot.jpg]]
 
-- Existen dos formas de referenciar un archivo en Linux: Mediante su ruta relativa y mediante su ruta absoluta. Generalmente una ruta relativa empieza por un ./ o ../, mientras que una ruta absoluta empieza por /, ya que es la ruta completa al archivo desde la raíz del sistema de archivos. Por ejemplo:
 
-#+begin_src bash :results verbatim
-echo este es el mismo archivo > test.txt
-cat /home/mrtaichi/Documents/escuela/adminUnix/test.txt # Ruta absoluta
-cat ./test.txt # Ruta relativa
-#+end_src
+- *Ventoy y su GRUB:* Ventoy no usa exactamente el mismo GRUB que el del sistema instalado; incluye y arranca con su propia varainte de *GRUB2* para poder gestionar el menú y el arranque de múltiples ISOs desde una sola USB.
 
-#+RESULTS:
-: este es el mismo archivo
-: este es el mismo archivo
+- *Consola de GRUB en Ventoy:* En el menú de Ventoy/GRUB, al presionar la tecla ~C~ se abre la *consola* (tipo terminal) de GRUB.
+  - En esta consola podemos inspeccionar y explorar qué ve el bootloader (discos/particiones/archivos) y consultar variables o configuración.
+  - Comandos:
+        #+begin_src
+        ls
+        help
+        set
+        ls (hd0,gpt1)/
+        cat (hd0,gpt1)/boot/grub/grub.cfg
+        #+end_src
+  - Esto sirve para tipo depurar, inspeccionar por qué algo no arranca como debe, confirmar rutas, o entender cómo Ventoy/GRUB está resolviendo la configuración.
 
-- LAN? (en proceso)
 
-- En Linux, [[Todo es un archivo]]. Esto incluye a los dispositivos, ya que la carpeta /dev guarda representaciones en archivo de todos los dispositivos que están conectados a la computadora. Esto incluye desde los mismos dispositivos de almacenamiento, hasta cosas más "virtuales" como las terminales y pseudoterminales del sistema.
-
-- Dispositivo psar? (en proceso)
-
-- Gparted es una herramienta con interfaz gráfica para crear y modificar particiones en un disco.
 
 ** Conceptos de repaso
-
 - *Proceso de arranque (boot process):*
   Secuencia general: BIOS/UEFI → bootloader (GRUB) → kernel → init/systemd.
   Punto clave: el sistema operativo *no existe* mientras estamos en GRUB; solo existe firmware con bootloader.
@@ -105,270 +97,261 @@ En los sistemas derivados de Unix, como Linux
 
 ** Sección libre
 
-
-* Sesión 2: 4 de Febrero 2026
-
-** Conceptos nuevos
-
-- Estuvimos hablando de la importancia de la redundancia para preservar la información. Como ejemplo usamos el sistema RAID, que utiliza varios discos duros para crear replicación de información y tolerancia a fallos.
-
-- La necesidad principal de tener redundancia en la información es para no tener un sólo punto de falla en nuestros sistemas que pueda fallar. Si alguna parte de nuestro sistema falla, siempre existe otro componente listo para tomar el lugar y mantener el sistema funcionando.
-
-- Generalmente la emulación es más lenta que la virtualización. El primer sistema de WSL usaba emulación de Linux, ahora el segundo utiliza virtualización.
-
-- El propósito de que cada quien utilice una distribución distinta es demostrar la máxima: "[[Todos los Linux son iguales]]". Vamos a observar como -en esencia- todos las distribuciones de Linux tienen tantas cosas en común que podemos hacer cualquier cosa en cualquier distro.
-
-- Distrowatch es un sitio web en el que se pueden observar todas las distribuciones de Linux y muchos datos acerca de ellas. Lo que resulta interesante es que incluso un ranking de cuáles son las distros más usadas hasta el mometo.
-
-- SCSI (que se pronuncia "scuzzy") es una interfaz de intercambio de datos que se utiliza sobre todo en servidores y computadoras de alto desempeño. Hablando del sistema RAID, es generalmente sobre esta interfaz sobre la que se construyen varios controladores RAID que están en la industria.
-
-** Conceptos de repaso
-
-** Máximas
-*** Todos los Linux son iguales
-En cualquier distribución de Linux podemos -a final de cuentas- hacer cualquier cosa. Todas funcionan esencialmente para lo mismo, y aunque evidentemente hay diferencias, se puede trabajar con ellas sin problema.
-
-** Sección libre
-
-* Sesión 3: 5 de Febrero 2026
-
-** Conceptos nuevos
-
-- Unix nace en 1969 como un sistema operativo desarrollado en Bell Labs, al principio con fines académicos y distribuido para varias universidades. De ahí nace BSD cuando se vuelve comercial
-
-- Y de ahí también nace Linux, como un kernel Unix-like desarrollado en 1991 por Linus Torvalds, el cual se termina fusionando con GNU para formar un sistema operativo completo.
-
-- Un proceso es un programa que se está ejecutando en el sistema y constantemente le está pidiendo recursos al kernel. Los procesos se comunican con el kernel a través de syscalls
-
-** Conceptos de repaso
-
-** Máximas
-
-** Sección libre
-
-Para entender mejor el funcionamiento de un proceso, se me ocurrió meterme al código fuente de Linux y, con ayuda de la IA, aprender acerca de la estructura que conforma un proceso como tal.
-
-Primero había que ubicarla, y después de indagar un rato en la documentación me pude dar cuenta de que el término usado en el kernel para referirse a los procesos es una task (o tarea). Esto debido a que esta estructura sirve tanto para procesos de programas como para los hilos de un mismo programa. La estructura que buscamos es entonces task_struc, la cual se encuentra declarada en include/linux/sched.h
-
-Como el código que define esta estructura es muy extenso, es aquí donde me tuve que servir de la IA para entenderle. Le pasé el archivo y le pedí una explicación sobre cada uno de los componentes de esta estructura. Este fue el resultado:
-
-#+begin_quote
-Entiendo perfectamente, la `struct task_struct` es intimidante porque es el "corazón" de Linux y contiene prácticamente todo lo que el kernel sabe sobre un proceso. Basado en el archivo `sched.h` que compartiste, vamos a despedazarla en partes lógicas para que sea más fácil de digerir.
-
-Piensa en la `task_struct` como el **expediente completo** de una persona en una oficina gubernamental; tiene su nombre, su familia, su dinero, sus propiedades y qué está haciendo en este momento.
-
-### 1. Estado y Propósito (¿Qué está haciendo?)
-
-Lo primero que el kernel necesita saber es si el proceso puede correr o si está esperando algo.
-
-***`__state`**: Define si el proceso está `TASK_RUNNING` (listo para usar la CPU), `TASK_INTERRUPTIBLE` (durmiendo pero puede despertar con una señal) o en otros estados como `TASK_DEAD`.
-***`stack`**: Un puntero al stack del kernel para este proceso específico.
-***`flags`**: Banderas que indican atributos especiales (por ejemplo, si es un hilo del kernel o si está saliendo).
-
-### 2. Identificación (¿Quién es?)
-
-***`pid`**: El *Process ID* único que ves cuando usas comandos como `top`.
-***`tgid`**: El *Thread Group ID*. En Linux, para el hilo principal, el PID y el TGID son iguales. Si creas más hilos en ese proceso, todos compartirán el mismo TGID pero tendrán PIDs distintos.
-***`comm[TASK_COMM_LEN]`**: El nombre del ejecutable (máximo 16 caracteres).
-
-### 3. El Planificador (¿Cuándo le toca la CPU?)
-
-Esta sección decide la prioridad del proceso.
-
-***`prio`, `static_prio`, `normal_prio**`: Las distintas prioridades que el planificador usa para decidir a quién darle la CPU.
-***`se`, `rt`, `dl**`: Estas son sub-estructuras (`sched_entity`, `sched_rt_entity`, etc.) que contienen los datos específicos para diferentes tipos de procesos (normales, de tiempo real, etc.).
-
-### 4. Relaciones Familiares (¿Quién lo creó?)
-
-Linux organiza los procesos en un árbol genealógico.
-
-***`parent`**: Puntero al proceso padre.
-***`children`**: Una lista de todos los procesos hijos que este proceso ha creado.
-***`sibling`**: Enlaces a sus "hermanos" (otros procesos creados por el mismo padre).
-
-### 5. Recursos (¿Qué posee?)
-
-Aquí es donde la estructura se conecta con el resto del sistema.
-
-***`mm`**: Puntero a `struct mm_struct`. Aquí reside toda la información de la **memoria virtual** del proceso (sus páginas, segmentos, etc.).
-***`files`**: Puntero a `struct files_struct`. Es la tabla que guarda todos los **archivos abiertos** (tus descriptores de archivo 0, 1, 2, etc.).
-***`fs`**: Información del sistema de archivos, como el directorio actual (`pwd`).
-***`cred`**: Las credenciales de seguridad (quién es el dueño: UID, GID).
-
-### 6. Señales (¿Qué le han dicho?)
-
-***`signal`** y **`sighand`**: Manejan qué debe hacer el proceso cuando recibe señales como un `SIGKILL` o `SIGTERM`.
-***`pending`**: Una lista de señales que han llegado pero que el proceso aún no ha procesado.
-
-**Resumen rápido para no volverse loco:**
-Si estás programando en el kernel y tienes un puntero a un proceso (usualmente llamado `p` o `current`), lo más común es que solo te interesen `p->pid`, `p->comm`, `p->mm` (memoria) o `p->files` (archivos). El resto son detalles técnicos para que el kernel gestione la magia por debajo.
-
-¿Hay alguna de estas secciones que te interese explorar más a fondo con el código que pasaste?
-#+end_quote
-
-De esto ya pude entender mejor cómo funciona el tema de los procesos en Linux y la relación de parentesco que debe existir entre todos ellos que los lleva al proceso inicial (systemd).
-
-* Sesión 4: 6 de Febrero 2026
-
-** Conceptos nuevos
-
-- Linux tiene un directorio llamado /tmp el cual es volátil. Ahí se guardan todos los archivos que se necesitan para el funcionamiento de los programas y SO durante la sesión, pero que no son necesarios de conservarse y por lo tanto se pueden borrar en el siguiente apagado. En Windows existe la misma implementación en una carpeta llamada Temp
-
-- nohup es un comando que nos permite ejecutar procesos y evitar que mueran cuando el padre muera.
-
-  #+begin_src bash :results verbatim
-man nohup
-  #+end_src
-
-  #+RESULTS:
-  #+begin_example
-  NOHUP(1)                         User Commands                         NOHUP(1)
-
-  NAME
-         nohup - run a command immune to hangups, with output to a non-tty
-
-  SYNOPSIS
-         nohup COMMAND [ARG]...
-         nohup OPTION
-
-  DESCRIPTION
-         Run COMMAND, ignoring hangup signals.
-
-         --help display this help and exit
-
-         --version
-                output version information and exit
-
-         If  standard  input  is a terminal, redirect it from an unreadable file.
-         If standard output is a terminal, append output to 'nohup.out' if possi‐
-         ble, '$HOME/nohup.out' otherwise.  If  standard  error  is  a  terminal,
-         redirect it to standard output.  To save output to FILE, use 'nohup COM‐
-         MAND > FILE'.
-
-         Your  shell  may have its own version of nohup, which usually supersedes
-         the version described here.  Please refer to your shell's  documentation
-         for details about the options it supports.
-
-     Exit status:
-         125    if the nohup command itself fails
-
-         126    if COMMAND is found but cannot be invoked
-
-         127    if COMMAND cannot be found
-
-         -      the exit status of COMMAND otherwise
-
-  AUTHOR
-         Written by Jim Meyering.
-
-  REPORTING BUGS
-         Report bugs to: bug-coreutils@gnu.org
-         GNU coreutils home page: <https://www.gnu.org/software/coreutils/>
-         General help using GNU software: <https://www.gnu.org/gethelp/>
-         Report any translation bugs to <https://translationproject.org/team/>
-
-  COPYRIGHT
-         Copyright © 2025 Free Software Foundation, Inc.  License GPLv3+: GNU GPL
-         version 3 or later <https://gnu.org/licenses/gpl.html>.
-         This  is  free  software:  you  are  free to change and redistribute it.
-         There is NO WARRANTY, to the extent permitted by law.
-
-  SEE ALSO
-         Full documentation <https://www.gnu.org/software/coreutils/nohup>
-         or available locally via: info '(coreutils) nohup invocation'
-
-  GNU coreutils 9.9                November 2025                         NOHUP(1)
-  #+end_example
-
-- Con el comando pstree podemos ver un árbol de los procesos en ejecución actualmente en nuestro sistema. Esto nos da una vista muy clara de las relaciones de parentesco de todos estos.
+- El comando ls nos permite listar los contenidos del directorio en el que nos encontramos actualmente. Usando los parámetros -la, podemos colocarlos en forma de lista y mostrar archivos ocultos para tener una vista más general y completa del directorio. Por ejemplo:
 
 #+begin_src bash :results verbatim
-pstree
+ls -la
 #+end_src
 
 #+RESULTS:
-#+begin_example
-systemd-+-NetworkManager---3*[{NetworkManager}]
-        |-ananicy-cpp---3*[{ananicy-cpp}]
-        |-avahi-daemon---avahi-daemon
-        |-bluetoothd
-        |-containerd---11*[{containerd}]
-        |-containerd-shim-+-s6-svscan-+-s6-supervise---gitea---8*[{gitea}]
-        |                 |           `-s6-supervise---sshd
-        |                 `-11*[{containerd-shim}]
-        |-2*[containerd-shim-+-mysqld---36*[{mysqld}]]
-        |                    `-10*[{containerd-shim}]]
-        |-containerd-shim-+-apache2---5*[apache2]
-        |                 `-10*[{containerd-shim}]
-        |-containerd-shim-+-postgres---5*[postgres]
-        |                 `-10*[{containerd-shim}]
-        |-containerd-shim-+-bash-+-/opt/lampp/bin/---7*[/opt/lampp/bin/]
-        |                 |      |-mysqld_safe---mysqld---29*[{mysqld}]
-        |                 |      |-proftpd
-        |                 |      |-sshd
-        |                 |      `-tail
-        |                 `-10*[{containerd-shim}]
-        |-dbus-broker-lau---dbus-broker
-        |-dockerd-+-3*[docker-proxy---6*[{docker-proxy}]]
-        |         |-2*[docker-proxy---8*[{docker-proxy}]]
-        |         |-6*[docker-proxy---7*[{docker-proxy}]]
-        |         |-docker-proxy---5*[{docker-proxy}]
-        |         `-45*[{dockerd}]
-        |-emacs---7*[{emacs}]
-        |-emacs-+-bash---pstree
-        |       |-bwrap---bwrap---glycin-svg---2*[{glycin-svg}]
-        |       `-8*[{emacs}]
-        |-ksecretd
-        |-msedge-+-2*[cat]
-        |        |-msedge---msedge---16*[{msedge}]
-        |        |-msedge---msedge-+-2*[msedge---6*[{msedge}]]
-        |        |                 |-2*[msedge---10*[{msedge}]]
-        |        |                 |-7*[msedge---9*[{msedge}]]
-        |        |                 `-msedge---5*[{msedge}]
-        |        |-msedge---8*[{msedge}]
-        |        `-46*[{msedge}]
-        |-msedge_crashpad---2*[{msedge_crashpad}]
-        |-msedge_crashpad---{msedge_crashpad}
-        |-netbird---8*[{netbird}]
-        |-polkitd---3*[{polkitd}]
-        |-power-profiles----3*[{power-profiles-}]
-        |-rtkit-daemon---2*[{rtkit-daemon}]
-        |-sddm-+-sddm-helper---start-hyprland-+-Hyprland-+-Xwayland---4*[{Xwayland}]
-        |      |                              |          |-hyprpaper---13*[{hyprpaper}]
-        |      |                              |          |-waybar---35*[{waybar}]
-        |      |                              |          `-14*[{Hyprland}]
-        |      |                              `-{start-hyprland}
-        |      `-{sddm}
-        |-systemd-+-(sd-pam)
-        |         |-at-spi-bus-laun-+-dbus-broker-lau---dbus-broker
-        |         |                 `-4*[{at-spi-bus-laun}]
-        |         |-at-spi2-registr---3*[{at-spi2-registr}]
-        |         |-dbus-broker-lau---dbus-broker
-        |         |-dconf-service---3*[{dconf-service}]
-        |         |-pipewire---2*[{pipewire}]
-        |         |-pipewire-pulse---2*[{pipewire-pulse}]
-        |         |-wireplumber---5*[{wireplumber}]
-        |         |-2*[xdg-desktop-por---4*[{xdg-desktop-por}]]
-        |         |-xdg-desktop-por---7*[{xdg-desktop-por}]
-        |         |-xdg-document-po-+-fusermount3
-        |         |                 `-7*[{xdg-document-po}]
-        |         `-xdg-permission----3*[{xdg-permission-}]
-        |-systemd-journal
-        |-systemd-logind
-        |-systemd-resolve
-        |-systemd-timesyn---{systemd-timesyn}
-        |-systemd-udevd
-        |-systemd-userdbd---3*[systemd-userwor]
-        |-upowerd---3*[{upowerd}]
-        `-wpa_supplicant
-#+end_example
+: total 8
+: drwxr-xr-x 1 mrtaichi mrtaichi   48 Feb  7 11:58 .
+: drwxr-xr-x 1 mrtaichi mrtaichi   32 Feb  4 09:26 ..
+: -rw-r--r-- 1 mrtaichi mrtaichi 2014 Feb  6 09:40 apuntes.org
+: -rw-r--r-- 1 mrtaichi mrtaichi  407 Feb  7 12:08 bitacora1.org
 
-- De aquí podemos observar una vez más como el proceso más importante y del que nacen todos los procesos en espacio de usuario es el proceso systemd. Además, observamos algunas cosillas interesantes como los procesos que generan nuestro entorno de escritorio, pipewire para el sonido, etc.
+- Existen dos formas de referenciar un archivo en Linux: Mediante su ruta relativa y mediante su ruta absoluta. Generalmente una ruta relativa empieza por un ./ o ../, mientras que una ruta absoluta empieza por /, ya que es la ruta completa al archivo desde la raíz del sistema de archivos. Por ejemplo:
+
+#+begin_src bash :results verbatim
+echo este es el mismo archivo > test.txt
+cat /home/mrtaichi/Documents/escuela/adminUnix/test.txt # Ruta absoluta
+cat ./test.txt # Ruta relativa
+#+end_src
+
+#+RESULTS:
+: este es el mismo archivo
+: este es el mismo archivo
+
+---------------------------------------------------------------------------
+* Disponibilidad del sistema: RAID y puntos únicos de falla
+
+** Conceptos nuevos
+*** Alta disponibilidad
+*** Redundancia
+*** Tolerancia a fallos
+*** Punto único de falla (Single Point of Failure)
+
+*** Técnicas de Protección de datos
+**** Replicación
+**** Paridad
+**** Backups vs redundancia
+
+*** RAID (Redundant Array of Independent Disks)
+**** Concepto general
+**** Objetivos: rendimiento vs seguridad
+**** RAID por hardware vs RAID por software
+**** Niveles de RAID
+***** RAID 0
+***** RAID 1
+***** RAID 5
+***** RAID 6
+***** RAID 10
+
 
 ** Conceptos de repaso
 
-- Me parece que nohup ya había sido visto?
+** Maximas
 
-** Máximas
+** Seccion libre
 
-** Sección libre
+---------------------------------------------------------------------------
+* De Unix a GNU/Linux: Origen, Filosofía y Evolución del Software Libre
+    -  Origen y evolución de Unix
+      - Contexto académico
+      - Nacimiento de Unix (1969)
+        - Desarrollo en Bell Labs
+        - Linus Torvalds
+        - Sistema Unix-like
+          - Diferencia entre Unix y Unix-like
+      - Filosofía Unix (simplicidad, modularidad, herramientas pequeñas que hacen una sola cosa)
+
+    - Proyecto GNU
+      - Filosofía del software libre
+      - Herramientas GNU (gcc, bash, coreutils)
+      - Licencia GPL
+
+    - GNU/Linux como sistema completo
+      - Integración del kernel Linux con herramientas GNU
+      - Concepto de distribución (Ubuntu, Debian, etc.)
+
+    - Comercialización de Unix
+      - Versiones propietarias
+      - Impacto en la industria
+
+
+---------------------------------------------------------------------------
+* Kernel
+    - Definición de kernel
+      - Intermediario entre hardware y software
+
+    - Rol del kernel
+      - Gestión de CPU, memoria y dispositivos
+      - Planificación (scheduling)
+      - Gestión de memoria
+      - Control de dispositivos
+      - Manejo de interrupciones
+
+    - Llamadas al sistema (System Calls)
+      - Interfaz entre espacio de usuario y kernel
+      - Ejemplos: fork(), exec(), read(), write()
+      - Cambio de modo usuario a modo kernel
+
+    - Espacio de usuario vs espacio de kernel
+      - Separación de privilegios
+      - Seguridad y protección del sistema
+
+---------------------------------------------------------------------------
+* Modelo de Ejecución y Gestión de Procesos en Linux
+    - Programa vs Proceso
+      - Definición de programa
+      - Definición de proceso
+      - Ciclo de vida de un proceso
+
+    - Procesos y Tareas en Linux
+      - Qué es una tarea (task)
+      - Concepto de hilo (thread)
+      - Diferencia entre proceso e hilo (thread)
+      - Identificador de proceso (PID)
+      - Estados de un proceso (running, ready, waiting, stopped, zombie)
+
+    - Espacio de Usuario vs Espacio de Kernel
+      - Separación de privilegios
+      - Protección de memoria
+      - Cambio de modo (user mode ↔ kernel mode)
+
+    - System Calls (Llamadas al Sistema)
+      - Mecanismo para que un proceso solicite servicios al kernel
+      - Interfaz entre usuario y kernel
+      - Cambio de contexto
+      - Ejemplos comunes de syscalls: fork(), exec(), wait(), read(), write(), open(), exit()
+
+    - Flujo básico de una system call
+      - Interrupción o instrucción especial (syscall/sysenter)
+      - El proceso solicita un servicio
+      - El CPU cambia a modo kernel
+      - El kernel ejecuta la operación
+      - Se regresa al modo usuario
+
+    - Representación Interna de Procesos en Linux
+      - struct task_struct
+        - Estructura que representa un proceso en el kernel
+        - Contiene:
+          - PID
+          - Estado
+          - Prioridad
+          - Información básica de memoria
+
+    - Qué es el scheduler
+      - Asignación de CPU a procesos
+      - Cambio de contexto (context switch)
+      - Procesos con mayor o menor prioridad
+      - Tiempo de CPU compartido
+      - sched.h (visión general)
+        - Definición de políticas de planificación
+        - Constantes relacionadas con scheduling
+        - Interacción con task_struct
+
+    - Comandos útiles
+      - pstree
+      - nohup
+
+
+---------------------------------------------------------------------------
+* Arquitectura de almacenamiento físico y su representación en Linux
+    - Dispositivos de almacenamiento
+      - HDD vs SSD
+      - NVMe vs SATA
+      - Rendimiento, latencia e IOPS
+      - Persistencia vs volatilidad
+
+    - Representación en Linux
+      - Dispositivos en /dev
+        - /dev/sda
+        - /dev/sdb
+        - /dev/nvme0n1
+      - Concepto de block device
+      - Uso de lsblk y blkid
+
+    - Interfaces de comunicación de discos
+      - SCSI
+      - SAS (Serial Attached SCSI)
+      - SATA (Serial ATA)
+      - NVMe (Non-Volatile Memory Express)
+
+    - Particiones
+      - ¿Qué es una partición?
+      - División lógica del disco
+      - Independencia de particiones
+      - Concepto de sector y bloque
+
+    - Tablas de partición
+      - MBR (Master Boot Record)
+      - GPT (GUID Partition Table)
+      - Diferencias técnicas (límite 2TB, número de particiones, redundancia)
+
+    - Tipos de particiones (MBR)
+      - Primaria
+      - Extendida
+      - Lógica
+
+    - Herramientas de particionado
+      - fdisk
+      - cfdisk
+      - parted
+      - gparted
+
+
+---------------------------------------------------------------------------
+* Estructura lógica y administración de sistemas de archivos
+
+    - ¿Qué es un sistema de archivos?
+      - Organización lógica de datos
+      - Relación con particiones
+      - Abstracción sobre el hardware
+
+    - Sistemas de archivos comunes en Linux
+      - ext4, xfs, btrfs, vfat, ntfs
+
+    - Estructura interna básica de un archivo
+      - Superbloque
+      - Inodos
+      - Bloques de datos
+      - Journaling
+      - Metadatos
+
+    - Creación y formateo de particiones
+      - mkfs
+      - mkfs.ext4
+      - mkfs.xfs
+      - Verificación con fsck
+
+    - Montaje
+      - mount
+      - umount
+      - Puntos de montaje (/mnt, /media)
+      - Montaje temporal vs permanente
+
+    - Archivo /etc/fstab
+      - Montaje automático al inicio
+      - UUID vs nombre de dispositivo
+      - Opciones comunes (defaults, noatime, ro, rw)
+
+
+
+---------------------------------------------------------------------------
+
+* Permisos y Propiedad
+      - Lectura (r)
+      - Escritura (w)
+      - Ejecución (x)
+      - comandos para ver esto ( ls -la )
+
+      - Conceptos de Usuarios y grupos
+        - Propietario
+        - Grupo
+        - Otros
+        - Comandos relacionados
+          - chmod
+          - chown
+          - chgrp
+

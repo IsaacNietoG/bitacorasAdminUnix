@@ -1,4 +1,4 @@
-% Created 2026-02-09 Mon 01:29
+% Created 2026-02-18 Wed 19:24
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt, letterpaper]{article}
 \usepackage[utf8]{inputenc}
@@ -18,13 +18,13 @@
 \usepackage{xcolor}                     % Colores personalizados
 \author{Equipo Alpine White}
 \date{\textit{{[}2026-02-09 Mon]}}
-\title{Bitácora Semanal: Administración de Sistemas Unix}
+\title{Bitácora Semanal: Administración de Sistemas Unix Bitácora Semanal - Administración de Unix}
 \hypersetup{
  pdfauthor={Equipo Alpine White},
- pdftitle={Bitácora Semanal: Administración de Sistemas Unix},
+ pdftitle={Bitácora Semanal: Administración de Sistemas Unix Bitácora Semanal - Administración de Unix},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 28.2 (Org mode 9.7.27)}, 
+ pdfcreator={Emacs 30.2 (Org mode 9.7.39)}, 
  pdflang={English}}
 \begin{document}
 
@@ -33,7 +33,7 @@
 \tableofcontents
 
 \section{Información General}
-\label{sec:org0fc6357}
+\label{sec:org7cead81}
 \begin{itemize}
 \item \textbf{Semana:} Del 3 de Febrero 2026 al 6 de Febrero 2026
 \item \textbf{Equipo:}
@@ -45,11 +45,11 @@
 \end{itemize}
 \end{itemize}
 \section{Sesión 1: 3 de Febrero 2026}
-\label{sec:org9ce91af}
+\label{sec:org60b8bfc}
 
 Esta sesión fue una introducción general a la clase y a conceptos iniciales de Linux.
 \subsection{Conceptos nuevos}
-\label{sec:org2468f96}
+\label{sec:org01e0598}
 
 \begin{itemize}
 \item \textbf{GRUB (bootloader):} GRUB (GNU GRand Unified Bootloader) es un \textbf{cargador de arranque}; es el programa que aparece al iniciar y se encarga de cargar el sistema operativo (o una ISO) y pasarle el control.
@@ -80,15 +80,15 @@ ls -la
 \phantomsection
 \label{}
 \begin{verbatim}
-total 416
-drwxr-xr-x 3 gael gael   4096 Feb  9 00:56 .
-drwxr-xr-x 3 gael gael   4096 Feb  9 00:56 ..
--rw-r--r-- 1 gael gael  18943 Feb  9 01:27 bitacora1.org
--rw-r--r-- 1 gael gael 230261 Feb  9 00:56 bitacora1.pdf
--rw-r--r-- 1 gael gael  19529 Feb  9 00:56 bitacora1.tex
-drwxr-xr-x 8 gael gael   4096 Feb  9 01:29 .git
--rw-r--r-- 1 gael gael     25 Feb  9 00:56 test.txt
--rw-r--r-- 1 gael gael 133687 Feb  9 00:56 ventoy_boot.jpg
+total 456
+drwxr-xr-x 1 marlop18 marlop18    132 Feb 18 19:22 .
+drwxr-xr-x 1 marlop18 marlop18     44 Feb 10 09:22 ..
+-rw-r--r-- 1 marlop18 marlop18  28160 Feb 18 19:20 bitacora1.org
+-rw-r--r-- 1 marlop18 marlop18 259064 Feb 18 19:22 bitacora1.pdf
+-rw-r--r-- 1 marlop18 marlop18  35070 Feb 18 19:22 bitacora1.tex
+drwxr-xr-x 1 marlop18 marlop18    142 Feb 18 19:24 .git
+-rw-r--r-- 1 marlop18 marlop18     25 Feb 18 19:22 test.txt
+-rw-r--r-- 1 marlop18 marlop18 133687 Feb 10 09:22 ventoy_boot.jpg
 \end{verbatim}
 
 
@@ -118,14 +118,14 @@ este es el mismo archivo
 \begin{itemize}
 \item LAN? (en proceso)
 
-\item En Linux, \ref{sec:orgff89e4c}. Esto incluye a los dispositivos, ya que la carpeta /dev guarda representaciones en archivo de todos los dispositivos que están conectados a la computadora. Esto incluye desde los mismos dispositivos de almacenamiento, hasta cosas más ``virtuales'' como las terminales y pseudoterminales del sistema.
+\item En Linux, \ref{sec:orgb8c669d}. Esto incluye a los dispositivos, ya que la carpeta /dev guarda representaciones en archivo de todos los dispositivos que están conectados a la computadora. Esto incluye desde los mismos dispositivos de almacenamiento, hasta cosas más ``virtuales'' como las terminales y pseudoterminales del sistema.
 
 \item Dispositivo psar? (en proceso)
 
 \item Gparted es una herramienta con interfaz gráfica para crear y modificar particiones en un disco.
 \end{itemize}
 \subsection{Conceptos de repaso}
-\label{sec:org30f63f8}
+\label{sec:orga718d80}
 
 \begin{itemize}
 \item \textbf{Proceso de arranque (boot process):}
@@ -149,18 +149,18 @@ El bootloader accede directamente a estructuras del sistema de archivos.
 Montar un FS es una abstracción que pertenece al kernel, no al bootloader.
 \end{itemize}
 \subsection{Máximas}
-\label{sec:org0176b3c}
+\label{sec:orgef19202}
 
 \subsubsection{Todo es un archivo}
-\label{sec:orgff89e4c}
+\label{sec:orgb8c669d}
 En los sistemas derivados de Unix, como Linux
 \subsection{Sección libre}
-\label{sec:org65d81c0}
+\label{sec:org041bc37}
 \section{Sesión 2: 4 de Febrero 2026}
-\label{sec:orgeef7e2a}
+\label{sec:org851a998}
 
 \subsection{Conceptos nuevos}
-\label{sec:org9035210}
+\label{sec:org58c030d}
 
 \begin{itemize}
 \item Estuvimos hablando de la importancia de la redundancia para preservar la información. Como ejemplo usamos el sistema RAID, que utiliza varios discos duros para crear replicación de información y tolerancia a fallos.
@@ -169,27 +169,27 @@ En los sistemas derivados de Unix, como Linux
 
 \item Generalmente la emulación es más lenta que la virtualización. El primer sistema de WSL usaba emulación de Linux, ahora el segundo utiliza virtualización.
 
-\item El propósito de que cada quien utilice una distribución distinta es demostrar la máxima: ``\ref{sec:org81d1a40}''. Vamos a observar como -en esencia- todos las distribuciones de Linux tienen tantas cosas en común que podemos hacer cualquier cosa en cualquier distro.
+\item El propósito de que cada quien utilice una distribución distinta es demostrar la máxima: ``\ref{sec:orgaa715c1}''. Vamos a observar como -en esencia- todos las distribuciones de Linux tienen tantas cosas en común que podemos hacer cualquier cosa en cualquier distro.
 
 \item Distrowatch es un sitio web en el que se pueden observar todas las distribuciones de Linux y muchos datos acerca de ellas. Lo que resulta interesante es que incluso un ranking de cuáles son las distros más usadas hasta el mometo.
 
 \item SCSI (que se pronuncia ``scuzzy'') es una interfaz de intercambio de datos que se utiliza sobre todo en servidores y computadoras de alto desempeño. Hablando del sistema RAID, es generalmente sobre esta interfaz sobre la que se construyen varios controladores RAID que están en la industria.
 \end{itemize}
 \subsection{Conceptos de repaso}
-\label{sec:org454902f}
+\label{sec:orgec594c3}
 
 \subsection{Máximas}
-\label{sec:orgd9e4d32}
+\label{sec:orgd71cdcb}
 \subsubsection{Todos los Linux son iguales}
-\label{sec:org81d1a40}
+\label{sec:orgaa715c1}
 En cualquier distribución de Linux podemos -a final de cuentas- hacer cualquier cosa. Todas funcionan esencialmente para lo mismo, y aunque evidentemente hay diferencias, se puede trabajar con ellas sin problema.
 \subsection{Sección libre}
-\label{sec:org64fc9c9}
+\label{sec:orge27192e}
 \section{Sesión 3: 5 de Febrero 2026}
-\label{sec:org00669ac}
+\label{sec:org061a00f}
 
 \subsection{Conceptos nuevos}
-\label{sec:orge6ffd06}
+\label{sec:org868f038}
 
 \begin{itemize}
 \item Unix nace en 1969 como un sistema operativo desarrollado en Bell Labs, al principio con fines académicos y distribuido para varias universidades. De ahí nace BSD cuando se vuelve comercial
@@ -199,13 +199,13 @@ En cualquier distribución de Linux podemos -a final de cuentas- hacer cualquier
 \item Un proceso es un programa que se está ejecutando en el sistema y constantemente le está pidiendo recursos al kernel. Los procesos se comunican con el kernel a través de syscalls
 \end{itemize}
 \subsection{Conceptos de repaso}
-\label{sec:org3db27a5}
+\label{sec:org24664ce}
 
 \subsection{Máximas}
-\label{sec:org7d9367b}
+\label{sec:org77ddf2f}
 
 \subsection{Sección libre}
-\label{sec:orged19921}
+\label{sec:orgedb919c}
 
 Para entender mejor el funcionamiento de un proceso, se me ocurrió meterme al código fuente de Linux y, con ayuda de la IA, aprender acerca de la estructura que conforma un proceso como tal.
 
@@ -269,10 +269,10 @@ Si estás programando en el kernel y tienes un puntero a un proceso (usualmente 
 
 De esto ya pude entender mejor cómo funciona el tema de los procesos en Linux y la relación de parentesco que debe existir entre todos ellos que los lleva al proceso inicial (systemd).
 \section{Sesión 4: 6 de Febrero 2026}
-\label{sec:orgc766e89}
+\label{sec:orgf9f2822}
 
 \subsection{Conceptos nuevos}
-\label{sec:org585a4ab}
+\label{sec:org161a0fb}
 
 \begin{itemize}
 \item Linux tiene un directorio llamado /tmp el cual es volátil. Ahí se guardan todos los archivos que se necesitan para el funcionamiento de los programas y SO durante la sesión, pero que no son necesarios de conservarse y por lo tanto se pueden borrar en el siguiente apagado. En Windows existe la misma implementación en una carpeta llamada Temp
@@ -286,7 +286,7 @@ man nohup
 \phantomsection
 \label{}
 \begin{verbatim}
-  NOHUP(1)                         User Commands                        NOHUP(1)
+  NOHUP(1)                         User Commands                         NOHUP(1)
 
   NAME
          nohup - run a command immune to hangups, with output to a non-tty
@@ -303,34 +303,45 @@ man nohup
          --version
                 output version information and exit
 
-         If  standard  input is a terminal, redirect it from an unreadable file.
-         If standard output is a terminal, append output to 'nohup.out' if  pos‐
-         sible,  '$HOME/nohup.out'  otherwise.  If standard error is a terminal,
-         redirect it to standard output.  To save output  to  FILE,  use  'nohup
-         COMMAND > FILE'.
+         If  standard  input  is a terminal, redirect it from an unreadable file.
+         If standard output is a terminal, append output to 'nohup.out' if possi‐
+         ble, '$HOME/nohup.out' otherwise.  If  standard  error  is  a  terminal,
+         redirect it to standard output.  To save output to FILE, use 'nohup COM‐
+         MAND > FILE'.
 
-         NOTE:  your  shell may have its own version of nohup, which usually su‐
-         persedes the version described here.  Please refer to your shell's doc‐
-         umentation for details about the options it supports.
+         Your  shell  may have its own version of nohup, which usually supersedes
+         the version described here.  Please refer to your shell's  documentation
+         for details about the options it supports.
+
+     Exit status:
+         125    if the nohup command itself fails
+
+         126    if COMMAND is found but cannot be invoked
+
+         127    if COMMAND cannot be found
+
+         -      the exit status of COMMAND otherwise
 
   AUTHOR
          Written by Jim Meyering.
 
   REPORTING BUGS
-         GNU coreutils online help: <https://www.gnu.org/software/coreutils/>
+         Report bugs to: bug-coreutils@gnu.org
+         GNU coreutils home page: <https://www.gnu.org/software/coreutils/>
+         General help using GNU software: <https://www.gnu.org/gethelp/>
          Report any translation bugs to <https://translationproject.org/team/>
 
   COPYRIGHT
-         Copyright  ©  2022  Free Software Foundation, Inc.  License GPLv3+: GNU
-         GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
-         This is free software: you are free  to  change  and  redistribute  it.
+         Copyright © 2025 Free Software Foundation, Inc.  License GPLv3+: GNU GPL
+         version 3 or later <https://gnu.org/licenses/gpl.html>.
+         This  is  free  software:  you  are  free to change and redistribute it.
          There is NO WARRANTY, to the extent permitted by law.
 
   SEE ALSO
          Full documentation <https://www.gnu.org/software/coreutils/nohup>
          or available locally via: info '(coreutils) nohup invocation'
 
-  GNU coreutils 9.1               September 2022                        NOHUP(1)
+  GNU coreutils 9.9                November 2025                         NOHUP(1)
 \end{verbatim}
 
 \item Con el comando pstree podemos ver un árbol de los procesos en ejecución actualmente en nuestro sistema. Esto nos da una vista muy clara de las relaciones de parentesco de todos estos.
@@ -343,125 +354,135 @@ pstree
 \phantomsection
 \label{}
 \begin{verbatim}
-systemd-+-ModemManager---2*[{ModemManager}]
-        |-NetworkManager---2*[{NetworkManager}]
-        |-accounts-daemon---2*[{accounts-daemon}]
-        |-avahi-daemon---avahi-daemon
+systemd-+-ModemManager---3*[{ModemManager}]
+        |-NetworkManager---3*[{NetworkManager}]
+        |-accounts-daemon---3*[{accounts-daemon}]
         |-bluetoothd
-        |-colord---2*[{colord}]
-        |-containerd---12*[{containerd}]
-        |-cron
-        |-cups-browsed---2*[{cups-browsed}]
+        |-colord---3*[{colord}]
+        |-containerd---13*[{containerd}]
         |-cupsd
-        |-dbus-daemon
+        |-dbus-broker-lau---dbus-broker
+        |-dirmngr
         |-dockerd---13*[{dockerd}]
-        |-exim4
-        |-fwupd---4*[{fwupd}]
-        |-gdm3-+-gdm-session-wor-+-gdm-wayland-ses-+-gnome-session-b---3*[{gnome-session-b}]
-        |      |                 |                 `-2*[{gdm-wayland-ses}]
-        |      |                 `-2*[{gdm-session-wor}]
-        |      `-2*[{gdm3}]
+        |-gdm-+-gdm-session-wor-+-gdm-wayland-ses-+-gnome-session-i---3*[{gnome-session-i}]
+        |     |                 |                 `-3*[{gdm-wayland-ses}]
+        |     |                 `-3*[{gdm-session-wor}]
+        |     `-4*[{gdm}]
         |-geoclue---3*[{geoclue}]
-        |-low-memory-moni---2*[{low-memory-moni}]
-        |-polkitd---2*[{polkitd}]
-        |-power-profiles----2*[{power-profiles-}]
+        |-pamac-daemon---3*[{pamac-daemon}]
+        |-polkitd---3*[{polkitd}]
+        |-power-profiles----3*[{power-profiles-}]
         |-rtkit-daemon---2*[{rtkit-daemon}]
-        |-switcheroo-cont---2*[{switcheroo-cont}]
         |-systemd-+-(sd-pam)
-        |         |-at-spi2-registr---2*[{at-spi2-registr}]
-        |         |-crashhelper---{crashhelper}
-        |         |-dbus-daemon
-        |         |-dconf-service---2*[{dconf-service}]
-        |         |-emacs
-        |         |-evolution-addre---5*[{evolution-addre}]
-        |         |-evolution-calen---8*[{evolution-calen}]
-        |         |-evolution-sourc---3*[{evolution-sourc}]
-        |         |-gcr-ssh-agent---{gcr-ssh-agent}
-        |         |-2*[gjs---10*[{gjs}]]
-        |         |-gnome-calendar---5*[{gnome-calendar}]
-        |         |-gnome-keyring-d---3*[{gnome-keyring-d}]
-        |         |-gnome-session-b-+-at-spi-bus-laun-+-dbus-daemon
-        |         |                 |                 `-3*[{at-spi-bus-laun}]
-        |         |                 |-evolution-alarm---5*[{evolution-alarm}]
-        |         |                 |-gnome-software---7*[{gnome-software}]
-        |         |                 |-gsd-disk-utilit---2*[{gsd-disk-utilit}]
-        |         |                 `-3*[{gnome-session-b}]
+        |         |-at-spi-bus-laun-+-dbus-broker-lau---dbus-broker
+        |         |                 `-4*[{at-spi-bus-laun}]
+        |         |-at-spi2-registr---3*[{at-spi2-registr}]
+        |         |-chrome-+-2*[cat]
+        |         |        |-chrome---chrome---24*[{chrome}]
+        |         |        |-chrome---chrome-+-2*[chrome---7*[{chrome}]]
+        |         |        |                 |-chrome---15*[{chrome}]
+        |         |        |                 |-6*[chrome---13*[{chrome}]]
+        |         |        |                 |-6*[chrome---14*[{chrome}]]
+        |         |        |                 |-chrome---27*[{chrome}]
+        |         |        |                 `-chrome---20*[{chrome}]
+        |         |        |-chrome---12*[{chrome}]
+        |         |        |-chrome---8*[{chrome}]
+        |         |        `-38*[{chrome}]
+        |         |-2*[chrome_crashpad---2*[{chrome_crashpad}]]
+        |         |-chrome_crashpad---{chrome_crashpad}
+        |         |-code-+-code---code---28*[{code}]
+        |         |      |-code---code---code---12*[{code}]
+        |         |      |-code---10*[{code}]
+        |         |      |-code---15*[{code}]
+        |         |      |-code---17*[{code}]
+        |         |      |-code---16*[{code}]
+        |         |      `-38*[{code}]
+        |         |-dbus-broker-lau---dbus-broker
+        |         |-dconf-service---3*[{dconf-service}]
+        |         |-deja-dup---5*[{deja-dup}]
+        |         |-deja-dup-monito---4*[{deja-dup-monito}]
+        |         |-evolution-addre---6*[{evolution-addre}]
+        |         |-evolution-alarm---7*[{evolution-alarm}]
+        |         |-evolution-calen---9*[{evolution-calen}]
+        |         |-evolution-sourc---4*[{evolution-sourc}]
+        |         |-2*[gjs---11*[{gjs}]]
+        |         |-gnome-calendar---7*[{gnome-calendar}]
+        |         |-gnome-keyring-d---4*[{gnome-keyring-d}]
         |         |-gnome-session-c---{gnome-session-c}
-        |         |-gnome-shell-+-Xwayland---6*[{Xwayland}]
-        |         |             |-firefox-esr-+-Isolated Servic---27*[{Isolated Servic}]
-        |         |             |             |-Isolated Web Co---29*[{Isolated Web Co}]
-        |         |             |             |-Isolated Web Co---32*[{Isolated Web Co}]
-        |         |             |             |-4*[Isolated Web Co---27*[{Isolated Web Co}]]
-        |         |             |             |-Isolated Web Co---28*[{Isolated Web Co}]
-        |         |             |             |-Privileged Cont---28*[{Privileged Cont}]
-        |         |             |             |-RDD Process---4*[{RDD Process}]
-        |         |             |             |-Socket Process---6*[{Socket Process}]
-        |         |             |             |-Utility Process---4*[{Utility Process}]
-        |         |             |             |-3*[Web Content---17*[{Web Content}]]
-        |         |             |             |-WebExtensions---26*[{WebExtensions}]
-        |         |             |             `-125*[{firefox-esr}]
-        |         |             `-20*[{gnome-shell}]
-        |         |-gnome-shell-cal---5*[{gnome-shell-cal}]
-        |         |-gnome-terminal--+-zsh---emacs-+-bash---pstree
-        |         |                 |             |-emacs
-        |         |                 |             `-3*[{emacs}]
-        |         |                 `-3*[{gnome-terminal-}]
+        |         |-gnome-session-s---4*[{gnome-session-s}]
+        |         |-gnome-shell-+-Xwayland---15*[{Xwayland}]
+        |         |             |-bwrap---bwrap---glycin-image-rs---2*[{glycin-image-rs}]
+        |         |             |-mutter-x11-fram---16*[{mutter-x11-fram}]
+        |         |             `-34*[{gnome-shell}]
+        |         |-gnome-shell-cal---6*[{gnome-shell-cal}]
+        |         |-gnome-text-edit---11*[{gnome-text-edit}]
         |         |-goa-daemon---3*[{goa-daemon}]
-        |         |-goa-identity-se---2*[{goa-identity-se}]
-        |         |-gsd-a11y-settin---3*[{gsd-a11y-settin}]
-        |         |-gsd-color---3*[{gsd-color}]
-        |         |-gsd-datetime---3*[{gsd-datetime}]
-        |         |-gsd-housekeepin---3*[{gsd-housekeepin}]
-        |         |-gsd-keyboard---3*[{gsd-keyboard}]
-        |         |-gsd-media-keys---3*[{gsd-media-keys}]
-        |         |-gsd-power---4*[{gsd-power}]
-        |         |-gsd-print-notif---2*[{gsd-print-notif}]
-        |         |-gsd-printer---2*[{gsd-printer}]
-        |         |-gsd-rfkill---2*[{gsd-rfkill}]
-        |         |-gsd-screensaver---2*[{gsd-screensaver}]
-        |         |-gsd-sharing---3*[{gsd-sharing}]
+        |         |-goa-identity-se---3*[{goa-identity-se}]
+        |         |-gsd-a11y-settin---4*[{gsd-a11y-settin}]
+        |         |-gsd-color---4*[{gsd-color}]
+        |         |-gsd-datetime---4*[{gsd-datetime}]
+        |         |-gsd-disk-utilit---3*[{gsd-disk-utilit}]
+        |         |-gsd-housekeepin---4*[{gsd-housekeepin}]
+        |         |-gsd-keyboard---4*[{gsd-keyboard}]
+        |         |-gsd-media-keys---4*[{gsd-media-keys}]
+        |         |-gsd-power---5*[{gsd-power}]
+        |         |-gsd-print-notif---3*[{gsd-print-notif}]
+        |         |-gsd-printer---3*[{gsd-printer}]
+        |         |-gsd-rfkill---3*[{gsd-rfkill}]
+        |         |-gsd-screensaver---3*[{gsd-screensaver}]
+        |         |-gsd-sharing---4*[{gsd-sharing}]
         |         |-gsd-smartcard---4*[{gsd-smartcard}]
-        |         |-gsd-sound---3*[{gsd-sound}]
-        |         |-gsd-usb-protect---3*[{gsd-usb-protect}]
-        |         |-gsd-wacom---3*[{gsd-wacom}]
-        |         |-gsd-xsettings---7*[{gsd-xsettings}]
-        |         |-gvfs-afc-volume---3*[{gvfs-afc-volume}]
-        |         |-gvfs-goa-volume---2*[{gvfs-goa-volume}]
-        |         |-gvfs-gphoto2-vo---2*[{gvfs-gphoto2-vo}]
-        |         |-gvfs-mtp-volume---2*[{gvfs-mtp-volume}]
-        |         |-gvfs-udisks2-vo---3*[{gvfs-udisks2-vo}]
-        |         |-gvfsd-+-gvfsd-dnssd---2*[{gvfsd-dnssd}]
-        |         |       |-gvfsd-network---3*[{gvfsd-network}]
-        |         |       |-gvfsd-recent---2*[{gvfsd-recent}]
-        |         |       |-gvfsd-trash---2*[{gvfsd-trash}]
-        |         |       `-2*[{gvfsd}]
-        |         |-gvfsd-fuse---5*[{gvfsd-fuse}]
-        |         |-gvfsd-metadata---2*[{gvfsd-metadata}]
-        |         |-ibus-portal---2*[{ibus-portal}]
-        |         |-ibus-x11---2*[{ibus-x11}]
-        |         |-pipewire---{pipewire}
-        |         |-pipewire-pulse---{pipewire-pulse}
-        |         |-sd_dummy---2*[{sd_dummy}]
-        |         |-sd_espeak-ng---{sd_espeak-ng}
-        |         |-sh---ibus-daemon-+-ibus-engine-sim---2*[{ibus-engine-sim}]
-        |         |                  |-ibus-extension----3*[{ibus-extension-}]
-        |         |                  |-ibus-memconf---2*[{ibus-memconf}]
-        |         |                  `-2*[{ibus-daemon}]
-        |         |-speech-dispatch---4*[{speech-dispatch}]
-        |         |-ssh-agent
-        |         |-tracker-miner-f---5*[{tracker-miner-f}]
-        |         |-wireplumber---3*[{wireplumber}]
-        |         |-xdg-desktop-por---5*[{xdg-desktop-por}]
-        |         |-2*[xdg-desktop-por---3*[{xdg-desktop-por}]]
+        |         |-gsd-sound---4*[{gsd-sound}]
+        |         |-gsd-usb-protect---4*[{gsd-usb-protect}]
+        |         |-gsd-wwan---4*[{gsd-wwan}]
+        |         |-gsd-xsettings---4*[{gsd-xsettings}]
+        |         |-gvfs-afc-volume---4*[{gvfs-afc-volume}]
+        |         |-gvfs-goa-volume---3*[{gvfs-goa-volume}]
+        |         |-gvfs-gphoto2-vo---3*[{gvfs-gphoto2-vo}]
+        |         |-gvfs-mtp-volume---3*[{gvfs-mtp-volume}]
+        |         |-gvfs-udisks2-vo---4*[{gvfs-udisks2-vo}]
+        |         |-gvfsd-+-gvfsd-dnssd---3*[{gvfsd-dnssd}]
+        |         |       |-gvfsd-network---4*[{gvfsd-network}]
+        |         |       |-gvfsd-recent---3*[{gvfsd-recent}]
+        |         |       |-gvfsd-trash---4*[{gvfsd-trash}]
+        |         |       |-gvfsd-wsdd-+-python3
+        |         |       |            `-3*[{gvfsd-wsdd}]
+        |         |       `-3*[{gvfsd}]
+        |         |-gvfsd-fuse---6*[{gvfsd-fuse}]
+        |         |-gvfsd-metadata---3*[{gvfsd-metadata}]
+        |         |-ibus-daemon-+-ibus-dconf---4*[{ibus-dconf}]
+        |         |             |-ibus-engine-sim---3*[{ibus-engine-sim}]
+        |         |             |-ibus-extension----5*[{ibus-extension-}]
+        |         |             `-3*[{ibus-daemon}]
+        |         |-ibus-portal---3*[{ibus-portal}]
+        |         |-ibus-x11---10*[{ibus-x11}]
+        |         |-keyboxd
+        |         |-kgx-+-zsh---emacs-+-bash---pstree
+        |         |     |             |-bwrap---bwrap---glycin-svg---2*[{glycin-svg}]
+        |         |     |             `-8*[{emacs}]
+        |         |     |-zsh
+        |         |     `-10*[{kgx}]
+        |         |-localsearch-3---7*[{localsearch-3}]
+        |         |-nautilus---13*[{nautilus}]
+        |         |-obexd
+        |         |-pipewire---2*[{pipewire}]
+        |         |-pipewire-pulse---2*[{pipewire-pulse}]
+        |         |-wireplumber---5*[{wireplumber}]
+        |         |-xdg-desktop-por---6*[{xdg-desktop-por}]
+        |         |-2*[xdg-desktop-por---5*[{xdg-desktop-por}]]
         |         |-xdg-document-po-+-fusermount3
-        |         |                 `-5*[{xdg-document-po}]
-        |         `-xdg-permission----2*[{xdg-permission-}]
+        |         |                 `-6*[{xdg-document-po}]
+        |         |-xdg-permission----3*[{xdg-permission-}]
+        |         |-2*[zsh---gitstatusd---16*[{gitstatusd}]]
+        |         `-4*[zsh]
         |-systemd-journal
         |-systemd-logind
+        |-systemd-machine
         |-systemd-timesyn---{systemd-timesyn}
         |-systemd-udevd
-        |-udisksd---4*[{udisksd}]
-        |-upowerd---2*[{upowerd}]
+        |-systemd-userdbd---3*[systemd-userwor]
+        |-udisksd---6*[{udisksd}]
+        |-upowerd---3*[{upowerd}]
         `-wpa_supplicant
 \end{verbatim}
 
@@ -469,14 +490,281 @@ systemd-+-ModemManager---2*[{ModemManager}]
 \item De aquí podemos observar una vez más como el proceso más importante y del que nacen todos los procesos en espacio de usuario es el proceso systemd. Además, observamos algunas cosillas interesantes como los procesos que generan nuestro entorno de escritorio, pipewire para el sonido, etc.
 \end{itemize}
 \subsection{Conceptos de repaso}
-\label{sec:org8330e44}
+\label{sec:orgc0acc47}
 
 \begin{itemize}
 \item Me parece que nohup ya había sido visto?
 \end{itemize}
 \subsection{Máximas}
-\label{sec:orgd7fc115}
+\label{sec:org8992b05}
 
 \subsection{Sección libre}
-\label{sec:org79f8345}
+\label{sec:orgb7f6c57}
+
+\begin{itemize}
+\item \textbf{Semana:} Del 9 de Febero al 13 de Febrero 2026
+\end{itemize}
+
+
+Durante la semana vimos una variedad de comandos que nos permiten ver la configuración que hay dentro de bas
+\section{Comandos de Administración en Linux}
+\label{sec:org31320e6}
+
+Definiciones de Comandos de Administración en Linux
+
+\begin{center}
+\begin{tabular}{ll}
+Comando & Definición\\
+\hline
+dmesg $\backslash$ & less & Muestra el registro del kernel (mensajes del sistema), incluyendo detección de hardware, particiones, errores de disco y eventos al arrancar. El uso de `less` permite navegar el historial página por página.\\
+fdisk -l /dev/sdf & Lista la tabla de particiones del disco especificado. Muestra tamaño, tipo (EFI, Linux, HPFS/NTFS), sectores y UUID. Es útil para identificar cómo está organizada la memoria o el disco.\\
+p (en fdisk) & Dentro del intérprete interactivo de fdisk, el comando `p` imprime (print) la tabla actual de particiones.\\
+n (en fdisk) & Crea una nueva partición dentro del disco seleccionado. Permite elegir tipo (primaria, extendida) y tamaño.\\
+gpart & Herramienta para analizar y recuperar tablas de particiones dañadas. Puede reconstruir estructuras perdidas en discos.\\
+smart & Hace referencia a SMART (Self-Monitoring, Analysis and Reporting Technology), sistema que monitorea el estado físico del disco para detectar fallos. Normalmente se usa con `smartctl`.\\
+efibootmgr & Administra las entradas de arranque EFI. Permite ver, crear o modificar el orden de arranque almacenado en la memoria NVRAM del sistema.\\
+df -l & Muestra los sistemas de archivos montados excluyendo los remotos. Indica cuánto espacio está usado y disponible.\\
+df -lh & Igual que `df`, pero en formato legible (human readable), mostrando tamaños en KB, MB o GB.\\
+mount /dev/sda3 /mnt & Monta una partición en un directorio para poder acceder a su contenido. Integra el sistema de archivos al árbol principal.\\
+umount /mnt & Desmonta una partición previamente montada, liberando el punto de montaje.\\
+mount -o subvol=home /dev/sda3 /mnt & Monta un subvolumen específico en sistemas Btrfs. Permite separar /home de la raíz del sistema.\\
+mount --bind /dev /mnt/dev & Realiza un montaje enlazado (bind mount), permitiendo que un directorio aparezca en otra ubicación. Es común antes de usar `chroot`.\\
+mount --bind /sys /mnt/sys & Similar al anterior, enlaza el directorio del sistema para que esté disponible dentro de un entorno chroot.\\
+less /etc/fstab & Muestra el archivo de configuración donde se definen los sistemas de archivos que se montan automáticamente al iniciar el sistema.\\
+less /etc/mtab & Muestra los sistemas de archivos actualmente montados.\\
+cat /etc/os-release & Muestra información sobre la distribución del sistema operativo (nombre, versión, ID).\\
+chroot /mnt bash & Cambia la raíz del sistema al directorio indicado y ejecuta un shell (bash). Permite administrar o reparar un sistema desde otro entorno.\\
+\end{tabular}
+\end{center}
+\section{Montaje de Particiones, EFI y Administración del Sistema}
+\label{sec:org2247c80}
+
+Durante esta semana se abordaron conceptos fundamentales relacionados con la
+arquitectura de almacenamiento en sistemas Unix/Linux, el proceso de arranque,
+el montaje de particiones y buenas prácticas administrativas.
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{1. Identificación y Montaje de Particiones}
+\label{sec:org1313763}
+
+En clase analizamos cómo identificar las particiones del sistema y montarlas
+manualmente utilizando el directorio /mnt como punto temporal de montaje.
+
+El directorio /mnt está definido por el FHS (Filesystem Hierarchy Standard)
+como un punto destinado a montajes temporales realizados por el administrador.
+
+El proceso general consistió en:
+
+\begin{itemize}
+\item Identificar las particiones con herramientas como fdisk o lsblk.
+\item Reconocer la partición raíz (/), la partición /boot y la partición /boot/efi.
+\item Montar manualmente las particiones para inspeccionar su contenido.
+\item Analizar la estructura interna del sistema de archivos.
+\end{itemize}
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{2. EFI (EFI System Partition)}
+\label{sec:orgddf2b20}
+
+La EFI System Partition (ESP) es una partición especial utilizada en sistemas
+modernos que emplean UEFI (Unified Extensible Firmware Interface) en lugar del
+BIOS tradicional.
+\subsection{Características principales:}
+\label{sec:orgb7f57e7}
+\begin{itemize}
+\item Formateada generalmente en FAT32.
+\item Contiene los cargadores de arranque (.efi).
+\item Se monta comúnmente en /boot/efi.
+\item Es requerida en sistemas con tabla de particiones GPT.
+\end{itemize}
+\subsection{Proceso de arranque en sistemas UEFI:}
+\label{sec:org80e6890}
+\begin{enumerate}
+\item Encendido del equipo.
+\item Ejecución del firmware (UEFI).
+\item Localización de la partición EFI.
+\item Carga del bootloader (ej. GRUB).
+\item Selección y carga del kernel.
+\item Inicio del sistema operativo.
+\end{enumerate}
+
+La EFI permite mayor flexibilidad, soporte para discos mayores a 2TB y
+mecanismos como Secure Boot.
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{3. Dispositivos tipo /dev/sdX y contexto de ``sd3''}
+\label{sec:orgba7cbb0}
+
+En Linux, los dispositivos de almacenamiento se representan como block devices
+dentro del directorio /dev.
+
+Ejemplos:
+\begin{itemize}
+\item /dev/sda  → Primer disco detectado
+\item /dev/sdb  → Segundo disco
+\item /dev/sda1 → Primera partición del disco sda
+\item /dev/sda3 → Tercera partición del disco sda
+\end{itemize}
+
+Cuando se mencionó “sd3”, se hacía referencia probablemente a /dev/sda3, que
+corresponde a una partición específica del disco principal. Esta partición
+puede contener:
+
+\begin{itemize}
+\item La raíz del sistema (/)
+\item Un subvolumen en Btrfs
+\item El directorio /home
+\item Otro sistema de archivos independiente
+\end{itemize}
+
+En sistemas modernos es común que la raíz esté en /dev/sda3 utilizando Btrfs.
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{4. Buenas prácticas: uso de usuario con privilegios sudo}
+\label{sec:org911fc0e}
+
+Una recomendación importante fue evitar trabajar directamente como root.
+\subsection{Justificación técnica:}
+\label{sec:orge54caf1}
+
+En sistemas Unix existe separación de privilegios:
+
+\begin{itemize}
+\item Usuario normal → permisos limitados.
+\item Root (UID 0) → control total del sistema.
+\end{itemize}
+
+Trabajar siempre como root implica riesgos:
+\begin{itemize}
+\item Eliminación accidental de archivos críticos.
+\item Modificación indebida de configuraciones.
+\item Mayor impacto ante errores humanos.
+\end{itemize}
+\subsection{Buena práctica recomendada:}
+\label{sec:orgd614c24}
+\begin{itemize}
+\item Crear un usuario administrador.
+\item Asignarlo al grupo sudo o wheel.
+\item Elevar privilegios únicamente cuando sea necesario usando sudo.
+\end{itemize}
+
+Esto sigue el principio de:
+\begin{quote}
+Principio de mínimo privilegio (Principle of Least Privilege)
+\end{quote}
+
+Este principio es ampliamente recomendado en comunidades técnicas,
+documentación oficial y foros especializados en administración Linux.
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{5. Sistema de archivos Btrfs}
+\label{sec:org9916143}
+
+Se revisó el uso del sistema de archivos Btrfs, el cual es moderno y avanzado,
+diseñado para ofrecer:
+
+\begin{itemize}
+\item Copy-on-Write (CoW)
+\item Snapshots
+\item Subvolúmenes
+\item Compresión
+\item Integridad de datos
+\end{itemize}
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{5.1 Opción compress=zstd:1 0 0}
+\label{sec:org00c9a96}
+
+La opción:
+
+compress=zstd:1
+
+es una opción de montaje en Btrfs que habilita compresión usando Zstandard.
+\subsection{Componentes:}
+\label{sec:org2379979}
+\begin{itemize}
+\item compress → activa compresión.
+\item zstd → algoritmo Zstandard.
+\item :1 → nivel de compresión (1 = bajo, más rápido).
+\end{itemize}
+
+Ventajas:
+\begin{itemize}
+\item Reduce uso de espacio en disco.
+\item Mejora rendimiento en ciertos escenarios (menos I/O).
+\item Transparente para el usuario.
+\end{itemize}
+
+En /etc/fstab suele verse algo como:
+
+UUID=xxxxx  /  btrfs  defaults,compress=zstd:1  0  0
+
+Los últimos dos valores (0 0) indican:
+\begin{itemize}
+\item Dump (respaldo) → generalmente 0.
+\item Orden de chequeo con fsck → generalmente 0 en Btrfs.
+\end{itemize}
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{5.2 Subvolúmenes (subvol)}
+\label{sec:org041d422}
+
+Un subvolumen en Btrfs es una división lógica dentro del mismo sistema de
+archivos.
+
+No es una partición física, sino una estructura interna.
+
+Ejemplo común:
+
+\begin{itemize}
+\item Subvolumen @        → raíz del sistema
+\item Subvolumen @home    → directorio /home
+\end{itemize}
+
+Ventajas:
+\begin{itemize}
+\item Permite snapshots independientes.
+\item Separación lógica sin particionar físicamente.
+\item Facilita recuperación y administración.
+\end{itemize}
+
+Montaje ejemplo:
+
+mount -o subvol=@home /dev/sda3 /mnt
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{6. Archivo /etc/fstab}
+\label{sec:org779c48e}
+
+El archivo /etc/fstab define qué sistemas de archivos se montan al inicio.
+
+Incluye:
+\begin{itemize}
+\item UUID
+\item Punto de montaje
+\item Tipo de sistema de archivos
+\item Opciones de montaje
+\item Flags de dump y fsck
+\end{itemize}
+
+Es clave en administración Unix para garantizar persistencia de configuración.
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{7. Conceptos Complementarios Propuestos}
+\label{sec:orgc560679}
+
+A continuación se listan temas estructurales para desarrollo posterior
+dentro de la materia Administración de Unix.
+
+
+Esta semana permitió comprender cómo Unix/Linux organiza el almacenamiento
+desde el nivel físico hasta el nivel lógico, cómo se monta el sistema de
+archivos y cómo el proceso de arranque interactúa con la EFI y el bootloader.
+
+Asimismo, se reforzaron buenas prácticas administrativas como el uso de
+usuarios con privilegios controlados y la comprensión del sistema de archivos
+Btrfs y sus capacidades avanzadas.
+
+Estos conocimientos constituyen una base esencial para la administración
+segura y eficiente de sistemas Unix.
 \end{document}

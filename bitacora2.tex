@@ -1,0 +1,762 @@
+% Created 2026-02-18 Wed 23:08
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+\usepackage[utf8]{inputenc}
+\usepackage{palatino}                   % Tipografía elegante
+\usepackage{xcolor}                     % Colores personalizados
+\author{Equipo Alpine White}
+\date{\textit{{[}2026-02-09 Mon]}}
+\title{Bitácora Semanal 2: Administración de Sistemas Unix}
+\hypersetup{
+ pdfauthor={Equipo Alpine White},
+ pdftitle={Bitácora Semanal 2: Administración de Sistemas Unix},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 30.2 (Org mode 9.7.29)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+\section{Información General}
+\label{sec:orgc25db69}
+\begin{itemize}
+\item \textbf{Semana:} Del 9 de Febrero 2026 al 13 de Febrero 2026
+\item \textbf{Equipo:}
+\begin{itemize}
+\item Arreguín Salgado Gael Emiliano
+\item Gramer Muñoz Omar Fernando
+\item López Pérez Mariana
+\item Nieto Gallegos Isaac Julián
+\end{itemize}
+\end{itemize}
+
+Durante la semana vimos una variedad de comandos que nos permiten ver el potencial de configurabilidad que existe dentro de Linux. Particularmente, estuvimos trabajando en permisos de archivos, montaje de sistemas de archivos y vamos comenzando a prepararnos para la virtualización.
+\section{Distro Watch}
+\label{sec:orgfe32d4b}
+
+Distro Watch es un sitio web que monitorea y cataloga distribuciones GNU/Linux y sistemas Unix like. Solo es un portal informativo que mantiene bases de datos sobre versiones.
+\subsection{Page Hit Ranking}
+\label{sec:org297bf0e}
+\begin{itemize}
+\item El ranking mostrado en su página principal se basa en el número de visitas a la página informativa de cada distribución.
+\item No mide instalaciones reales, cuota de mercado ni popularidad efectiva.
+\item Es un indicador aproximado de interes relativo dentro de la comunidad que consulta el sitio.
+\end{itemize}
+\section{POSIX y modelo de ejecución en sistemas Unix y GNU/Linux}
+\label{sec:orgb5237ef}
+
+POSIX (Portable Operating System Interface) es un estándar definido por IEEE que especifica cómo los programas interactúan con el sistema operativo. No es el sistema operativo en sí, sino una especificación que define las interfaces que deben existir. Gracias a POSIX, un programa puede ejecutarse en distintos sistemas tipo Unix, como Linux, BSD o macOS sin modificaciones significativas, siempre que use únicamente las interfaces estándar.
+
+En este modelo, el concepto central es el proceso. Un proceso es un ejemplar de un programa en ejecución gestionado por el kernel. Cada proceso posee su propio espacio de memoria virtual, su propio contexto de ejecución y un identificador único llamado PID (Process ID). El kernel es responsable de crear, planificar y destruir procesos. La creación de procesos se realiza mediante la llamada al sistema \texttt{fork()}, que crea una copia del proceso actual. Posteriormente, el proceso puede reemplazar su imagen de memoria usando \texttt{exec()} para ejecutar otro programa. Este modelo permite construir sistemas complejos mediante la composición de procesos simples.
+
+La interacción con recursos del sistema se realiza mediante una abstracción fundamental: el file descriptor. Un file descriptor es un entero que representa un recurso abierto, como un archivo, un dispositivo o un canal de comunicación. Por convención, existen tres descriptores estándar:
+
+\begin{itemize}
+\item 0 corresponde a la entrada estándar (stdin)
+\item 1 corresponde a la salida estándar (stdout)
+\item 2 corresponde al error estándar (stderr)
+\end{itemize}
+
+Esta abstracción permite que el sistema trate distintos tipos de recursos de forma uniforme, simplificando el diseño y la implementación de programas.
+
+La comunicación entre procesos se realiza mediante mecanismos de IPC (Inter-Process Communication). Un pipe es un canal unidireccional gestionado por el kernel que conecta la salida de un proceso con la entrada de otro.
+
+Internamente, el kernel crea un buffer temporal y coordina la transferencia de datos entre ambos procesos mediante file descriptors.
+
+Las señales son notificaciones asíncronas enviadas por el kernel o por otros procesos para indicar que ha ocurrido un evento. Por ejemplo, cuando el usuario presiona Ctrl+C, el sistema envía la señal \texttt{SIGINT} al proceso activo. Las señales permiten controlar la ejecución de procesos, terminar programas, manejar errores o reaccionar a eventos del sistema. Algunas señales comunes incluyen:
+
+\begin{itemize}
+\item \texttt{SIGINT}: interrupción desde el teclado
+\item \texttt{SIGTERM}: solicitud de terminación
+\item \texttt{SIGKILL}: terminación forzada por el kernel
+\item \texttt{SIGCHLD}: notificación de que un proceso hijo ha terminado
+\end{itemize}
+
+Este modelo, definido por POSIX y adoptado por Unix y GNU/Linux, se basa en principios de aislamiento, simplicidad y composición. Los procesos son entidades independientes que se comunican explícitamente, el kernel controla el acceso a los recursos, y la abstracción de file descriptors permite unificar la interacción con el sistema. Esta arquitectura ha demostrado ser extremadamente robusta y es la base de prácticamente todos los sistemas operativos tipo Unix modernos.
+\section{Comandos de Administración en Linux}
+\label{sec:orgd5b521f}
+
+Definiciones de Comandos de Administración en Linux
+
+\begin{center}
+\begin{tabular}{ll}
+Comando & Definición\\
+\hline
+dmesg $\backslash$ & less & Muestra el registro del kernel (mensajes del sistema), incluyendo detección de hardware, particiones, errores de disco y eventos al arrancar. El uso de `less` permite navegar el historial página por página.\\
+fdisk -l /dev/sdf & Lista la tabla de particiones del disco especificado. Muestra tamaño, tipo (EFI, Linux, HPFS/NTFS), sectores y UUID. Es útil para identificar cómo está organizada la memoria o el disco.\\
+p (en fdisk) & Dentro del intérprete interactivo de fdisk, el comando `p` imprime (print) la tabla actual de particiones.\\
+n (en fdisk) & Crea una nueva partición dentro del disco seleccionado. Permite elegir tipo (primaria, extendida) y tamaño.\\
+gpart & Herramienta para analizar y recuperar tablas de particiones dañadas. Puede reconstruir estructuras perdidas en discos.\\
+smart & Hace referencia a SMART (Self-Monitoring, Analysis and Reporting Technology), sistema que monitorea el estado físico del disco para detectar fallos. Normalmente se usa con `smartctl`.\\
+efibootmgr & Administra las entradas de arranque EFI. Permite ver, crear o modificar el orden de arranque almacenado en la memoria NVRAM del sistema.\\
+df -l & Muestra los sistemas de archivos montados excluyendo los remotos. Indica cuánto espacio está usado y disponible.\\
+df -lh & Igual que `df`, pero en formato legible (human readable), mostrando tamaños en KB, MB o GB.\\
+mount /dev/sda3 /mnt & Monta una partición en un directorio para poder acceder a su contenido. Integra el sistema de archivos al árbol principal.\\
+umount /mnt & Desmonta una partición previamente montada, liberando el punto de montaje.\\
+mount -o subvol=home /dev/sda3 /mnt & Monta un subvolumen específico en sistemas Btrfs. Permite separar /home de la raíz del sistema.\\
+mount --bind /dev /mnt/dev & Realiza un montaje enlazado (bind mount), permitiendo que un directorio aparezca en otra ubicación. Es común antes de usar `chroot`.\\
+mount --bind /sys /mnt/sys & Similar al anterior, enlaza el directorio del sistema para que esté disponible dentro de un entorno chroot.\\
+less /etc/fstab & Muestra el archivo de configuración donde se definen los sistemas de archivos que se montan automáticamente al iniciar el sistema.\\
+less /etc/mtab & Muestra los sistemas de archivos actualmente montados.\\
+cat /etc/os-release & Muestra información sobre la distribución del sistema operativo (nombre, versión, ID).\\
+chroot /mnt bash & Cambia la raíz del sistema al directorio indicado y ejecuta un shell (bash). Permite administrar o reparar un sistema desde otro entorno.\\
+\end{tabular}
+\end{center}
+\section{Montaje de Particiones, EFI y Administración del Sistema}
+\label{sec:org05bf7e6}
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{1. Identificación y Montaje de Particiones}
+\label{sec:orgbf18c1d}
+
+En clase analizamos cómo identificar las particiones del sistema y montarlas
+manualmente utilizando el directorio /mnt como punto temporal de montaje.
+
+El directorio /mnt está definido por el FHS (Filesystem Hierarchy Standard)
+como un punto destinado a montajes temporales realizados por el administrador.
+
+El proceso general consistió en:
+
+\begin{itemize}
+\item Identificar las particiones con herramientas como fdisk o lsblk.
+\item Reconocer la partición raíz (/), la partición /boot y la partición /boot/efi.
+\item Montar manualmente las particiones para inspeccionar su contenido.
+\item Analizar la estructura interna del sistema de archivos.
+\end{itemize}
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{2. EFI (EFI System Partition)}
+\label{sec:orgf109eb4}
+
+La EFI System Partition (ESP) es una partición especial utilizada en sistemas
+modernos que emplean UEFI (Unified Extensible Firmware Interface) en lugar del
+BIOS tradicional.
+\subsection{Características principales:}
+\label{sec:org9ece670}
+\begin{itemize}
+\item Formateada generalmente en FAT32.
+\item Contiene los cargadores de arranque (.efi).
+\item Se monta comúnmente en /boot/efi.
+\item Es requerida en sistemas con tabla de particiones GPT.
+\end{itemize}
+\subsection{Proceso de arranque en sistemas UEFI:}
+\label{sec:org11cc463}
+\begin{enumerate}
+\item Encendido del equipo.
+\item Ejecución del firmware (UEFI).
+\item Localización de la partición EFI.
+\item Carga del bootloader (ej. GRUB).
+\item Selección y carga del kernel.
+\item Inicio del sistema operativo.
+\end{enumerate}
+
+La EFI permite mayor flexibilidad, soporte para discos mayores a 2TB y
+mecanismos como Secure Boot.
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{3. Dispositivos tipo /dev/sdX y contexto de ``sd3''}
+\label{sec:orgb479ce6}
+
+En Linux, los dispositivos de almacenamiento se representan como block devices dentro del directorio /dev.
+
+Ejemplos:
+\begin{itemize}
+\item /dev/sda  → Primer disco detectado
+\item /dev/sdb  → Segundo disco
+\item /dev/sda1 → Primera partición del disco sda
+\item /dev/sda3 → Tercera partición del disco sda
+\end{itemize}
+
+Cuando se mencionó “sd3”, se hacía referencia probablemente a /dev/sda3, que corresponde a una partición específica del disco principal. Esta partición
+puede contener:
+
+\begin{itemize}
+\item La raíz del sistema (/)
+\item Un subvolumen en Btrfs
+\item El directorio /home
+\item Otro sistema de archivos independiente
+\end{itemize}
+
+En sistemas modernos es común que la raíz esté en /dev/sda3 utilizando Btrfs. Ya que las primeras dos particiones suelen justamente dedicarse al arranque, o a otro sistema.
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{4. Buenas prácticas: uso de usuario con privilegios sudo}
+\label{sec:org8cca340}
+
+Una recomendación importante fue evitar trabajar directamente como root.
+\subsection{Justificación técnica:}
+\label{sec:org3cd77be}
+
+En sistemas Unix existe separación de privilegios:
+
+\begin{itemize}
+\item Usuario normal → permisos limitados.
+\item Root (UID 0) → control total del sistema.
+\end{itemize}
+
+Trabajar siempre como root implica riesgos:
+\begin{itemize}
+\item Eliminación accidental de archivos críticos.
+\item Modificación indebida de configuraciones.
+\item Mayor impacto ante errores humanos.
+\end{itemize}
+\subsection{Buena práctica recomendada:}
+\label{sec:org45a7edf}
+\begin{itemize}
+\item Crear un usuario administrador.
+\item Asignarlo al grupo sudo o wheel.
+\item Elevar privilegios únicamente cuando sea necesario usando sudo.
+\end{itemize}
+
+Esto sigue el principio de:
+\begin{quote}
+Principio de mínimo privilegio (Principle of Least Privilege)
+\end{quote}
+
+Este principio es ampliamente recomendado en comunidades técnicas,
+documentación oficial y foros especializados en administración Linux.
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{5. Sistema de archivos Btrfs}
+\label{sec:org5a4e752}
+
+Se revisó el uso del sistema de archivos Btrfs, el cual es moderno y avanzado,
+diseñado para ofrecer:
+
+\begin{itemize}
+\item Copy-on-Write (CoW)
+\item Snapshots
+\item Subvolúmenes
+\item Compresión
+\item Integridad de datos
+\end{itemize}
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{5.1 Opción compress=zstd:1 0 0}
+\label{sec:org9d08fa3}
+
+La opción:
+
+compress=zstd:1
+
+es una opción de montaje en Btrfs que habilita compresión usando Zstandard.
+\subsection{Componentes:}
+\label{sec:org26ccc2d}
+\begin{itemize}
+\item compress → activa compresión.
+\item zstd → algoritmo Zstandard.
+\item :1 → nivel de compresión (1 = bajo, más rápido).
+\end{itemize}
+
+Ventajas:
+\begin{itemize}
+\item Reduce uso de espacio en disco.
+\item Mejora rendimiento en ciertos escenarios (menos I/O).
+\item Transparente para el usuario.
+\end{itemize}
+
+En /etc/fstab suele verse algo como:
+
+UUID=xxxxx  /  btrfs  defaults,compress=zstd:1  0  0
+
+Los últimos dos valores (0 0) indican:
+\begin{itemize}
+\item Dump (respaldo) → generalmente 0.
+\item Orden de chequeo con fsck → generalmente 0 en Btrfs.
+\end{itemize}
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{5.2 Subvolúmenes (subvol)}
+\label{sec:org2444a48}
+
+Un subvolumen en Btrfs es una división lógica dentro del mismo sistema de
+archivos.
+
+No es una partición física, sino una estructura interna.
+
+Ejemplo común:
+
+\begin{itemize}
+\item Subvolumen @        → raíz del sistema
+\item Subvolumen @home    → directorio /home
+\end{itemize}
+
+Ventajas:
+\begin{itemize}
+\item Permite snapshots independientes.
+\item Separación lógica sin particionar físicamente.
+\item Facilita recuperación y administración.
+\end{itemize}
+
+Montaje ejemplo:
+
+mount -o subvol=@home /dev/sda3 /mnt
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{6. Archivo /etc/fstab}
+\label{sec:org802ffdc}
+
+El archivo /etc/fstab define qué sistemas de archivos se montan al inicio.
+
+Incluye:
+\begin{itemize}
+\item UUID
+\item Punto de montaje
+\item Tipo de sistema de archivos
+\item Opciones de montaje
+\item Flags de dump y fsck
+\end{itemize}
+
+Es clave en administración Unix para garantizar persistencia de configuración.
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{7. Conceptos Complementarios Propuestos}
+\label{sec:org2ceab2a}
+
+A continuación se listan temas estructurales para desarrollo posterior
+dentro de la materia Administración de Unix.
+
+Esta semana permitió comprender cómo Unix/Linux organiza el almacenamiento
+desde el nivel físico hasta el nivel lógico, cómo se monta el sistema de
+archivos y cómo el proceso de arranque interactúa con la EFI y el bootloader.
+
+Asimismo, se reforzaron buenas prácticas administrativas como el uso de
+usuarios con privilegios controlados y la comprensión del sistema de archivos
+Btrfs y sus capacidades avanzadas.
+
+Estos conocimientos constituyen una base esencial para la administración
+segura y eficiente de sistemas Unix.
+\section{8. Estructura lógica y administración de sistemas de archivos}
+\label{sec:orgf804031}
+
+\subsection{¿Qué es un sistema de archivos?}
+\label{sec:org6706a19}
+
+Un sistema de archivos (Filesystem) es el mecanismo lógico que utiliza el
+sistema operativo para organizar, almacenar y recuperar datos en un
+dispositivo de almacenamiento.
+\subsubsection{Organización lógica de datos}
+\label{sec:org7061e21}
+Permite estructurar la información en archivos y directorios jerárquicos,
+independientemente de cómo estén físicamente almacenados los bloques
+en el disco.
+
+Ejemplo:
+Un archivo llamado documento.txt puede estar dividido en múltiples
+bloques físicos, pero el sistema lo presenta como una unidad lógica.
+\subsubsection{Relación con particiones}
+\label{sec:org204e6b8}
+Un sistema de archivos se crea sobre una partición o dispositivo.
+La partición define el espacio físico; el sistema de archivos define
+cómo se organiza ese espacio.
+
+Disco → Partición → Sistema de archivos → Archivos y directorios
+\subsubsection{Abstracción sobre el hardware}
+\label{sec:org7589f98}
+El sistema de archivos actúa como una capa de abstracción entre el
+usuario y el hardware, ocultando detalles como sectores, cilindros
+y bloques físicos.
+
+---
+\subsection{Sistemas de archivos comunes en Linux}
+\label{sec:org084d606}
+
+\subsubsection{ext4}
+\label{sec:orgde00688}
+Sistema de archivos por defecto en muchas distribuciones Linux.
+Soporta journaling, archivos grandes y buena estabilidad.
+\subsubsection{xfs}
+\label{sec:org7ae6217}
+Optimizado para alto rendimiento y manejo de grandes volúmenes
+de datos. Muy usado en servidores.
+\subsubsection{btrfs}
+\label{sec:org6981d4b}
+Sistema moderno con características avanzadas como snapshots,
+compresión y subvolúmenes.
+\subsubsection{vfat}
+\label{sec:org3bda863}
+Compatible con sistemas Windows. Usado comúnmente en memorias USB.
+\subsubsection{ntfs}
+\label{sec:org98e5f24}
+Sistema de archivos de Windows. Linux puede leerlo y escribirlo
+mediante controladores como ntfs-3g.
+
+---
+\subsection{Estructura interna básica de un archivo}
+\label{sec:org1880a9e}
+
+\subsubsection{Superbloque}
+\label{sec:org72c06bc}
+Contiene información global del sistema de archivos:
+\begin{itemize}
+\item Tamaño total
+\item Número de inodos
+\item Tamaño de bloque
+\item Estado del sistema
+\end{itemize}
+
+Es esencial para montar el sistema.
+\subsubsection{Inodos}
+\label{sec:org179402b}
+Estructuras que almacenan metadatos del archivo:
+\begin{itemize}
+\item Permisos
+\item Propietario
+\item Tamaño
+\item Punteros a bloques de datos
+\end{itemize}
+
+Importante: el nombre del archivo NO está en el inodo,
+sino en el directorio.
+\subsubsection{Bloques de datos}
+\label{sec:orgdbea73f}
+Son las unidades físicas donde se almacena el contenido real
+del archivo.
+\subsubsection{Journaling}
+\label{sec:orgc1e271b}
+Mecanismo que registra cambios antes de aplicarlos.
+Permite recuperación ante fallos inesperados (apagones).
+
+Ejemplo:
+ext4 usa journaling para evitar corrupción tras un corte eléctrico.
+\subsubsection{Metadatos}
+\label{sec:org543a780}
+Información sobre el archivo, no su contenido.
+Ejemplo:
+\begin{itemize}
+\item Fecha de creación
+\item Permisos
+\item Tamaño
+\item UID y GID
+\end{itemize}
+
+---
+\subsection{Creación y formateo de particiones}
+\label{sec:org5f35d03}
+
+Formatear significa crear un sistema de archivos dentro
+de una partición.
+\subsubsection{mkfs}
+\label{sec:org1dae781}
+Comando general para crear sistemas de archivos.
+
+Ejemplo:
+\begin{verbatim}
+mkfs -t ext4 /dev/sdb1
+\end{verbatim}
+\subsubsection{mkfs.ext4}
+\label{sec:org66502c4}
+Forma específica para crear ext4.
+
+\begin{verbatim}
+mkfs.ext4 /dev/sdb1
+\end{verbatim}
+\subsubsection{mkfs.xfs}
+\label{sec:org7b4d599}
+Para crear sistema de archivos XFS.
+
+\begin{verbatim}
+mkfs.xfs /dev/sdb1
+\end{verbatim}
+\subsubsection{Verificación con fsck}
+\label{sec:orgdf5bb1d}
+Herramienta para revisar y reparar sistemas de archivos.
+
+\begin{verbatim}
+fsck /dev/sdb1
+\end{verbatim}
+
+\phantomsection
+\label{}
+\begin{verbatim}
+fsck from util-linux 2.41.3
+\end{verbatim}
+
+
+---
+\subsection{Montaje}
+\label{sec:orgebb0a89}
+
+Montar significa asociar un sistema de archivos
+a un directorio del sistema.
+\subsubsection{mount}
+\label{sec:orgf6be7a2}
+Permite montar manualmente.
+
+\begin{verbatim}
+mount /dev/sdb1 /mnt
+\end{verbatim}
+\subsubsection{umount}
+\label{sec:orgc160da2}
+Desmonta el sistema.
+
+\begin{verbatim}
+umount /mnt
+\end{verbatim}
+\subsubsection{Puntos de montaje (/mnt, /media)}
+\label{sec:orgd555bca}
+\begin{itemize}
+\item /mnt → montajes temporales manuales.
+\item /media → dispositivos removibles (USB).
+\end{itemize}
+\subsubsection{Montaje temporal vs permanente}
+\label{sec:org0eabaed}
+Temporal:
+Se pierde al reiniciar.
+
+Permanente:
+Se configura en /etc/fstab para montarse automáticamente.
+
+---
+\subsection{Archivo /etc/fstab}
+\label{sec:org8d3b2d6}
+
+Archivo de configuración que define qué sistemas de archivos
+se montan al inicio.
+
+Formato general:
+dispositivo   punto\textsubscript{montaje}   tipo   opciones   dump   pass
+\subsubsection{Montaje automático al inicio}
+\label{sec:org60b5e71}
+Permite que las particiones se monten automáticamente
+durante el arranque.
+\subsubsection{UUID vs nombre de dispositivo}
+\label{sec:org0227d23}
+\begin{itemize}
+\item /dev/sda1 puede cambiar.
+\item UUID es único y estable.
+\end{itemize}
+
+Ejemplo:
+\begin{verbatim}
+UUID=xxxx-xxxx /home ext4 defaults 0 2
+\end{verbatim}
+\subsubsection{Opciones comunes}
+\label{sec:orgdcd400f}
+\begin{itemize}
+\item defaults → configuración estándar
+\item noatime → no actualiza fecha de acceso
+\item ro → solo lectura
+\item rw → lectura y escritura
+\end{itemize}
+
+\noindent\rule{\textwidth}{0.5pt}
+\section{9. Organización del sistema, permisos y almacenamiento avanzado}
+\label{sec:org2cf0989}
+
+\subsection{FHS (Filesystem Hierarchy Standard)}
+\label{sec:orgfceb325}
+
+Estándar que define cómo se organizan los directorios
+en sistemas Unix/Linux.
+
+Garantiza consistencia entre distribuciones.
+
+---
+\subsection{Estructura de directorios}
+\label{sec:org4717664}
+
+\subsubsection{/}
+\label{sec:orgc4d23e0}
+Raíz del sistema. Todo parte desde aquí.
+\subsubsection{/home}
+\label{sec:org46c906f}
+Directorios personales de los usuarios.
+\subsubsection{/etc}
+\label{sec:org7747e93}
+Archivos de configuración del sistema.
+\subsubsection{/var}
+\label{sec:org205cea9}
+Archivos variables:
+\begin{itemize}
+\item logs
+\item bases de datos
+\item spool
+\end{itemize}
+\subsubsection{/usr}
+\label{sec:org82924e2}
+Programas y bibliotecas del sistema.
+\subsubsection{/boot}
+\label{sec:org50758c8}
+Archivos necesarios para el arranque:
+\begin{itemize}
+\item kernel
+\item initramfs
+\item bootloader
+\end{itemize}
+\subsubsection{/dev}
+\label{sec:org07007df}
+Archivos especiales que representan dispositivos.
+
+Ejemplo:
+/dev/sda → disco
+/dev/null → dispositivo nulo
+\subsubsection{/proc}
+\label{sec:org8b71838}
+Sistema virtual que expone información del kernel
+y procesos en tiempo real.
+\subsubsection{/sys}
+\label{sec:org4613340}
+Sistema virtual que expone información del hardware
+y dispositivos.
+
+---
+\subsection{Permisos y Propiedad}
+\label{sec:org3b38dec}
+
+Cada archivo tiene permisos para:
+\begin{itemize}
+\item Usuario (owner)
+\item Grupo
+\item Otros
+\end{itemize}
+\subsubsection{Lectura (r)}
+\label{sec:org42c5d25}
+Permite ver contenido.
+\subsubsection{Escritura (w)}
+\label{sec:org3ac2898}
+Permite modificar.
+\subsubsection{Ejecución (x)}
+\label{sec:org1a1a99f}
+Permite ejecutar como programa.
+\subsubsection{Ver permisos}
+\label{sec:org2a7d56e}
+\begin{verbatim}
+ls -la
+\end{verbatim}
+
+\begin{table}[htbp]
+\label{}
+\centering
+\begin{tabular}{lrllrlrrl}
+total & 464 &  &  &  &  &  &  & \\
+drwxr-xr-x & 1 & mrtaichi & mrtaichi & 158 & Feb & 18 & 23:07 & .\\
+drwxr-xr-x & 1 & mrtaichi & mrtaichi & 186 & Feb & 18 & 21:37 & ..\\
+-rw-r--r-- & 1 & mrtaichi & mrtaichi & 23480 & Feb & 18 & 21:53 & bitacora1.org\\
+-rw-r--r-- & 1 & mrtaichi & mrtaichi & 250680 & Feb & 18 & 21:54 & bitacora1.pdf\\
+-rw-r--r-- & 1 & mrtaichi & mrtaichi & 30106 & Feb & 18 & 21:54 & bitacora1.tex\\
+-rw-r--r-- & 1 & mrtaichi & mrtaichi & 20686 & Feb & 18 & 23:07 & bitacora2.org\\
+drwxr-xr-x & 1 & mrtaichi & mrtaichi & 166 & Feb & 18 & 23:07 & .git\\
+-rw-r--r-- & 1 & mrtaichi & mrtaichi & 25 & Feb & 18 & 21:54 & test.txt\\
+-rw-r--r-- & 1 & mrtaichi & mrtaichi & 133687 & Feb & 7 & 12:15 & ventoy\textsubscript{boot.jpg}\\
+\end{tabular}
+\end{table}
+
+Ejemplo de salida:
+-rwxr-xr-- 1 user group 1024 archivo.sh
+
+---
+\subsection{Conceptos de Usuarios y grupos}
+\label{sec:org85441d2}
+
+\subsubsection{Propietario}
+\label{sec:org214c27f}
+Usuario dueño del archivo.
+\subsubsection{Grupo}
+\label{sec:orgb43307d}
+Conjunto de usuarios con permisos compartidos.
+\subsubsection{Otros}
+\label{sec:org265332c}
+Todos los demás usuarios.
+\subsubsection{Comandos relacionados}
+\label{sec:orga9f7770}
+
+\begin{enumerate}
+\item chmod
+\label{sec:org251337d}
+Modifica permisos.
+
+\begin{verbatim}
+chmod 755 archivo.sh
+\end{verbatim}
+\item chown
+\label{sec:orgf0f0bfe}
+Cambia propietario.
+
+\begin{verbatim}
+chown user archivo.txt
+\end{verbatim}
+\item chgrp
+\label{sec:org885b668}
+Cambia grupo.
+
+\begin{verbatim}
+chgrp developers archivo.txt
+\end{verbatim}
+
+---
+\end{enumerate}
+\subsection{Permisos especiales}
+\label{sec:org2f85922}
+
+\subsubsection{SUID}
+\label{sec:orgf090997}
+Permite ejecutar un archivo con privilegios del propietario.
+
+Ejemplo típico:
+passwd
+\subsubsection{SGID}
+\label{sec:orgdac0189}
+Similar al SUID pero aplicado al grupo.
+En directorios, los archivos heredan el grupo.
+\subsubsection{Sticky bit}
+\label{sec:orge04586e}
+En directorios compartidos, solo el propietario puede
+eliminar sus propios archivos.
+
+Ejemplo:
+/tmp
+
+---
+\subsection{Gestión Avanzada de Almacenamiento}
+\label{sec:org41d10bf}
+
+\subsubsection{LVM (Logical Volume Manager)}
+\label{sec:org9fba339}
+
+Permite administrar almacenamiento de forma flexible.
+\begin{enumerate}
+\item Volúmenes físicos (PV)
+\label{sec:org8909d32}
+Discos o particiones inicializadas para LVM.
+\item Grupos de volúmenes (VG)
+\label{sec:orgf977b82}
+Agrupación de múltiples PV.
+\item Volúmenes lógicos (LV)
+\label{sec:orgf9dec1d}
+Particiones virtuales creadas dentro de un VG.
+
+Ventaja:
+Permite redimensionar sin reorganizar físicamente el disco.
+\end{enumerate}
+\subsection{Sistemas de archivos en red}
+\label{sec:orgae92c7d}
+
+Permiten compartir almacenamiento entre máquinas.
+\subsubsection{NFS}
+\label{sec:org246c831}
+Network File System.
+Común en entornos Linux/Unix.
+
+Permite montar un directorio remoto como si fuera local.
+\subsubsection{SMB}
+\label{sec:orgf90cc2a}
+Server Message Block.
+Protocolo usado por Windows.
+En Linux se implementa mediante Samba.
+\end{document}

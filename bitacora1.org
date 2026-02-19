@@ -156,6 +156,10 @@ Cuando una de las partes del sistema es tan crítica que su fallo puede arriesga
 
 ** Conceptos de repaso
 
+- *Proceso de arranque:* La disponibilidad del sistema empieza desde el encendido; si falla el firmware, el bootloader o el kernel, no hay sistema. RAID protege la capa de almacenamiento donde viven los datos.
+- *Sistemas de archivos:* GRUB puede leer sistemas de archivos (FAT, EXT, ISO) en disco; los datos que la redundancia protege residen en particiones y FS.
+- *Todo es un archivo:* Máxima ya vista en GRUB; los dispositivos que RAID agrupa se representan como archivos en /dev.
+
 ** Máximas
 
 *** Todos los Linux son iguales
@@ -171,36 +175,57 @@ En cualquier distribución de Linux podemos -a final de cuentas- hacer cualquier
 ---------------------------------------------------------------------------
 * De Unix a GNU/Linux: Origen, Filosofía y Evolución del Software Libre
 ** Conceptos nuevos
+
 *** Origen y evolución de Unix
+
 **** Contexto académico
+
 **** Nacimiento de Unix (1969)
-**** Desarrollo en Bell Labs
+
+Unix nace en 1969 como un sistema operativo desarrollado en Bell Labs, al principio con fines académicos y distribuido para varias universidades. De ahí nace BSD cuando se vuelve comercial.
+
+**** BSD
+
+Berkeley System Distribution. Nace como un Unix con código fuente original de Unix. De el nacen distribuciones todavía vivas hasta el día de hoy.
+
 **** Linus Torvalds
+
 *** Sistema Unix-like
+
 **** Diferencia entre Unix y Unix-like
+Un sistema Unix es aquel que usa código fuente de Unix. Un Unix-like es aquel que está hecho para comportarse como Unix pero no usa código de Unix. Linux es Unix-like
+
 *** Filosofía Unix (simplicidad, modularidad, herramientas pequeñas que hacen una sola cosa)
 
 *** Proyecto GNU
+
 **** Filosofía del software libre
+
 **** Herramientas GNU (gcc, bash, coreutils)
+
 **** Licencia GPL
 
 *** GNU/Linux como sistema completo
+
 **** Integración del kernel Linux con herramientas GNU
+
 **** Concepto de distribución (Ubuntu, Debian, etc.)
 
 *** Comercialización de Unix
+
 **** Versiones propietarias
+
 **** Impacto en la industria
 
 ** Conceptos de repaso
 
+- *Kernel:* En GRUB vimos que el bootloader carga el kernel; aquí vemos el origen de ese kernel (Linux, Linus Torvalds) y su integración con GNU.
+- *Distribuciones:* Ya mencionadas al hablar de elegir distro (Información general) y en RAID (Distrowatch, “todos los Linux son iguales”).
+- *Filosofía de una sola cosa:* En GRUB repasamos la separación de responsabilidades (Ventoy, GRUB); la filosofía Unix (herramientas pequeñas que hacen una cosa) es la misma idea.
+
 ** Máximas
 
 ** Sección libre
-
-- Unix nace en 1969 como un sistema operativo desarrollado en Bell Labs, al principio con fines académicos y distribuido para varias universidades. De ahí nace BSD cuando se vuelve comercial.
-- Linux surge como un kernel Unix-like desarrollado en 1991 por Linus Torvalds, el cual se termina fusionando con GNU para formar un sistema operativo completo.
 
 ---------------------------------------------------------------------------
 * Kernel
@@ -227,6 +252,9 @@ En cualquier distribución de Linux podemos -a final de cuentas- hacer cualquier
 **** Seguridad y protección del sistema
 
 ** Conceptos de repaso
+
+- *Proceso de arranque:* En GRUB vimos la secuencia BIOS/UEFI → bootloader → *kernel* → init/systemd; aquí estudiamos qué es ese kernel que se carga y qué hace.
+- *Linux como kernel:* En “De Unix a GNU/Linux” vimos que Linux es el kernel y GNU las herramientas de usuario; el kernel es el intermediario entre ambas capas.
 
 ** Máximas
 
@@ -303,6 +331,107 @@ En cualquier distribución de Linux podemos -a final de cuentas- hacer cualquier
 
 - *pstree* muestra un árbol de los procesos en ejecución, dando una vista clara de las relaciones de parentesco. De ahí se observa que el proceso del que nacen todos los procesos en espacio de usuario es systemd.
 
+#+begin_src bash :results verbatim
+pstree
+#+end_src
+
+#+RESULTS:
+#+begin_example
+systemd-+-NetworkManager---3*[{NetworkManager}]
+        |-ananicy-cpp---3*[{ananicy-cpp}]
+        |-avahi-daemon---avahi-daemon
+        |-bluetoothd
+        |-chrome_crashpad---2*[{chrome_crashpad}]
+        |-containerd---12*[{containerd}]
+        |-containerd-shim-+-postgres---5*[postgres]
+        |                 `-10*[{containerd-shim}]
+        |-containerd-shim-+-s6-svscan-+-s6-supervise---gitea---9*[{gitea}]
+        |                 |           `-s6-supervise---sshd
+        |                 `-10*[{containerd-shim}]
+        |-containerd-shim-+-bash-+-/opt/lampp/bin/---6*[/opt/lampp/bin/]
+        |                 |      |-mysqld_safe---mysqld---29*[{mysqld}]
+        |                 |      |-proftpd
+        |                 |      |-sshd
+        |                 |      `-tail
+        |                 `-10*[{containerd-shim}]
+        |-2*[containerd-shim-+-mysqld---36*[{mysqld}]]
+        |                    `-10*[{containerd-shim}]]
+        |-containerd-shim-+-apache2---5*[apache2]
+        |                 `-10*[{containerd-shim}]
+        |-dbus-broker-lau---dbus-broker
+        |-dockerd-+-4*[docker-proxy---6*[{docker-proxy}]]
+        |         |-6*[docker-proxy---7*[{docker-proxy}]]
+        |         |-2*[docker-proxy---8*[{docker-proxy}]]
+        |         `-36*[{dockerd}]
+        |-electron-+-electron---electron---16*[{electron}]
+        |          |-electron---electron---electron---11*[{electron}]
+        |          |-electron---7*[{electron}]
+        |          |-electron-+-electron---11*[{electron}]
+        |          |          `-23*[{electron}]
+        |          |-2*[electron---18*[{electron}]]
+        |          |-electron---20*[{electron}]
+        |          |-electron-+-zsh
+        |          |          `-19*[{electron}]
+        |          `-37*[{electron}]
+        |-emacs-+-bash---pstree
+        |       |-bwrap---bwrap---glycin-svg---2*[{glycin-svg}]
+        |       `-8*[{emacs}]
+        |-ksecretd
+        |-msedge-+-2*[cat]
+        |        |-msedge---msedge---20*[{msedge}]
+        |        |-msedge---msedge-+-msedge---7*[{msedge}]
+        |        |                 |-6*[msedge---10*[{msedge}]]
+        |        |                 |-msedge---12*[{msedge}]
+        |        |                 |-3*[msedge---9*[{msedge}]]
+        |        |                 |-msedge---23*[{msedge}]
+        |        |                 |-msedge---14*[{msedge}]
+        |        |                 `-msedge---8*[{msedge}]
+        |        |-msedge---8*[{msedge}]
+        |        |-msedge---7*[{msedge}]
+        |        `-51*[{msedge}]
+        |-msedge_crashpad---2*[{msedge_crashpad}]
+        |-msedge_crashpad---{msedge_crashpad}
+        |-netbird---8*[{netbird}]
+        |-polkitd---3*[{polkitd}]
+        |-power-profiles----3*[{power-profiles-}]
+        |-rtkit-daemon---2*[{rtkit-daemon}]
+        |-sddm-+-sddm-helper---start-hyprland-+-Hyprland-+-Xwayland---4*[{Xwayland}]
+        |      |                              |          |-alacritty-+-zsh
+        |      |                              |          |           `-9*[{alacritty}]
+        |      |                              |          |-hyprpaper---13*[{hyprpaper}]
+        |      |                              |          |-waybar---37*[{waybar}]
+        |      |                              |          `-14*[{Hyprland}]
+        |      |                              `-{start-hyprland}
+        |      `-{sddm}
+        |-spotify-+-spotify---spotify---15*[{spotify}]
+        |         |-spotify-+-spotify---7*[{spotify}]
+        |         |         `-spotify---12*[{spotify}]
+        |         |-spotify---8*[{spotify}]
+        |         `-63*[{spotify}]
+        |-systemd-+-(sd-pam)
+        |         |-at-spi-bus-laun-+-dbus-broker-lau---dbus-broker
+        |         |                 `-4*[{at-spi-bus-laun}]
+        |         |-at-spi2-registr---3*[{at-spi2-registr}]
+        |         |-dbus-broker-lau---dbus-broker
+        |         |-dconf-service---3*[{dconf-service}]
+        |         |-pipewire---2*[{pipewire}]
+        |         |-pipewire-pulse---2*[{pipewire-pulse}]
+        |         |-wireplumber---5*[{wireplumber}]
+        |         |-2*[xdg-desktop-por---4*[{xdg-desktop-por}]]
+        |         |-xdg-desktop-por---7*[{xdg-desktop-por}]
+        |         |-xdg-document-po-+-fusermount3
+        |         |                 `-6*[{xdg-document-po}]
+        |         `-xdg-permission----3*[{xdg-permission-}]
+        |-systemd-journal
+        |-systemd-logind
+        |-systemd-resolve
+        |-systemd-timesyn---{systemd-timesyn}
+        |-systemd-udevd
+        |-systemd-userdbd---3*[systemd-userwor]
+        |-upowerd---3*[{upowerd}]
+        `-wpa_supplicant
+#+end_example
+
 Para entender mejor el funcionamiento de un proceso, se puede revisar el código fuente del kernel Linux. El término usado en el kernel para referirse a los procesos es una *task* (tarea), ya que la misma estructura sirve para procesos y para hilos. La estructura es ~task_struct~, declarada en ~include/linux/sched.h~. Contiene, entre otras cosas: estado (__state), PID y TGID, prioridades (prio, static_prio), relaciones (parent, children, sibling), memoria (mm), archivos abiertos (files), credenciales (cred) y manejo de señales (signal, sighand). El proceso más importante y del que nacen todos los procesos en espacio de usuario es systemd.
 
 ---------------------------------------------------------------------------
@@ -348,6 +477,11 @@ Para entender mejor el funcionamiento de un proceso, se puede revisar el código
 
 ** Conceptos de repaso
 
+- *GRUB y discos:* En la consola de GRUB vimos ~(hd0,gpt1)~, discos y particiones; la EFI System Partition; el bootloader ya “ve” discos y tablas de partición (GPT).
+- *Tablas de partición:* GPT apareció en el arranque (partición EFI); aquí se ven MBR y GPT con detalle (límites, número de particiones).
+- *Todo es un archivo:* Los dispositivos se representan como archivos en /dev (máxima en GRUB); aquí vemos /dev/sda, /dev/nvme0n1, etc.
+- *RAID:* En disponibilidad vimos varios discos independientes; aquí cómo se representan esos discos en Linux (block devices, lsblk).
+
 ** Máximas
 
 ** Sección libre
@@ -391,6 +525,10 @@ Para entender mejor el funcionamiento de un proceso, se puede revisar el código
 
 ** Conceptos de repaso
 
+- *GRUB y sistemas de archivos:* GRUB puede leer sistemas de archivos (FAT, EXT, ISO) sin montar; el bootloader accede a estructuras del FS. Montar es una abstracción del *kernel*, no del bootloader.
+- *Particiones y almacenamiento:* Un sistema de archivos va sobre particiones; ya vimos /dev, block devices, particionado y tablas (MBR/GPT) en el capítulo anterior.
+- *Kernel:* El kernel es quien monta y gestiona los FS; las syscalls (read, write, open) operan sobre archivos una vez montado el FS.
+
 ** Máximas
 
 ** Sección libre
@@ -410,7 +548,11 @@ Para entender mejor el funcionamiento de un proceso, se puede revisar el código
 
 ** Conceptos de repaso
 
+- *~ls -la~:* Ya usado en GRUB (Sección libre) para listar en forma de lista y mostrar archivos ocultos; la misma salida muestra permisos (r/w/x) y propietario/grupo.
+- *Rutas y archivos:* En GRUB vimos rutas absolutas y relativas para referenciar archivos; aquí quién (qué usuario/grupo) puede acceder a cada archivo.
+- *Sistema de archivos:* Los archivos tienen metadatos (inodos, etc.); propiedad y permisos son parte de esa información que el FS guarda.
+- *Procesos y kernel:* En ~task_struct~ vimos ~cred~ (credenciales); el kernel usa UID/GID del proceso para comprobar permisos en cada acceso.
+
 ** Máximas
 
 ** Sección libre
-

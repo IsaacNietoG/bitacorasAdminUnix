@@ -1,0 +1,109 @@
+% Created 2026-02-19 Thu 14:08
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+\usepackage[utf8]{inputenc}
+\usepackage{palatino}                   % Tipografía elegante
+\usepackage{xcolor}                     % Colores personalizados
+\author{Equipo Alpine White}
+\date{\textit{{[}2026-02-16 Mon]}}
+\title{Bitácora Semanal 3: Administración de Sistemas Unix}
+\hypersetup{
+ pdfauthor={Equipo Alpine White},
+ pdftitle={Bitácora Semanal 3: Administración de Sistemas Unix},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 30.2 (Org mode 9.7.39)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+\section{Información General}
+\label{sec:org571d682}
+\begin{itemize}
+\item \textbf{Semana:} Del 16 de Febrero 2026 al 20 de Febrero 2026
+\item \textbf{Equipo:}
+\begin{itemize}
+\item Arreguín Salgado Gael Emiliano
+\item Gramer Muñoz Omar Fernando
+\item López Pérez Mariana
+\item Nieto Gallegos Isaac Julián
+\end{itemize}
+\end{itemize}
+
+En esta tercera semana el enfoque se baso en las maquinas virtuales y sus configuraciones, en como esta la organización de archivos.
+\subsection{Responsabilidades:}
+\label{sec:org336851e}
+Gael Emiliano:
+Omar Fernando:
+Mariana:
+Isaac Julián:
+\section{Maquina virtual de fedora}
+\label{sec:orgd36ee3b}
+
+Dentro de fedora existe algo llamada \textbf{Fedora Scientific Lab}, que esta construida por una amplia biblioteca de herramientas y software preinstalados diseñados específicamente para la ciencia de datos, el análisis numérico y la computación científica, por lo que obtiene el nombre de ``spin''.
+
+Por otra parte se menciono que las formas de arranque que nos da Fedora, ya que al iniciar la mv nos da la opción de \textbf{``Test this media \& start Fedora''} y sucede que es muy recomendable seleccionarla ya que asegura la integridad de la imagen ISO descargada, ya que como dato curioso, el profesor nos menciono que anteriorme se arrancaba desde CDs/DVDs físicos y solian estar dañados.
+\subsubsection{Nat y adaptador puente}
+\label{sec:orgffc65a1}
+\begin{itemize}
+\item Nat(Network Address Translation): Permite que la mv obtenga una ip privada y se conecte a internet utilizando la dirección IP del equipo anfitrión, por lo que la MV tiene acceso al exterior pero no es accesible la red local, en este caso al usar VirtualBox actúa como un router, traduciendo la IP privada de la MV a la pública del host, es muy ideal para la instalación inicial ya que oculta la MV
+\item Adaptador Puente (Bridged Adapter): Este es la tarjeta de red de la MV que se conecta directamente al adaptador de red del anfitrión, entonces la MV aparecera como un equipo independiente más en la red física, permitiendo la comunicación bidireccional, pero esta es expuesta a ataques externos.
+\end{itemize}
+\subsection{Terminales}
+\label{sec:orgf712d2e}
+\begin{itemize}
+\item Host/Equipo local: Esta la encontraremos de color blanco ya que representara la máquina física real (home).
+\item MV: Esta la encontraremos de color negro ya que indica que estás operando dentro del sistema operativo invitado (``guest OS''), aislado y ejecutándose sobre un hipervisor.
+\end{itemize}
+\section{Lectura de archivos y comandos}
+\label{sec:org9a00000}
+\begin{verbatim}
+lss nfc-blacklist.conf
+\end{verbatim}
+Este se utiliza a menudo para impedir que los drivers automáticos del kernel se carguen, lo cual es muy importante ya que evita conflictos con herramientas de terceros como \textbf{libnfc} o \textbf{pcscd}
+
+\begin{verbatim}
+lss firewall-systems.conf
+\end{verbatim}
+En este archivo es una configuración de firewalls, que se basa en archivos de configuración dependiendo de la herramienta de red utilizada, se definen zonas de red, servicios permitidos, puertos y protocolos.
+
+\begin{verbatim}
+ls /etc/mtad /etc/fstab
+\end{verbatim}
+Estos archivos gestionan el montaje de sistemas de archivos.
+\begin{itemize}
+\item \textbf{fstab} (file systems table) es un archivo estático y persistente configurado por el usuario para montar dispositivos al arrancar, asi como las particiones, discos y recursos compartidos al iniciar. (configuración)
+\item \textbf{mtab} (mounted filesystems table) es un archivo dinámico actualizado por el sistema que enumera los sistemas de archivos montados actualmente. (estado)
+\end{itemize}
+
+\begin{verbatim}
+rmmod kvm_intel
+\end{verbatim}
+El comando \textbf{rmmod} se utiliza para eliminar un módulo del kernel de linux, mientras que \textbf{kvm\textsubscript{intel}} es un módulo del kernel específico para procesadores intel que permite utilizar las extensiones de virtualización por hardware para KVM.
+
+\begin{verbatim}
+top
+\end{verbatim}
+Este comando permite tener una vista dinámica y en tiempo real de los procesos activos, ordenándolos por defecto según el uso de CPU, aquí le prestamos más atención al apartado de \textbf{load average}, ya que muestra la carga promedio del sistema, donde indican cuántos procesos están ejecutándose o esperando tiempo de CPU, esto siendo crucial con el número de núcleos del servidor, ya que cada núcleo solo puede trabajar con un proceso.
+\section{Directorios}
+\label{sec:orgae6f2e6}
+
+\begin{itemize}
+\item /proc: Es un sistema de archivos virtual (``procfs'') creado en memoria de arrancar, que sirve como interfaz del kernel para obtener información en tiempo real sobre procesos, hardware y parámetros del sistema, este es un directorio extremadamente volátil, ya que no es un directorio real en el disco duro, sino un pseudo-sistema de archivos que se genera en la memoria RAM al arrancar el sistema y se elimina al apagarlo.
+\end{itemize}
+\end{document}

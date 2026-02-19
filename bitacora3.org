@@ -1,0 +1,74 @@
+#+TITLE: Bitácora Semanal 3: Administración de Sistemas Unix
+#+AUTHOR: Equipo Alpine White
+#+DATE: [2026-02-16 lun]
+#+OPTIONS: toc:2
+#+PROPERTY: header-args :exports both
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [11pt, letterpaper]
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage{palatino}                   % Tipografía elegante
+#+LATEX_HEADER: \usepackage{xcolor}                     % Colores personalizados
+
+* Información General
+- *Semana:* Del 16 de Febrero 2026 al 20 de Febrero 2026
+- *Equipo:*
+  - Arreguín Salgado Gael Emiliano
+  - Gramer Muñoz Omar Fernando
+  - López Pérez Mariana
+  - Nieto Gallegos Isaac Julián
+
+En esta tercera semana el enfoque se baso en las maquinas virtuales y sus configuraciones, en como esta la organización de archivos.
+
+** Responsabilidades:
+Gael Emiliano:
+Omar Fernando:
+Mariana:
+Isaac Julián:
+
+
+* Maquina virtual de fedora
+
+Dentro de fedora existe algo llamada *Fedora Scientific Lab*, que esta construida por una amplia biblioteca de herramientas y software preinstalados diseñados específicamente para la ciencia de datos, el análisis numérico y la computación científica, por lo que obtiene el nombre de "spin".
+
+Por otra parte se menciono que las formas de arranque que nos da Fedora, ya que al iniciar la mv nos da la opción de *"Test this media & start Fedora"* y sucede que es muy recomendable seleccionarla ya que asegura la integridad de la imagen ISO descargada, ya que como dato curioso, el profesor nos menciono que anteriorme se arrancaba desde CDs/DVDs físicos y solian estar dañados.
+
+*** Nat y adaptador puente
+- Nat(Network Address Translation): Permite que la mv obtenga una ip privada y se conecte a internet utilizando la dirección IP del equipo anfitrión, por lo que la MV tiene acceso al exterior pero no es accesible la red local, en este caso al usar VirtualBox actúa como un router, traduciendo la IP privada de la MV a la pública del host, es muy ideal para la instalación inicial ya que oculta la MV
+- Adaptador Puente (Bridged Adapter): Este es la tarjeta de red de la MV que se conecta directamente al adaptador de red del anfitrión, entonces la MV aparecera como un equipo independiente más en la red física, permitiendo la comunicación bidireccional, pero esta es expuesta a ataques externos.
+
+** Terminales
+- Host/Equipo local: Esta la encontraremos de color blanco ya que representara la máquina física real (home).
+- MV: Esta la encontraremos de color negro ya que indica que estás operando dentro del sistema operativo invitado ("guest OS"), aislado y ejecutándose sobre un hipervisor.
+
+* Lectura de archivos y comandos
+#+begin_src
+lss nfc-blacklist.conf
+#+end_src
+Este se utiliza a menudo para impedir que los drivers automáticos del kernel se carguen, lo cual es muy importante ya que evita conflictos con herramientas de terceros como *libnfc* o *pcscd*
+
+#+begin_src
+lss firewall-systems.conf
+#+end_src
+En este archivo es una configuración de firewalls, que se basa en archivos de configuración dependiendo de la herramienta de red utilizada, se definen zonas de red, servicios permitidos, puertos y protocolos.
+
+#+begin_src
+ls /etc/mtad /etc/fstab
+#+end_src
+Estos archivos gestionan el montaje de sistemas de archivos.
+- *fstab* (file systems table) es un archivo estático y persistente configurado por el usuario para montar dispositivos al arrancar, asi como las particiones, discos y recursos compartidos al iniciar. (configuración)
+- *mtab* (mounted filesystems table) es un archivo dinámico actualizado por el sistema que enumera los sistemas de archivos montados actualmente. (estado)
+
+#+begin_src
+rmmod kvm_intel
+#+end_src
+El comando *rmmod* se utiliza para eliminar un módulo del kernel de linux, mientras que *kvm_intel* es un módulo del kernel específico para procesadores intel que permite utilizar las extensiones de virtualización por hardware para KVM.
+
+#+begin_src
+top
+#+end_src
+Este comando permite tener una vista dinámica y en tiempo real de los procesos activos, ordenándolos por defecto según el uso de CPU, aquí le prestamos más atención al apartado de *load average*, ya que muestra la carga promedio del sistema, donde indican cuántos procesos están ejecutándose o esperando tiempo de CPU, esto siendo crucial con el número de núcleos del servidor, ya que cada núcleo solo puede trabajar con un proceso.
+
+* Directorios
+
+- /proc: Es un sistema de archivos virtual ("procfs") creado en memoria de arrancar, que sirve como interfaz del kernel para obtener información en tiempo real sobre procesos, hardware y parámetros del sistema, este es un directorio extremadamente volátil, ya que no es un directorio real en el disco duro, sino un pseudo-sistema de archivos que se genera en la memoria RAM al arrancar el sistema y se elimina al apagarlo.

@@ -20,6 +20,43 @@
 
 Durante la semana vimos una variedad de comandos que nos permiten ver el potencial de configurabilidad que existe dentro de Linux. Particularmente, estuvimos trabajando en permisos de archivos, montaje de sistemas de archivos y vamos comenzando a prepararnos para la virtualización.
 
+* Distro Watch
+
+Distro Watch es un sitio web que monitorea y cataloga distribuciones GNU/Linux y sistemas Unix like. Solo es un portal informativo que mantiene bases de datos sobre versiones.
+
+** Page Hit Ranking
+- El ranking mostrado en su página principal se basa en el número de visitas a la página informativa de cada distribución.
+- No mide instalaciones reales, cuota de mercado ni popularidad efectiva.
+- Es un indicador aproximado de interes relativo dentro de la comunidad que consulta el sitio.
+
+* POSIX y modelo de ejecución en sistemas Unix y GNU/Linux
+
+POSIX (Portable Operating System Interface) es un estándar definido por IEEE que especifica cómo los programas interactúan con el sistema operativo. No es el sistema operativo en sí, sino una especificación que define las interfaces que deben existir. Gracias a POSIX, un programa puede ejecutarse en distintos sistemas tipo Unix, como Linux, BSD o macOS sin modificaciones significativas, siempre que use únicamente las interfaces estándar.
+
+En este modelo, el concepto central es el proceso. Un proceso es un ejemplar de un programa en ejecución gestionado por el kernel. Cada proceso posee su propio espacio de memoria virtual, su propio contexto de ejecución y un identificador único llamado PID (Process ID). El kernel es responsable de crear, planificar y destruir procesos. La creación de procesos se realiza mediante la llamada al sistema =fork()=, que crea una copia del proceso actual. Posteriormente, el proceso puede reemplazar su imagen de memoria usando =exec()= para ejecutar otro programa. Este modelo permite construir sistemas complejos mediante la composición de procesos simples.
+
+La interacción con recursos del sistema se realiza mediante una abstracción fundamental: el file descriptor. Un file descriptor es un entero que representa un recurso abierto, como un archivo, un dispositivo o un canal de comunicación. Por convención, existen tres descriptores estándar:
+
+- 0 corresponde a la entrada estándar (stdin)
+- 1 corresponde a la salida estándar (stdout)
+- 2 corresponde al error estándar (stderr)
+
+Esta abstracción permite que el sistema trate distintos tipos de recursos de forma uniforme, simplificando el diseño y la implementación de programas.
+
+La comunicación entre procesos se realiza mediante mecanismos de IPC (Inter-Process Communication). Un pipe es un canal unidireccional gestionado por el kernel que conecta la salida de un proceso con la entrada de otro.
+
+Internamente, el kernel crea un buffer temporal y coordina la transferencia de datos entre ambos procesos mediante file descriptors.
+
+Las señales son notificaciones asíncronas enviadas por el kernel o por otros procesos para indicar que ha ocurrido un evento. Por ejemplo, cuando el usuario presiona Ctrl+C, el sistema envía la señal =SIGINT= al proceso activo. Las señales permiten controlar la ejecución de procesos, terminar programas, manejar errores o reaccionar a eventos del sistema. Algunas señales comunes incluyen:
+
+- =SIGINT=: interrupción desde el teclado
+- =SIGTERM=: solicitud de terminación
+- =SIGKILL=: terminación forzada por el kernel
+- =SIGCHLD=: notificación de que un proceso hijo ha terminado
+
+Este modelo, definido por POSIX y adoptado por Unix y GNU/Linux, se basa en principios de aislamiento, simplicidad y composición. Los procesos son entidades independientes que se comunican explícitamente, el kernel controla el acceso a los recursos, y la abstracción de file descriptors permite unificar la interacción con el sistema. Esta arquitectura ha demostrado ser extremadamente robusta y es la base de prácticamente todos los sistemas operativos tipo Unix modernos.
+
+
 * Comandos de Administración en Linux
 
 Definiciones de Comandos de Administración en Linux

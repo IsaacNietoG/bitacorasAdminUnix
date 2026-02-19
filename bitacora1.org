@@ -20,6 +20,15 @@
 
 En esta nuestra primera semana de clases, el enfoque fue particularmente en entender el arranque del sistema operativo, el sistema de archivos y comenzar a prepararnos para elegir la distribución con la que iremos trabajando en el semestre.
 
+** Responsabilidades:
+Gael Emiliano: Secciones de GRUB, RAID y varias aportaciones de bloques de código y revisión de detalles sobre lo visto en clase.
+
+Omar Fernando: Propuesta de estructura del archivo y arreglo de temas de la semana
+
+Mariana: Captura de temas de la semana, aportaciones de detalles sobre los temas vistos en clase.
+
+Isaac Julián: Conciliación con estructura previa del trabajo. Bloques de código y "compilado" de archivo org a pdf.
+
 * GRUB Y SISTEMAS DE ARRANQUE
 
 ** Conceptos nuevos

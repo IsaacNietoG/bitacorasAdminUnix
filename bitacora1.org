@@ -127,9 +127,15 @@ cat ./test.txt # Ruta relativa
 
 ** Conceptos nuevos
 *** Alta disponibilidad
+
 *** Redundancia
+
+Concepto estrechamente relacionado con Punto único de falla. Es la respuesta directa a solucionar este problema. Siempre existe un componente listo para tomar el lugar y mantener el sistema funcionando.
+
 *** Tolerancia a fallos
 *** Punto único de falla (Single Point of Failure)
+
+Cuando una de las partes del sistema es tan crítica que su fallo puede arriesgar la integridad de todo el sistema.
 
 *** Técnicas de Protección de datos
 **** Replicación
@@ -150,58 +156,86 @@ cat ./test.txt # Ruta relativa
 
 ** Conceptos de repaso
 
-** Maximas
+** Máximas
 
-** Seccion libre
+*** Todos los Linux son iguales
+En cualquier distribución de Linux podemos -a final de cuentas- hacer cualquier cosa. Todas funcionan esencialmente para lo mismo, y aunque evidentemente hay diferencias, se puede trabajar con ellas sin problema.
+
+** Sección libre
+
+- Estuvimos hablando de la importancia de la redundancia para preservar la información. Como ejemplo usamos el sistema RAID, que utiliza varios discos duros para crear replicación de información y tolerancia a fallos.
+- Generalmente la emulación es más lenta que la virtualización. El primer sistema de WSL usaba emulación de Linux, ahora el segundo utiliza virtualización.
+- Distrowatch es un sitio web en el que se pueden observar todas las distribuciones de Linux y muchos datos acerca de ellas, incluyendo un ranking de cuáles son las distros más usadas.
+- SCSI (que se pronuncia "scuzzy") es una interfaz de intercambio de datos que se utiliza sobre todo en servidores y computadoras de alto desempeño. Hablando del sistema RAID, es generalmente sobre esta interfaz sobre la que se construyen varios controladores RAID que están en la industria.
 
 ---------------------------------------------------------------------------
 * De Unix a GNU/Linux: Origen, Filosofía y Evolución del Software Libre
-    -  Origen y evolución de Unix
-      - Contexto académico
-      - Nacimiento de Unix (1969)
-        - Desarrollo en Bell Labs
-        - Linus Torvalds
-        - Sistema Unix-like
-          - Diferencia entre Unix y Unix-like
-      - Filosofía Unix (simplicidad, modularidad, herramientas pequeñas que hacen una sola cosa)
+** Conceptos nuevos
+*** Origen y evolución de Unix
+**** Contexto académico
+**** Nacimiento de Unix (1969)
+**** Desarrollo en Bell Labs
+**** Linus Torvalds
+*** Sistema Unix-like
+**** Diferencia entre Unix y Unix-like
+*** Filosofía Unix (simplicidad, modularidad, herramientas pequeñas que hacen una sola cosa)
 
-    - Proyecto GNU
-      - Filosofía del software libre
-      - Herramientas GNU (gcc, bash, coreutils)
-      - Licencia GPL
+*** Proyecto GNU
+**** Filosofía del software libre
+**** Herramientas GNU (gcc, bash, coreutils)
+**** Licencia GPL
 
-    - GNU/Linux como sistema completo
-      - Integración del kernel Linux con herramientas GNU
-      - Concepto de distribución (Ubuntu, Debian, etc.)
+*** GNU/Linux como sistema completo
+**** Integración del kernel Linux con herramientas GNU
+**** Concepto de distribución (Ubuntu, Debian, etc.)
 
-    - Comercialización de Unix
-      - Versiones propietarias
-      - Impacto en la industria
+*** Comercialización de Unix
+**** Versiones propietarias
+**** Impacto en la industria
 
+** Conceptos de repaso
+
+** Máximas
+
+** Sección libre
+
+- Unix nace en 1969 como un sistema operativo desarrollado en Bell Labs, al principio con fines académicos y distribuido para varias universidades. De ahí nace BSD cuando se vuelve comercial.
+- Linux surge como un kernel Unix-like desarrollado en 1991 por Linus Torvalds, el cual se termina fusionando con GNU para formar un sistema operativo completo.
 
 ---------------------------------------------------------------------------
 * Kernel
-    - Definición de kernel
-      - Intermediario entre hardware y software
 
-    - Rol del kernel
-      - Gestión de CPU, memoria y dispositivos
-      - Planificación (scheduling)
-      - Gestión de memoria
-      - Control de dispositivos
-      - Manejo de interrupciones
+** Conceptos nuevos
 
-    - Llamadas al sistema (System Calls)
-      - Interfaz entre espacio de usuario y kernel
-      - Ejemplos: fork(), exec(), read(), write()
-      - Cambio de modo usuario a modo kernel
+*** Definición de kernel
+**** Intermediario entre hardware y software
 
-    - Espacio de usuario vs espacio de kernel
-      - Separación de privilegios
-      - Seguridad y protección del sistema
+*** Rol del kernel
+**** Gestión de CPU, memoria y dispositivos
+**** Planificación (scheduling)
+**** Gestión de memoria
+**** Control de dispositivos
+**** Manejo de interrupciones
+
+*** Llamadas al sistema (System Calls)
+**** Interfaz entre espacio de usuario y kernel
+**** Ejemplos: fork(), exec(), read(), write()
+**** Cambio de modo usuario a modo kernel
+
+*** Espacio de usuario vs espacio de kernel
+**** Separación de privilegios
+**** Seguridad y protección del sistema
+
+** Conceptos de repaso
+
+** Máximas
+
+** Sección libre
 
 ---------------------------------------------------------------------------
 * Modelo de Ejecución y Gestión de Procesos en Linux
+
+** Conceptos nuevos
     - Programa vs Proceso
       - Definición de programa
       - Definición de proceso
@@ -213,24 +247,6 @@ cat ./test.txt # Ruta relativa
       - Diferencia entre proceso e hilo (thread)
       - Identificador de proceso (PID)
       - Estados de un proceso (running, ready, waiting, stopped, zombie)
-
-    - Espacio de Usuario vs Espacio de Kernel
-      - Separación de privilegios
-      - Protección de memoria
-      - Cambio de modo (user mode ↔ kernel mode)
-
-    - System Calls (Llamadas al Sistema)
-      - Mecanismo para que un proceso solicite servicios al kernel
-      - Interfaz entre usuario y kernel
-      - Cambio de contexto
-      - Ejemplos comunes de syscalls: fork(), exec(), wait(), read(), write(), open(), exit()
-
-    - Flujo básico de una system call
-      - Interrupción o instrucción especial (syscall/sysenter)
-      - El proceso solicita un servicio
-      - El CPU cambia a modo kernel
-      - El kernel ejecuta la operación
-      - Se regresa al modo usuario
 
     - Representación Interna de Procesos en Linux
       - struct task_struct
@@ -255,103 +271,146 @@ cat ./test.txt # Ruta relativa
       - pstree
       - nohup
 
+** Conceptos de repaso
+- Espacio de Usuario vs Espacio de Kernel
+      - Separación de privilegios
+      - Protección de memoria
+      - Cambio de modo (user mode ↔ kernel mode)
+
+- System Calls (Llamadas al Sistema)
+      - Mecanismo para que un proceso solicite servicios al kernel
+      - Interfaz entre usuario y kernel
+      - Cambio de contexto
+      - Ejemplos comunes de syscalls: fork(), exec(), wait(), read(), write(), open(), exit()
+
+
+- Flujo básico de una system call
+      - Interrupción o instrucción especial (syscall/sysenter)
+      - El proceso solicita un servicio
+      - El CPU cambia a modo kernel
+      - El kernel ejecuta la operación
+      - Se regresa al modo usuario
+
+** Máximas
+
+** Sección libre
+
+- Un proceso es un programa que se está ejecutando en el sistema y constantemente le está pidiendo recursos al kernel. Los procesos se comunican con el kernel a través de syscalls.
+
+- Linux tiene un directorio llamado /tmp el cual es volátil. Ahí se guardan archivos necesarios para el funcionamiento de programas y SO durante la sesión, pero que no es necesario conservar y por lo tanto se pueden borrar en el siguiente apagado. En Windows existe la misma implementación en una carpeta llamada Temp.
+
+- *nohup* nos permite ejecutar procesos y evitar que mueran cuando el padre muere (ignora señales de hangup). Para guardar la salida en un archivo: ~nohup COMANDO > FILE~.
+
+- *pstree* muestra un árbol de los procesos en ejecución, dando una vista clara de las relaciones de parentesco. De ahí se observa que el proceso del que nacen todos los procesos en espacio de usuario es systemd.
+
+Para entender mejor el funcionamiento de un proceso, se puede revisar el código fuente del kernel Linux. El término usado en el kernel para referirse a los procesos es una *task* (tarea), ya que la misma estructura sirve para procesos y para hilos. La estructura es ~task_struct~, declarada en ~include/linux/sched.h~. Contiene, entre otras cosas: estado (__state), PID y TGID, prioridades (prio, static_prio), relaciones (parent, children, sibling), memoria (mm), archivos abiertos (files), credenciales (cred) y manejo de señales (signal, sighand). El proceso más importante y del que nacen todos los procesos en espacio de usuario es systemd.
 
 ---------------------------------------------------------------------------
 * Arquitectura de almacenamiento físico y su representación en Linux
-    - Dispositivos de almacenamiento
-      - HDD vs SSD
-      - NVMe vs SATA
-      - Rendimiento, latencia e IOPS
-      - Persistencia vs volatilidad
 
-    - Representación en Linux
-      - Dispositivos en /dev
-        - /dev/sda
-        - /dev/sdb
-        - /dev/nvme0n1
-      - Concepto de block device
-      - Uso de lsblk y blkid
+** Conceptos nuevos
 
-    - Interfaces de comunicación de discos
-      - SCSI
-      - SAS (Serial Attached SCSI)
-      - SATA (Serial ATA)
-      - NVMe (Non-Volatile Memory Express)
+*** Dispositivos de almacenamiento
+- HDD vs SSD
+- NVMe vs SATA
+- Rendimiento, latencia e IOPS
+- Persistencia vs volatilidad
 
-    - Particiones
-      - ¿Qué es una partición?
-      - División lógica del disco
-      - Independencia de particiones
-      - Concepto de sector y bloque
+*** Representación en Linux
+- Dispositivos en /dev (/dev/sda, /dev/sdb, /dev/nvme0n1)
+- Concepto de block device
+- Uso de lsblk y blkid
 
-    - Tablas de partición
-      - MBR (Master Boot Record)
-      - GPT (GUID Partition Table)
-      - Diferencias técnicas (límite 2TB, número de particiones, redundancia)
+*** Interfaces de comunicación de discos
+- SCSI
+- SAS (Serial Attached SCSI)
+- SATA (Serial ATA)
+- NVMe (Non-Volatile Memory Express)
 
-    - Tipos de particiones (MBR)
-      - Primaria
-      - Extendida
-      - Lógica
+*** Particiones
+- ¿Qué es una partición?
+- División lógica del disco
+- Independencia de particiones
+- Concepto de sector y bloque
 
-    - Herramientas de particionado
-      - fdisk
-      - cfdisk
-      - parted
-      - gparted
+*** Tablas de partición
+- MBR (Master Boot Record)
+- GPT (GUID Partition Table)
+- Diferencias técnicas (límite 2TB, número de particiones, redundancia)
 
+*** Tipos de particiones (MBR)
+- Primaria
+- Extendida
+- Lógica
+
+*** Herramientas de particionado
+- fdisk, cfdisk, parted, gparted
+
+** Conceptos de repaso
+
+** Máximas
+
+** Sección libre
+
+- Gparted es una herramienta con interfaz gráfica para crear y modificar particiones en un disco.
+- En Linux, [[Todo es un archivo]]. La carpeta /dev guarda representaciones en archivo de todos los dispositivos conectados (almacenamiento, terminales, pseudoterminales).
 
 ---------------------------------------------------------------------------
 * Estructura lógica y administración de sistemas de archivos
 
-    - ¿Qué es un sistema de archivos?
-      - Organización lógica de datos
-      - Relación con particiones
-      - Abstracción sobre el hardware
+** Conceptos nuevos
 
-    - Sistemas de archivos comunes en Linux
-      - ext4, xfs, btrfs, vfat, ntfs
+*** ¿Qué es un sistema de archivos?
+- Organización lógica de datos
+- Relación con particiones
+- Abstracción sobre el hardware
 
-    - Estructura interna básica de un archivo
-      - Superbloque
-      - Inodos
-      - Bloques de datos
-      - Journaling
-      - Metadatos
+*** Sistemas de archivos comunes en Linux
+- ext4, xfs, btrfs, vfat, ntfs
 
-    - Creación y formateo de particiones
-      - mkfs
-      - mkfs.ext4
-      - mkfs.xfs
-      - Verificación con fsck
+*** Estructura interna básica
+- Superbloque
+- Inodos
+- Bloques de datos
+- Journaling
+- Metadatos
 
-    - Montaje
-      - mount
-      - umount
-      - Puntos de montaje (/mnt, /media)
-      - Montaje temporal vs permanente
+*** Creación y formateo de particiones
+- mkfs, mkfs.ext4, mkfs.xfs
+- Verificación con fsck
 
-    - Archivo /etc/fstab
-      - Montaje automático al inicio
-      - UUID vs nombre de dispositivo
-      - Opciones comunes (defaults, noatime, ro, rw)
+*** Montaje
+- mount, umount
+- Puntos de montaje (/mnt, /media)
+- Montaje temporal vs permanente
 
+*** Archivo /etc/fstab
+- Montaje automático al inicio
+- UUID vs nombre de dispositivo
+- Opciones comunes (defaults, noatime, ro, rw)
 
+** Conceptos de repaso
+
+** Máximas
+
+** Sección libre
 
 ---------------------------------------------------------------------------
-
 * Permisos y Propiedad
-      - Lectura (r)
-      - Escritura (w)
-      - Ejecución (x)
-      - comandos para ver esto ( ls -la )
 
-      - Conceptos de Usuarios y grupos
-        - Propietario
-        - Grupo
-        - Otros
-        - Comandos relacionados
-          - chmod
-          - chown
-          - chgrp
+** Conceptos nuevos
+
+*** Permisos básicos
+- Lectura (r), Escritura (w), Ejecución (x)
+- Comando para ver permisos: ~ls -la~
+
+*** Usuarios y grupos
+- Propietario, Grupo, Otros
+- Comandos: chmod, chown, chgrp
+
+** Conceptos de repaso
+
+** Máximas
+
+** Sección libre
 

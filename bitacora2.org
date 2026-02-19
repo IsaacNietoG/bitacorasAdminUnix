@@ -266,3 +266,368 @@ Btrfs y sus capacidades avanzadas.
 
 Estos conocimientos constituyen una base esencial para la administración
 segura y eficiente de sistemas Unix.
+
+
+
+* 8. Estructura lógica y administración de sistemas de archivos
+
+** ¿Qué es un sistema de archivos?
+
+Un sistema de archivos (Filesystem) es el mecanismo lógico que utiliza el
+sistema operativo para organizar, almacenar y recuperar datos en un
+dispositivo de almacenamiento.
+
+*** Organización lógica de datos
+Permite estructurar la información en archivos y directorios jerárquicos,
+independientemente de cómo estén físicamente almacenados los bloques
+en el disco.
+
+Ejemplo:
+Un archivo llamado documento.txt puede estar dividido en múltiples
+bloques físicos, pero el sistema lo presenta como una unidad lógica.
+
+*** Relación con particiones
+Un sistema de archivos se crea sobre una partición o dispositivo.
+La partición define el espacio físico; el sistema de archivos define
+cómo se organiza ese espacio.
+
+Disco → Partición → Sistema de archivos → Archivos y directorios
+
+*** Abstracción sobre el hardware
+El sistema de archivos actúa como una capa de abstracción entre el
+usuario y el hardware, ocultando detalles como sectores, cilindros
+y bloques físicos.
+
+---
+
+** Sistemas de archivos comunes en Linux
+
+*** ext4
+Sistema de archivos por defecto en muchas distribuciones Linux.
+Soporta journaling, archivos grandes y buena estabilidad.
+
+*** xfs
+Optimizado para alto rendimiento y manejo de grandes volúmenes
+de datos. Muy usado en servidores.
+
+*** btrfs
+Sistema moderno con características avanzadas como snapshots,
+compresión y subvolúmenes.
+
+*** vfat
+Compatible con sistemas Windows. Usado comúnmente en memorias USB.
+
+*** ntfs
+Sistema de archivos de Windows. Linux puede leerlo y escribirlo
+mediante controladores como ntfs-3g.
+
+---
+
+** Estructura interna básica de un archivo
+
+*** Superbloque
+Contiene información global del sistema de archivos:
+- Tamaño total
+- Número de inodos
+- Tamaño de bloque
+- Estado del sistema
+
+Es esencial para montar el sistema.
+
+*** Inodos
+Estructuras que almacenan metadatos del archivo:
+- Permisos
+- Propietario
+- Tamaño
+- Punteros a bloques de datos
+
+Importante: el nombre del archivo NO está en el inodo,
+sino en el directorio.
+
+*** Bloques de datos
+Son las unidades físicas donde se almacena el contenido real
+del archivo.
+
+*** Journaling
+Mecanismo que registra cambios antes de aplicarlos.
+Permite recuperación ante fallos inesperados (apagones).
+
+Ejemplo:
+ext4 usa journaling para evitar corrupción tras un corte eléctrico.
+
+*** Metadatos
+Información sobre el archivo, no su contenido.
+Ejemplo:
+- Fecha de creación
+- Permisos
+- Tamaño
+- UID y GID
+
+---
+
+** Creación y formateo de particiones
+
+Formatear significa crear un sistema de archivos dentro
+de una partición.
+
+*** mkfs
+Comando general para crear sistemas de archivos.
+
+Ejemplo:
+#+begin_src bash
+mkfs -t ext4 /dev/sdb1
+#+end_src
+
+*** mkfs.ext4
+Forma específica para crear ext4.
+
+#+begin_src bash
+mkfs.ext4 /dev/sdb1
+#+end_src
+
+*** mkfs.xfs
+Para crear sistema de archivos XFS.
+
+#+begin_src bash
+mkfs.xfs /dev/sdb1
+#+end_src
+
+*** Verificación con fsck
+Herramienta para revisar y reparar sistemas de archivos.
+
+#+begin_src bash
+fsck /dev/sdb1
+#+end_src
+
+---
+
+** Montaje
+
+Montar significa asociar un sistema de archivos
+a un directorio del sistema.
+
+*** mount
+Permite montar manualmente.
+
+#+begin_src bash
+mount /dev/sdb1 /mnt
+#+end_src
+
+*** umount
+Desmonta el sistema.
+
+#+begin_src bash
+umount /mnt
+#+end_src
+
+*** Puntos de montaje (/mnt, /media)
+- /mnt → montajes temporales manuales.
+- /media → dispositivos removibles (USB).
+
+*** Montaje temporal vs permanente
+Temporal:
+Se pierde al reiniciar.
+
+Permanente:
+Se configura en /etc/fstab para montarse automáticamente.
+
+---
+
+** Archivo /etc/fstab
+
+Archivo de configuración que define qué sistemas de archivos
+se montan al inicio.
+
+Formato general:
+dispositivo   punto_montaje   tipo   opciones   dump   pass
+
+*** Montaje automático al inicio
+Permite que las particiones se monten automáticamente
+durante el arranque.
+
+*** UUID vs nombre de dispositivo
+- /dev/sda1 puede cambiar.
+- UUID es único y estable.
+
+Ejemplo:
+#+begin_src bash
+UUID=xxxx-xxxx /home ext4 defaults 0 2
+#+end_src
+
+*** Opciones comunes
+- defaults → configuración estándar
+- noatime → no actualiza fecha de acceso
+- ro → solo lectura
+- rw → lectura y escritura
+
+---------------------------------------------------------------------------
+
+* 9. Organización del sistema, permisos y almacenamiento avanzado
+
+** FHS (Filesystem Hierarchy Standard)
+
+Estándar que define cómo se organizan los directorios
+en sistemas Unix/Linux.
+
+Garantiza consistencia entre distribuciones.
+
+---
+
+** Estructura de directorios
+
+*** /
+Raíz del sistema. Todo parte desde aquí.
+
+*** /home
+Directorios personales de los usuarios.
+
+*** /etc
+Archivos de configuración del sistema.
+
+*** /var
+Archivos variables:
+- logs
+- bases de datos
+- spool
+
+*** /usr
+Programas y bibliotecas del sistema.
+
+*** /boot
+Archivos necesarios para el arranque:
+- kernel
+- initramfs
+- bootloader
+
+*** /dev
+Archivos especiales que representan dispositivos.
+
+Ejemplo:
+/dev/sda → disco
+/dev/null → dispositivo nulo
+
+*** /proc
+Sistema virtual que expone información del kernel
+y procesos en tiempo real.
+
+*** /sys
+Sistema virtual que expone información del hardware
+y dispositivos.
+
+---
+
+** Permisos y Propiedad
+
+Cada archivo tiene permisos para:
+- Usuario (owner)
+- Grupo
+- Otros
+
+*** Lectura (r)
+Permite ver contenido.
+
+*** Escritura (w)
+Permite modificar.
+
+*** Ejecución (x)
+Permite ejecutar como programa.
+
+*** Ver permisos
+#+begin_src bash
+ls -la
+#+end_src
+
+Ejemplo de salida:
+-rwxr-xr-- 1 user group 1024 archivo.sh
+
+---
+
+** Conceptos de Usuarios y grupos
+
+*** Propietario
+Usuario dueño del archivo.
+
+*** Grupo
+Conjunto de usuarios con permisos compartidos.
+
+*** Otros
+Todos los demás usuarios.
+
+*** Comandos relacionados
+
+**** chmod
+Modifica permisos.
+
+#+begin_src bash
+chmod 755 archivo.sh
+#+end_src
+
+**** chown
+Cambia propietario.
+
+#+begin_src bash
+chown user archivo.txt
+#+end_src
+
+**** chgrp
+Cambia grupo.
+
+#+begin_src bash
+chgrp developers archivo.txt
+#+end_src
+
+---
+
+** Permisos especiales
+
+*** SUID
+Permite ejecutar un archivo con privilegios del propietario.
+
+Ejemplo típico:
+passwd
+
+*** SGID
+Similar al SUID pero aplicado al grupo.
+En directorios, los archivos heredan el grupo.
+
+*** Sticky bit
+En directorios compartidos, solo el propietario puede
+eliminar sus propios archivos.
+
+Ejemplo:
+/tmp
+
+---
+
+** Gestión Avanzada de Almacenamiento
+
+*** LVM (Logical Volume Manager)
+
+Permite administrar almacenamiento de forma flexible.
+
+**** Volúmenes físicos (PV)
+Discos o particiones inicializadas para LVM.
+
+**** Grupos de volúmenes (VG)
+Agrupación de múltiples PV.
+
+**** Volúmenes lógicos (LV)
+Particiones virtuales creadas dentro de un VG.
+
+Ventaja:
+Permite redimensionar sin reorganizar físicamente el disco.
+
+** Sistemas de archivos en red
+
+Permiten compartir almacenamiento entre máquinas.
+
+*** NFS
+Network File System.
+Común en entornos Linux/Unix.
+
+Permite montar un directorio remoto como si fuera local.
+
+*** SMB
+Server Message Block.
+Protocolo usado por Windows.
+En Linux se implementa mediante Samba.

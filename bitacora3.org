@@ -41,6 +41,42 @@ Por otra parte se menciono que las formas de arranque que nos da Fedora, ya que 
 - Host/Equipo local: Esta la encontraremos de color blanco ya que representara la máquina física real (home).
 - MV: Esta la encontraremos de color negro ya que indica que estás operando dentro del sistema operativo invitado ("guest OS"), aislado y ejecutándose sobre un hipervisor.
 
+** Tipos de fedora como medios de instalación
+- Al instalar *Fedora Live USB* con virtualBox, sse crea un medio en vivo (live iso) utilizando herramientas oficiales dde Fedora Media Writer, justamente interactuando en la instalación de esta podemos encontrar aquí mismo varios software que podemos instalar directamente, y que tambien podemos encontrar en la página oficial de fedora.
+- Dependiendo de cada institución se pueden agregar más elementos, incluso paquetes de otras distribuciones obteniendo una similitud en apariencia pero aun estando en fedora.
+- En una prueba para intentar hacer ping entre dos diferentes mv, creamos una nueva mv usando *Fedora Workstation Live* que es una imagen ISO arrancable que permite instalar el SO sin modificar el disco duro, entre una de las cosas más importantes o utiles es que permite persistencia de datos en USB, lo cuál es bastante accesible en el sentido de que es "movible", se puede transportar y arrancar desde diferentes ordenadores, aunque cabe mencionar que solo en modo de "lectura".
+
+Cuando estamos en la instalación de fedora nos pregunta si queremos activar repositorios de terceros, ya que hay paquetes externos que no pertenecen a fedora y es por ello que necesitan un permiso para poder ser descargador dentro del SO.
+
+*El espacio que necesita fedora ws es de 3.8G*
+
+** Diferentes tipos de terminales
+#+begin_src
+ctrl + f1
+#+end_src
+Esta es la terminal de inicio, donde muestra el proceso de instalación activo
+enadores, aunque cabe mencionar que solo en modo de "lectura".
+
+#+begin_src
+ctrl + f2
+#+end_src
+En esta terminal es con Bash/Shell, aquí podemos ejecutar comandos como *top* para monitorear recursos, navegar por directorios o iniciar sesión.
+
+#+begin_src
+ctrl + f3 / f4
+#+end_src
+Es una terminal de respaldo, donde a menudo muestra logs detallados de la instalación o paquetes que se están instalando.
+
+#+begin_src
+ctrl + f6
+#+end_src
+Este comando es usado como la interfaz del instalador gráfico o consola de logs.
+
+#+begin_src
+ctrl + f7
+#+end_src
+Solo retorna al entorno gráfico principal.
+
 * Lectura de archivos y comandos
 #+begin_src
 lss nfc-blacklist.conf

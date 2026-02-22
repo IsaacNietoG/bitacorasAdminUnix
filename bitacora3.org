@@ -22,26 +22,119 @@ En esta tercera semana el enfoque se baso en las maquinas virtuales y sus config
 
 ** Responsabilidades:
 Gael Emiliano:
+
 Omar Fernando:
+
 Mariana:
-Isaac Julián:
 
+Isaac Julián: Cambios menores, primeros dos temas y algunas investigaciones en Secciones Libres
 
-* Maquina virtual de fedora
+* Herramientas para máquinas virtuales (Virtual Box y Boxes)
 
-Dentro de fedora existe algo llamada *Fedora Scientific Lab*, que esta construida por una amplia biblioteca de herramientas y software preinstalados diseñados específicamente para la ciencia de datos, el análisis numérico y la computación científica, por lo que obtiene el nombre de "spin".
+** Conceptos nuevos
 
-Por otra parte se menciono que las formas de arranque que nos da Fedora, ya que al iniciar la mv nos da la opción de *"Test this media & start Fedora"* y sucede que es muy recomendable seleccionarla ya que asegura la integridad de la imagen ISO descargada, ya que como dato curioso, el profesor nos menciono que anteriorme se arrancaba desde CDs/DVDs físicos y solian estar dañados.
+*** Virtual Box
+
+Es un software de virtualización desarrollado por Oracle. Mediante este podemos instalar sistemas operativos adicionales "invitados" dentro del sistema "anfitrión".
+
+*** Boxes
+
+La alternativa que ofrece GNOME para Virtual Box. En realidad es un front de QEMU-KVM, y por lo tanto utiliza el módulo de kernel kvm que luego deberemos de desactivar para correr virtual box.
+
+*** Hipervisor
+
+Es la generalización de estos softwares de virtualización. Es el componente de software (con features en hardware en ciertos casos) que se encarga de crear y correr máquinas virtuales.
+
+** Conceptos de repaso
+
+- Virtualizacion y emulación
+
+** Máximas
+
+** Sección libre
+
+En realidad existen dos categorías de hipervisor:
+
+Tipo 1: "Bare Metal" (Nativo)
+Este hipervisor se instala directamente sobre el hardware físico. No necesita un sistema operativo previo porque él mismo actúa como un sistema operativo básico diseñado solo para gestionar máquinas virtuales.
+Cómo funciona: Tiene acceso directo a los recursos del servidor, lo que lo hace extremadamente eficiente y seguro.
+Uso común: Centros de datos, servidores empresariales y la nube (AWS, Azure).
+Ejemplos: VMware ESXi, Microsoft Hyper-V (en modo servidor), Xen y KVM.
+
+Tipo 2: "Hosted" (Alojado)
+Este hipervisor se instala como una aplicación dentro de un sistema operativo ya existente (como Windows, macOS o Linux).
+Cómo funciona: El hipervisor debe pedirle recursos al sistema operativo anfitrión, el cual a su vez se los pide al hardware. Esto añade una capa de "latencia" o sobrecarga, por lo que es menos eficiente que el Tipo 1.
+Uso común: Desarrolladores de software, estudiantes o usuarios que necesitan probar sistemas operativos en su propia PC o laptop.
+Ejemplos: Oracle VirtualBox, VMware Workstation y Parallels Desktop.
+
+* Instalación de virtual box
+
+** Conceptos nuevos
+
+*** Axel
+
+Es un acelerador de descargas que corre desde la terminal. Lo ussamos para acelerar la descarga del ISO de Fedora que luego íbamos a usar posteriormente.
+
+#+begin_src
+axel <rutaArchivo>
+#+end_src
+
+*** Módulos de kernel
+
+Es una extensión que podemos "pegarle" al kernel para obtener ciertas features particulares. Por ahora, vimos que, si usamos Gnome, entonces tenemos que deshabilitar un módulo de kernel que Boxes instala para acceder a recursos de virtualización directamente al hardware del sistema anfitrión. Para ello, usamos el siguiente comando:
+
+#+begin_src
+rmmod kvm_intel
+#+end_src
 
 *** Nat y adaptador puente
 - Nat(Network Address Translation): Permite que la mv obtenga una ip privada y se conecte a internet utilizando la dirección IP del equipo anfitrión, por lo que la MV tiene acceso al exterior pero no es accesible la red local, en este caso al usar VirtualBox actúa como un router, traduciendo la IP privada de la MV a la pública del host, es muy ideal para la instalación inicial ya que oculta la MV
 - Adaptador Puente (Bridged Adapter): Este es la tarjeta de red de la MV que se conecta directamente al adaptador de red del anfitrión, entonces la MV aparecera como un equipo independiente más en la red física, permitiendo la comunicación bidireccional, pero esta es expuesta a ataques externos.
 
-** Terminales
+** Conceptos de repaso
+
+** Máximas
+
+** Sección libre
+
+Me dió curiosidad investigar cómo funcionaba Axel por detrás y me puse a investigarlo.
+
+Resulta que Axel lo que hace es paralelizar una descarga utilizando varios hilos, cada uno descargando una sección diferente del archivo a la vez. Esto a su vez me llevó a la duda de cómo estaba implementado esto, ya que no es algo que se podría lograr si no estuviera soportado por los servidores de manera nativa. Resulta que es algo que -al menos en el caso de archivos en internet- es soportado directamente por HTTP mediante una feature llamada Byte Ranges
+
+El protocolo HTTP (desde su versión 1.1) incluye una cabecera de solicitud llamada Range. Esta permite al cliente pedirle al servidor solo una parte específica de un recurso, en lugar del archivo completo.
+
+- *Verificación*: Primero, Axel envía una solicitud HEAD para ver si el servidor soporta esto. Si el servidor responde con la cabecera Accept-Ranges: bytes, significa que el servidor es capaz de "trocear" el envío.
+
+- *Segmentación*: Axel divide el tamaño total del archivo (digamos 100 MB) entre el número de conexiones que le pediste (por ejemplo, 4).
+
+- *Descarga en paralelo*: Abre n conexiones simultáneas enviando peticiones como estas:
+
+Conexión 1: Range: bytes=0-24999999
+
+Conexión 2: Range: bytes=25000000-49999999
+
+...y así sucesivamente.
+
+
+* Maquina virtual de fedora
+
+** Conceptos nuevos
+
+*** Spin y flavor
+
+Dentro de fedora existe algo llamada *Fedora Scientific Lab*, que esta construida por una amplia biblioteca de herramientas y software preinstalados diseñados específicamente para la ciencia de datos, el análisis numérico y la computación científica, por lo que obtiene el nombre de "spin". Un spin es una versión alternativa de Fedora que puede cambiar sea en esto o en su entorno de escritorio. Es el caso particular de un flavor.
+
+Un flavor es una versión alternativa de alguna distribución de Linux. Puede ser simplemente un entorno de escritorio distinto por default o toda una serie de paqueterías por default instaladas.
+
+*** Test and start
+
+Por otra parte se menciono que las formas de arranque que nos da Fedora, ya que al iniciar la mv nos da la opción de *"Test this media & start Fedora"* y sucede que es muy recomendable seleccionarla ya que asegura la integridad de la imagen ISO descargada, ya que como dato curioso, el profesor nos menciono que anteriorme se arrancaba desde CDs/DVDs físicos y solian estar dañados.
+
+*** Terminales
 - Host/Equipo local: Esta la encontraremos de color blanco ya que representara la máquina física real (home).
 - MV: Esta la encontraremos de color negro ya que indica que estás operando dentro del sistema operativo invitado ("guest OS"), aislado y ejecutándose sobre un hipervisor.
 
-** Tipos de fedora como medios de instalación
+*** Tipos de fedora como medios de instalación
 - Al instalar *Fedora Live USB* con virtualBox, sse crea un medio en vivo (live iso) utilizando herramientas oficiales dde Fedora Media Writer, justamente interactuando en la instalación de esta podemos encontrar aquí mismo varios software que podemos instalar directamente, y que tambien podemos encontrar en la página oficial de fedora.
 - Dependiendo de cada institución se pueden agregar más elementos, incluso paquetes de otras distribuciones obteniendo una similitud en apariencia pero aun estando en fedora.
 - En una prueba para intentar hacer ping entre dos diferentes mv, creamos una nueva mv usando *Fedora Workstation Live* que es una imagen ISO arrancable que permite instalar el SO sin modificar el disco duro, entre una de las cosas más importantes o utiles es que permite persistencia de datos en USB, lo cuál es bastante accesible en el sentido de que es "movible", se puede transportar y arrancar desde diferentes ordenadores, aunque cabe mencionar que solo en modo de "lectura".
@@ -50,7 +143,7 @@ Cuando estamos en la instalación de fedora nos pregunta si queremos activar rep
 
 *El espacio que necesita fedora ws es de 3.8G*
 
-** Diferentes tipos de terminales
+*** Diferentes tipos de terminales
 #+begin_src
 ctrl + f1
 #+end_src
@@ -77,7 +170,21 @@ ctrl + f7
 #+end_src
 Solo retorna al entorno gráfico principal.
 
+** Conceptos de repaso
+
+*** Nat y adaptador puente
+- Nat(Network Address Translation): Permite que la mv obtenga una ip privada y se conecte a internet utilizando la dirección IP del equipo anfitrión, por lo que la MV tiene acceso al exterior pero no es accesible la red local, en este caso al usar VirtualBox actúa como un router, traduciendo la IP privada de la MV a la pública del host, es muy ideal para la instalación inicial ya que oculta la MV
+- Adaptador Puente (Bridged Adapter): Este es la tarjeta de red de la MV que se conecta directamente al adaptador de red del anfitrión, entonces la MV aparecera como un equipo independiente más en la red física, permitiendo la comunicación bidireccional, pero esta es expuesta a ataques externos.
+
+Esto lo usamos para configurar la VM de Fedora.
+
+** Maximas
+
+** Sección libre
+
 * Lectura de archivos y comandos
+
+** Conceptos nuevos
 #+begin_src
 lss nfc-blacklist.conf
 #+end_src
@@ -95,6 +202,8 @@ Estos archivos gestionan el montaje de sistemas de archivos.
 - *fstab* (file systems table) es un archivo estático y persistente configurado por el usuario para montar dispositivos al arrancar, asi como las particiones, discos y recursos compartidos al iniciar. (configuración)
 - *mtab* (mounted filesystems table) es un archivo dinámico actualizado por el sistema que enumera los sistemas de archivos montados actualmente. (estado)
 
+
+** Conceptos de repaso
 #+begin_src
 rmmod kvm_intel
 #+end_src
@@ -105,6 +214,23 @@ top
 #+end_src
 Este comando permite tener una vista dinámica y en tiempo real de los procesos activos, ordenándolos por defecto según el uso de CPU, aquí le prestamos más atención al apartado de *load average*, ya que muestra la carga promedio del sistema, donde indican cuántos procesos están ejecutándose o esperando tiempo de CPU, esto siendo crucial con el número de núcleos del servidor, ya que cada núcleo solo puede trabajar con un proceso.
 
+** Máximas
+
+** Sección libre
+
 * Directorios
 
+** Conceptos nuevos
 - /proc: Es un sistema de archivos virtual ("procfs") creado en memoria de arrancar, que sirve como interfaz del kernel para obtener información en tiempo real sobre procesos, hardware y parámetros del sistema, este es un directorio extremadamente volátil, ya que no es un directorio real en el disco duro, sino un pseudo-sistema de archivos que se genera en la memoria RAM al arrancar el sistema y se elimina al apagarlo.
+
+
+** Conceptos de repaso
+- Sistema de archivos
+- BTRFS
+- Montaje de sistema de archivos
+
+
+** Máximas
+
+
+** Sección libre

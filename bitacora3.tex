@@ -1,4 +1,4 @@
-% Created 2026-02-19 Thu 14:08
+% Created 2026-02-21 Sat 20:33
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt, letterpaper]{article}
 \usepackage[utf8]{inputenc}
@@ -24,7 +24,7 @@
  pdftitle={Bitácora Semanal 3: Administración de Sistemas Unix},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 30.2 (Org mode 9.7.39)}, 
+ pdfcreator={Emacs 30.2 (Org mode 9.7.29)}, 
  pdflang={English}}
 \begin{document}
 
@@ -33,7 +33,7 @@
 \tableofcontents
 
 \section{Información General}
-\label{sec:org571d682}
+\label{sec:org7b472db}
 \begin{itemize}
 \item \textbf{Semana:} Del 16 de Febrero 2026 al 20 de Febrero 2026
 \item \textbf{Equipo:}
@@ -47,31 +47,194 @@
 
 En esta tercera semana el enfoque se baso en las maquinas virtuales y sus configuraciones, en como esta la organización de archivos.
 \subsection{Responsabilidades:}
-\label{sec:org336851e}
+\label{sec:orgd666534}
 Gael Emiliano:
+
 Omar Fernando:
+
 Mariana:
-Isaac Julián:
-\section{Maquina virtual de fedora}
-\label{sec:orgd36ee3b}
 
-Dentro de fedora existe algo llamada \textbf{Fedora Scientific Lab}, que esta construida por una amplia biblioteca de herramientas y software preinstalados diseñados específicamente para la ciencia de datos, el análisis numérico y la computación científica, por lo que obtiene el nombre de ``spin''.
+Isaac Julián: Cambios menores, primeros dos temas y algunas investigaciones en Secciones Libres
+\section{Herramientas para máquinas virtuales (Virtual Box y Boxes)}
+\label{sec:org2a39b75}
 
-Por otra parte se menciono que las formas de arranque que nos da Fedora, ya que al iniciar la mv nos da la opción de \textbf{``Test this media \& start Fedora''} y sucede que es muy recomendable seleccionarla ya que asegura la integridad de la imagen ISO descargada, ya que como dato curioso, el profesor nos menciono que anteriorme se arrancaba desde CDs/DVDs físicos y solian estar dañados.
+\subsection{Conceptos nuevos}
+\label{sec:org1cf865a}
+
+\subsubsection{Virtual Box}
+\label{sec:org7af9f0b}
+
+Es un software de virtualización desarrollado por Oracle. Mediante este podemos instalar sistemas operativos adicionales ``invitados'' dentro del sistema ``anfitrión''.
+\subsubsection{Boxes}
+\label{sec:org300a90c}
+
+La alternativa que ofrece GNOME para Virtual Box. En realidad es un front de QEMU-KVM, y por lo tanto utiliza el módulo de kernel kvm que luego deberemos de desactivar para correr virtual box.
+\subsubsection{Hipervisor}
+\label{sec:orge9d4f8a}
+
+Es la generalización de estos softwares de virtualización. Es el componente de software (con features en hardware en ciertos casos) que se encarga de crear y correr máquinas virtuales.
+\subsection{Conceptos de repaso}
+\label{sec:org06ad47c}
+
+\begin{itemize}
+\item Virtualizacion y emulación
+\end{itemize}
+\subsection{Máximas}
+\label{sec:org411b00d}
+
+\subsection{Sección libre}
+\label{sec:org185fdce}
+
+En realidad existen dos categorías de hipervisor:
+
+Tipo 1: ``Bare Metal'' (Nativo)
+Este hipervisor se instala directamente sobre el hardware físico. No necesita un sistema operativo previo porque él mismo actúa como un sistema operativo básico diseñado solo para gestionar máquinas virtuales.
+Cómo funciona: Tiene acceso directo a los recursos del servidor, lo que lo hace extremadamente eficiente y seguro.
+Uso común: Centros de datos, servidores empresariales y la nube (AWS, Azure).
+Ejemplos: VMware ESXi, Microsoft Hyper-V (en modo servidor), Xen y KVM.
+
+Tipo 2: ``Hosted'' (Alojado)
+Este hipervisor se instala como una aplicación dentro de un sistema operativo ya existente (como Windows, macOS o Linux).
+Cómo funciona: El hipervisor debe pedirle recursos al sistema operativo anfitrión, el cual a su vez se los pide al hardware. Esto añade una capa de ``latencia'' o sobrecarga, por lo que es menos eficiente que el Tipo 1.
+Uso común: Desarrolladores de software, estudiantes o usuarios que necesitan probar sistemas operativos en su propia PC o laptop.
+Ejemplos: Oracle VirtualBox, VMware Workstation y Parallels Desktop.
+\section{Instalación de virtual box}
+\label{sec:org40c114e}
+
+\subsection{Conceptos nuevos}
+\label{sec:org6c53460}
+
+\subsubsection{Axel}
+\label{sec:org068b45e}
+
+Es un acelerador de descargas que corre desde la terminal. Lo ussamos para acelerar la descarga del ISO de Fedora que luego íbamos a usar posteriormente.
+
+\begin{verbatim}
+axel <rutaArchivo>
+\end{verbatim}
+\subsubsection{Módulos de kernel}
+\label{sec:orgc84000a}
+
+Es una extensión que podemos ``pegarle'' al kernel para obtener ciertas features particulares. Por ahora, vimos que, si usamos Gnome, entonces tenemos que deshabilitar un módulo de kernel que Boxes instala para acceder a recursos de virtualización directamente al hardware del sistema anfitrión. Para ello, usamos el siguiente comando:
+
+\begin{verbatim}
+rmmod kvm_intel
+\end{verbatim}
 \subsubsection{Nat y adaptador puente}
-\label{sec:orgffc65a1}
+\label{sec:org7fa6708}
 \begin{itemize}
 \item Nat(Network Address Translation): Permite que la mv obtenga una ip privada y se conecte a internet utilizando la dirección IP del equipo anfitrión, por lo que la MV tiene acceso al exterior pero no es accesible la red local, en este caso al usar VirtualBox actúa como un router, traduciendo la IP privada de la MV a la pública del host, es muy ideal para la instalación inicial ya que oculta la MV
 \item Adaptador Puente (Bridged Adapter): Este es la tarjeta de red de la MV que se conecta directamente al adaptador de red del anfitrión, entonces la MV aparecera como un equipo independiente más en la red física, permitiendo la comunicación bidireccional, pero esta es expuesta a ataques externos.
 \end{itemize}
-\subsection{Terminales}
-\label{sec:orgf712d2e}
+\subsection{Conceptos de repaso}
+\label{sec:orge92288e}
+
+\subsection{Máximas}
+\label{sec:org46aa4cb}
+
+\subsection{Sección libre}
+\label{sec:org4295fb8}
+
+Me dió curiosidad investigar cómo funcionaba Axel por detrás y me puse a investigarlo.
+
+Resulta que Axel lo que hace es paralelizar una descarga utilizando varios hilos, cada uno descargando una sección diferente del archivo a la vez. Esto a su vez me llevó a la duda de cómo estaba implementado esto, ya que no es algo que se podría lograr si no estuviera soportado por los servidores de manera nativa. Resulta que es algo que -al menos en el caso de archivos en internet- es soportado directamente por HTTP mediante una feature llamada Byte Ranges
+
+El protocolo HTTP (desde su versión 1.1) incluye una cabecera de solicitud llamada Range. Esta permite al cliente pedirle al servidor solo una parte específica de un recurso, en lugar del archivo completo.
+
+\begin{itemize}
+\item \textbf{Verificación}: Primero, Axel envía una solicitud HEAD para ver si el servidor soporta esto. Si el servidor responde con la cabecera Accept-Ranges: bytes, significa que el servidor es capaz de ``trocear'' el envío.
+
+\item \textbf{Segmentación}: Axel divide el tamaño total del archivo (digamos 100 MB) entre el número de conexiones que le pediste (por ejemplo, 4).
+
+\item \textbf{Descarga en paralelo}: Abre n conexiones simultáneas enviando peticiones como estas:
+\end{itemize}
+
+Conexión 1: Range: bytes=0-24999999
+
+Conexión 2: Range: bytes=25000000-49999999
+
+\ldots{}y así sucesivamente.
+\section{Maquina virtual de fedora}
+\label{sec:orga1fb669}
+
+\subsection{Conceptos nuevos}
+\label{sec:orgc5b7275}
+
+\subsubsection{Spin y flavor}
+\label{sec:orgb6788f0}
+
+Dentro de fedora existe algo llamada \textbf{Fedora Scientific Lab}, que esta construida por una amplia biblioteca de herramientas y software preinstalados diseñados específicamente para la ciencia de datos, el análisis numérico y la computación científica, por lo que obtiene el nombre de ``spin''. Un spin es una versión alternativa de Fedora que puede cambiar sea en esto o en su entorno de escritorio. Es el caso particular de un flavor.
+
+Un flavor es una versión alternativa de alguna distribución de Linux. Puede ser simplemente un entorno de escritorio distinto por default o toda una serie de paqueterías por default instaladas.
+\subsubsection{Test and start}
+\label{sec:orgf069b8c}
+
+Por otra parte se menciono que las formas de arranque que nos da Fedora, ya que al iniciar la mv nos da la opción de \textbf{``Test this media \& start Fedora''} y sucede que es muy recomendable seleccionarla ya que asegura la integridad de la imagen ISO descargada, ya que como dato curioso, el profesor nos menciono que anteriorme se arrancaba desde CDs/DVDs físicos y solian estar dañados.
+\subsubsection{Terminales}
+\label{sec:org2b9d4b2}
 \begin{itemize}
 \item Host/Equipo local: Esta la encontraremos de color blanco ya que representara la máquina física real (home).
 \item MV: Esta la encontraremos de color negro ya que indica que estás operando dentro del sistema operativo invitado (``guest OS''), aislado y ejecutándose sobre un hipervisor.
 \end{itemize}
+\subsubsection{Tipos de fedora como medios de instalación}
+\label{sec:org028132c}
+\begin{itemize}
+\item Al instalar \textbf{Fedora Live USB} con virtualBox, sse crea un medio en vivo (live iso) utilizando herramientas oficiales dde Fedora Media Writer, justamente interactuando en la instalación de esta podemos encontrar aquí mismo varios software que podemos instalar directamente, y que tambien podemos encontrar en la página oficial de fedora.
+\item Dependiendo de cada institución se pueden agregar más elementos, incluso paquetes de otras distribuciones obteniendo una similitud en apariencia pero aun estando en fedora.
+\item En una prueba para intentar hacer ping entre dos diferentes mv, creamos una nueva mv usando \textbf{Fedora Workstation Live} que es una imagen ISO arrancable que permite instalar el SO sin modificar el disco duro, entre una de las cosas más importantes o utiles es que permite persistencia de datos en USB, lo cuál es bastante accesible en el sentido de que es ``movible'', se puede transportar y arrancar desde diferentes ordenadores, aunque cabe mencionar que solo en modo de ``lectura''.
+\end{itemize}
+
+Cuando estamos en la instalación de fedora nos pregunta si queremos activar repositorios de terceros, ya que hay paquetes externos que no pertenecen a fedora y es por ello que necesitan un permiso para poder ser descargador dentro del SO.
+
+\textbf{El espacio que necesita fedora ws es de 3.8G}
+\subsubsection{Diferentes tipos de terminales}
+\label{sec:orgf3fc3ca}
+\begin{verbatim}
+ctrl + f1
+\end{verbatim}
+Esta es la terminal de inicio, donde muestra el proceso de instalación activo
+enadores, aunque cabe mencionar que solo en modo de ``lectura''.
+
+\begin{verbatim}
+ctrl + f2
+\end{verbatim}
+En esta terminal es con Bash/Shell, aquí podemos ejecutar comandos como \textbf{top} para monitorear recursos, navegar por directorios o iniciar sesión.
+
+\begin{verbatim}
+ctrl + f3 / f4
+\end{verbatim}
+Es una terminal de respaldo, donde a menudo muestra logs detallados de la instalación o paquetes que se están instalando.
+
+\begin{verbatim}
+ctrl + f6
+\end{verbatim}
+Este comando es usado como la interfaz del instalador gráfico o consola de logs.
+
+\begin{verbatim}
+ctrl + f7
+\end{verbatim}
+Solo retorna al entorno gráfico principal.
+\subsection{Conceptos de repaso}
+\label{sec:orgc40f9c6}
+
+\subsubsection{Nat y adaptador puente}
+\label{sec:org7188413}
+\begin{itemize}
+\item Nat(Network Address Translation): Permite que la mv obtenga una ip privada y se conecte a internet utilizando la dirección IP del equipo anfitrión, por lo que la MV tiene acceso al exterior pero no es accesible la red local, en este caso al usar VirtualBox actúa como un router, traduciendo la IP privada de la MV a la pública del host, es muy ideal para la instalación inicial ya que oculta la MV
+\item Adaptador Puente (Bridged Adapter): Este es la tarjeta de red de la MV que se conecta directamente al adaptador de red del anfitrión, entonces la MV aparecera como un equipo independiente más en la red física, permitiendo la comunicación bidireccional, pero esta es expuesta a ataques externos.
+\end{itemize}
+
+Esto lo usamos para configurar la VM de Fedora.
+\subsection{Maximas}
+\label{sec:org40a5b6e}
+
+\subsection{Sección libre}
+\label{sec:org23a6a3e}
 \section{Lectura de archivos y comandos}
-\label{sec:org9a00000}
+\label{sec:orgb406084}
+
+\subsection{Conceptos nuevos}
+\label{sec:orgedd31fc}
 \begin{verbatim}
 lss nfc-blacklist.conf
 \end{verbatim}
@@ -90,7 +253,8 @@ Estos archivos gestionan el montaje de sistemas de archivos.
 \item \textbf{fstab} (file systems table) es un archivo estático y persistente configurado por el usuario para montar dispositivos al arrancar, asi como las particiones, discos y recursos compartidos al iniciar. (configuración)
 \item \textbf{mtab} (mounted filesystems table) es un archivo dinámico actualizado por el sistema que enumera los sistemas de archivos montados actualmente. (estado)
 \end{itemize}
-
+\subsection{Conceptos de repaso}
+\label{sec:org33df234}
 \begin{verbatim}
 rmmod kvm_intel
 \end{verbatim}
@@ -100,10 +264,30 @@ El comando \textbf{rmmod} se utiliza para eliminar un módulo del kernel de linu
 top
 \end{verbatim}
 Este comando permite tener una vista dinámica y en tiempo real de los procesos activos, ordenándolos por defecto según el uso de CPU, aquí le prestamos más atención al apartado de \textbf{load average}, ya que muestra la carga promedio del sistema, donde indican cuántos procesos están ejecutándose o esperando tiempo de CPU, esto siendo crucial con el número de núcleos del servidor, ya que cada núcleo solo puede trabajar con un proceso.
-\section{Directorios}
-\label{sec:orgae6f2e6}
+\subsection{Máximas}
+\label{sec:org45cea40}
 
+\subsection{Sección libre}
+\label{sec:org9bca96f}
+\section{Directorios}
+\label{sec:org6630294}
+
+\subsection{Conceptos nuevos}
+\label{sec:org76f3649}
 \begin{itemize}
 \item /proc: Es un sistema de archivos virtual (``procfs'') creado en memoria de arrancar, que sirve como interfaz del kernel para obtener información en tiempo real sobre procesos, hardware y parámetros del sistema, este es un directorio extremadamente volátil, ya que no es un directorio real en el disco duro, sino un pseudo-sistema de archivos que se genera en la memoria RAM al arrancar el sistema y se elimina al apagarlo.
 \end{itemize}
+\subsection{Conceptos de repaso}
+\label{sec:org22ef071}
+\begin{itemize}
+\item Sistema de archivos
+\item BTRFS
+\item Montaje de sistema de archivos
+\end{itemize}
+\subsection{Máximas}
+\label{sec:orgb82ff90}
+
+
+\subsection{Sección libre}
+\label{sec:org275a7b1}
 \end{document}

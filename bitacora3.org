@@ -21,13 +21,11 @@
 En esta tercera semana el enfoque se baso en las maquinas virtuales y sus configuraciones, en como esta la organización de archivos.
 
 ** Responsabilidades:
-Gael Emiliano:
 
-Omar Fernando:
-
-Mariana:
-
-Isaac Julián: Cambios menores, primeros dos temas y algunas investigaciones en Secciones Libres
+- Gael Emiliano: Notas físicas y aportaciones en nuevos conceptos y maquetado del reporte.
+- Omar Fernando: Notas físicas.
+- Mariana: Desarrollo de temas principales y estructura principal.
+- Isaac Julián: Cambios menores, primeros dos temas y algunas investigaciones en Secciones Libres
 
 * Herramientas para máquinas virtuales (Virtual Box y Boxes)
 

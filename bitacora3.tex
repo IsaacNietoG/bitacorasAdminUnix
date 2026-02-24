@@ -1,4 +1,4 @@
-% Created 2026-02-21 Sat 20:33
+% Created 2026-02-23 Mon 22:39
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt, letterpaper]{article}
 \usepackage[utf8]{inputenc}
@@ -24,7 +24,7 @@
  pdftitle={Bitácora Semanal 3: Administración de Sistemas Unix},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 30.2 (Org mode 9.7.29)}, 
+ pdfcreator={Emacs 30.2 (Org mode 9.7.39)}, 
  pdflang={English}}
 \begin{document}
 
@@ -33,7 +33,7 @@
 \tableofcontents
 
 \section{Información General}
-\label{sec:org7b472db}
+\label{sec:org6db86af}
 \begin{itemize}
 \item \textbf{Semana:} Del 16 de Febrero 2026 al 20 de Febrero 2026
 \item \textbf{Equipo:}
@@ -47,43 +47,43 @@
 
 En esta tercera semana el enfoque se baso en las maquinas virtuales y sus configuraciones, en como esta la organización de archivos.
 \subsection{Responsabilidades:}
-\label{sec:orgd666534}
-Gael Emiliano:
+\label{sec:orge053d35}
 
-Omar Fernando:
-
-Mariana:
-
-Isaac Julián: Cambios menores, primeros dos temas y algunas investigaciones en Secciones Libres
+\begin{itemize}
+\item Gael Emiliano: Notas físicas y aportaciones en nuevos conceptos y maquetado del reporte.
+\item Omar Fernando: Notas físicas.
+\item Mariana: Desarrollo de temas principales y estructura principal.
+\item Isaac Julián: Cambios menores, primeros dos temas y algunas investigaciones en Secciones Libres
+\end{itemize}
 \section{Herramientas para máquinas virtuales (Virtual Box y Boxes)}
-\label{sec:org2a39b75}
+\label{sec:org987ccf8}
 
 \subsection{Conceptos nuevos}
-\label{sec:org1cf865a}
+\label{sec:org8f76a04}
 
 \subsubsection{Virtual Box}
-\label{sec:org7af9f0b}
+\label{sec:orgbe26579}
 
 Es un software de virtualización desarrollado por Oracle. Mediante este podemos instalar sistemas operativos adicionales ``invitados'' dentro del sistema ``anfitrión''.
 \subsubsection{Boxes}
-\label{sec:org300a90c}
+\label{sec:orgf93de89}
 
 La alternativa que ofrece GNOME para Virtual Box. En realidad es un front de QEMU-KVM, y por lo tanto utiliza el módulo de kernel kvm que luego deberemos de desactivar para correr virtual box.
 \subsubsection{Hipervisor}
-\label{sec:orge9d4f8a}
+\label{sec:orged80cac}
 
 Es la generalización de estos softwares de virtualización. Es el componente de software (con features en hardware en ciertos casos) que se encarga de crear y correr máquinas virtuales.
 \subsection{Conceptos de repaso}
-\label{sec:org06ad47c}
+\label{sec:orgebc1403}
 
 \begin{itemize}
 \item Virtualizacion y emulación
 \end{itemize}
 \subsection{Máximas}
-\label{sec:org411b00d}
+\label{sec:org8152492}
 
 \subsection{Sección libre}
-\label{sec:org185fdce}
+\label{sec:org36f264b}
 
 En realidad existen dos categorías de hipervisor:
 
@@ -99,13 +99,13 @@ Cómo funciona: El hipervisor debe pedirle recursos al sistema operativo anfitri
 Uso común: Desarrolladores de software, estudiantes o usuarios que necesitan probar sistemas operativos en su propia PC o laptop.
 Ejemplos: Oracle VirtualBox, VMware Workstation y Parallels Desktop.
 \section{Instalación de virtual box}
-\label{sec:org40c114e}
+\label{sec:org7745775}
 
 \subsection{Conceptos nuevos}
-\label{sec:org6c53460}
+\label{sec:org926ea11}
 
 \subsubsection{Axel}
-\label{sec:org068b45e}
+\label{sec:org4469b35}
 
 Es un acelerador de descargas que corre desde la terminal. Lo ussamos para acelerar la descarga del ISO de Fedora que luego íbamos a usar posteriormente.
 
@@ -113,7 +113,7 @@ Es un acelerador de descargas que corre desde la terminal. Lo ussamos para acele
 axel <rutaArchivo>
 \end{verbatim}
 \subsubsection{Módulos de kernel}
-\label{sec:orgc84000a}
+\label{sec:org66b97d4}
 
 Es una extensión que podemos ``pegarle'' al kernel para obtener ciertas features particulares. Por ahora, vimos que, si usamos Gnome, entonces tenemos que deshabilitar un módulo de kernel que Boxes instala para acceder a recursos de virtualización directamente al hardware del sistema anfitrión. Para ello, usamos el siguiente comando:
 
@@ -121,19 +121,19 @@ Es una extensión que podemos ``pegarle'' al kernel para obtener ciertas feature
 rmmod kvm_intel
 \end{verbatim}
 \subsubsection{Nat y adaptador puente}
-\label{sec:org7fa6708}
+\label{sec:orgf207e17}
 \begin{itemize}
 \item Nat(Network Address Translation): Permite que la mv obtenga una ip privada y se conecte a internet utilizando la dirección IP del equipo anfitrión, por lo que la MV tiene acceso al exterior pero no es accesible la red local, en este caso al usar VirtualBox actúa como un router, traduciendo la IP privada de la MV a la pública del host, es muy ideal para la instalación inicial ya que oculta la MV
 \item Adaptador Puente (Bridged Adapter): Este es la tarjeta de red de la MV que se conecta directamente al adaptador de red del anfitrión, entonces la MV aparecera como un equipo independiente más en la red física, permitiendo la comunicación bidireccional, pero esta es expuesta a ataques externos.
 \end{itemize}
 \subsection{Conceptos de repaso}
-\label{sec:orge92288e}
+\label{sec:org6993572}
 
 \subsection{Máximas}
-\label{sec:org46aa4cb}
+\label{sec:orgdbaabae}
 
 \subsection{Sección libre}
-\label{sec:org4295fb8}
+\label{sec:org5ad9245}
 
 Me dió curiosidad investigar cómo funcionaba Axel por detrás y me puse a investigarlo.
 
@@ -155,29 +155,29 @@ Conexión 2: Range: bytes=25000000-49999999
 
 \ldots{}y así sucesivamente.
 \section{Maquina virtual de fedora}
-\label{sec:orga1fb669}
+\label{sec:org4d169b0}
 
 \subsection{Conceptos nuevos}
-\label{sec:orgc5b7275}
+\label{sec:org5747f7c}
 
 \subsubsection{Spin y flavor}
-\label{sec:orgb6788f0}
+\label{sec:org65cf85b}
 
 Dentro de fedora existe algo llamada \textbf{Fedora Scientific Lab}, que esta construida por una amplia biblioteca de herramientas y software preinstalados diseñados específicamente para la ciencia de datos, el análisis numérico y la computación científica, por lo que obtiene el nombre de ``spin''. Un spin es una versión alternativa de Fedora que puede cambiar sea en esto o en su entorno de escritorio. Es el caso particular de un flavor.
 
 Un flavor es una versión alternativa de alguna distribución de Linux. Puede ser simplemente un entorno de escritorio distinto por default o toda una serie de paqueterías por default instaladas.
 \subsubsection{Test and start}
-\label{sec:orgf069b8c}
+\label{sec:org553a924}
 
 Por otra parte se menciono que las formas de arranque que nos da Fedora, ya que al iniciar la mv nos da la opción de \textbf{``Test this media \& start Fedora''} y sucede que es muy recomendable seleccionarla ya que asegura la integridad de la imagen ISO descargada, ya que como dato curioso, el profesor nos menciono que anteriorme se arrancaba desde CDs/DVDs físicos y solian estar dañados.
 \subsubsection{Terminales}
-\label{sec:org2b9d4b2}
+\label{sec:org2f0aaae}
 \begin{itemize}
 \item Host/Equipo local: Esta la encontraremos de color blanco ya que representara la máquina física real (home).
 \item MV: Esta la encontraremos de color negro ya que indica que estás operando dentro del sistema operativo invitado (``guest OS''), aislado y ejecutándose sobre un hipervisor.
 \end{itemize}
 \subsubsection{Tipos de fedora como medios de instalación}
-\label{sec:org028132c}
+\label{sec:org35b795c}
 \begin{itemize}
 \item Al instalar \textbf{Fedora Live USB} con virtualBox, sse crea un medio en vivo (live iso) utilizando herramientas oficiales dde Fedora Media Writer, justamente interactuando en la instalación de esta podemos encontrar aquí mismo varios software que podemos instalar directamente, y que tambien podemos encontrar en la página oficial de fedora.
 \item Dependiendo de cada institución se pueden agregar más elementos, incluso paquetes de otras distribuciones obteniendo una similitud en apariencia pero aun estando en fedora.
@@ -188,7 +188,7 @@ Cuando estamos en la instalación de fedora nos pregunta si queremos activar rep
 
 \textbf{El espacio que necesita fedora ws es de 3.8G}
 \subsubsection{Diferentes tipos de terminales}
-\label{sec:orgf3fc3ca}
+\label{sec:org35959b0}
 \begin{verbatim}
 ctrl + f1
 \end{verbatim}
@@ -215,10 +215,10 @@ ctrl + f7
 \end{verbatim}
 Solo retorna al entorno gráfico principal.
 \subsection{Conceptos de repaso}
-\label{sec:orgc40f9c6}
+\label{sec:org218273a}
 
 \subsubsection{Nat y adaptador puente}
-\label{sec:org7188413}
+\label{sec:org1226d35}
 \begin{itemize}
 \item Nat(Network Address Translation): Permite que la mv obtenga una ip privada y se conecte a internet utilizando la dirección IP del equipo anfitrión, por lo que la MV tiene acceso al exterior pero no es accesible la red local, en este caso al usar VirtualBox actúa como un router, traduciendo la IP privada de la MV a la pública del host, es muy ideal para la instalación inicial ya que oculta la MV
 \item Adaptador Puente (Bridged Adapter): Este es la tarjeta de red de la MV que se conecta directamente al adaptador de red del anfitrión, entonces la MV aparecera como un equipo independiente más en la red física, permitiendo la comunicación bidireccional, pero esta es expuesta a ataques externos.
@@ -226,15 +226,15 @@ Solo retorna al entorno gráfico principal.
 
 Esto lo usamos para configurar la VM de Fedora.
 \subsection{Maximas}
-\label{sec:org40a5b6e}
+\label{sec:orgd5a023b}
 
 \subsection{Sección libre}
-\label{sec:org23a6a3e}
+\label{sec:orgc03e0aa}
 \section{Lectura de archivos y comandos}
-\label{sec:orgb406084}
+\label{sec:org644d5c8}
 
 \subsection{Conceptos nuevos}
-\label{sec:orgedd31fc}
+\label{sec:org4343a94}
 \begin{verbatim}
 lss nfc-blacklist.conf
 \end{verbatim}
@@ -254,7 +254,7 @@ Estos archivos gestionan el montaje de sistemas de archivos.
 \item \textbf{mtab} (mounted filesystems table) es un archivo dinámico actualizado por el sistema que enumera los sistemas de archivos montados actualmente. (estado)
 \end{itemize}
 \subsection{Conceptos de repaso}
-\label{sec:org33df234}
+\label{sec:org647357a}
 \begin{verbatim}
 rmmod kvm_intel
 \end{verbatim}
@@ -265,29 +265,29 @@ top
 \end{verbatim}
 Este comando permite tener una vista dinámica y en tiempo real de los procesos activos, ordenándolos por defecto según el uso de CPU, aquí le prestamos más atención al apartado de \textbf{load average}, ya que muestra la carga promedio del sistema, donde indican cuántos procesos están ejecutándose o esperando tiempo de CPU, esto siendo crucial con el número de núcleos del servidor, ya que cada núcleo solo puede trabajar con un proceso.
 \subsection{Máximas}
-\label{sec:org45cea40}
+\label{sec:org8ebed00}
 
 \subsection{Sección libre}
-\label{sec:org9bca96f}
+\label{sec:org01abb45}
 \section{Directorios}
-\label{sec:org6630294}
+\label{sec:orgcf59ea2}
 
 \subsection{Conceptos nuevos}
-\label{sec:org76f3649}
+\label{sec:org74f80a1}
 \begin{itemize}
 \item /proc: Es un sistema de archivos virtual (``procfs'') creado en memoria de arrancar, que sirve como interfaz del kernel para obtener información en tiempo real sobre procesos, hardware y parámetros del sistema, este es un directorio extremadamente volátil, ya que no es un directorio real en el disco duro, sino un pseudo-sistema de archivos que se genera en la memoria RAM al arrancar el sistema y se elimina al apagarlo.
 \end{itemize}
 \subsection{Conceptos de repaso}
-\label{sec:org22ef071}
+\label{sec:org22b2b39}
 \begin{itemize}
 \item Sistema de archivos
 \item BTRFS
 \item Montaje de sistema de archivos
 \end{itemize}
 \subsection{Máximas}
-\label{sec:orgb82ff90}
+\label{sec:org406ed84}
 
 
 \subsection{Sección libre}
-\label{sec:org275a7b1}
+\label{sec:org800c1e6}
 \end{document}

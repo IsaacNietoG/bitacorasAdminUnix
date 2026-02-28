@@ -1,0 +1,153 @@
+#+TITLE: Bitácora Semanal 3: Administración de Sistemas Unix
+#+AUTHOR: Equipo Alpine White
+#+DATE: [2026-02-23 lun]
+#+OPTIONS: toc:2
+#+PROPERTY: header-args :exports both
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [11pt, letterpaper]
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage{palatino}                   % Tipografía elegante
+#+LATEX_HEADER: \usepackage{xcolor}                     % Colores personalizados
+
+* Información General
+- *Semana:* Del 23 de Febrero 2026 al 27 de Febrero 2026
+- *Equipo:*
+  - Arreguín Salgado Gael Emiliano
+  - Gramer Muñoz Omar Fernando
+  - López Pérez Mariana
+  - Nieto Gallegos Isaac Julián
+
+En esta cuarta semana, el enfoque se basó en terminar de entender las utilidades principales que proporciona la terminal de los sistemas UNIX para seguir sintiéndonos cómodos a la hora de usar la terminal. También seguimos indagando sobre las configuraciones de red más populares que ofrecen las máquinas virtuales para funcionar (NAT y Bridge), la interacción que ofrece cada una de estas configuraciones. Y del lado de laboratorio seguimos reafirmando estos conocimientos comenzando la instalación de RHEL.
+
+** Responsabilidades:
+
+- Gael Emiliano:
+- Omar Fernando:
+- Mariana:
+- Isaac Julián:
+
+
+* Contenedorización
+
+** Conceptos nuevos
+
+La contenedorización aprovecha varias características nativas de Linux para hacer que ciertos procesos puedan utilizar el kernel del sistem anfitrión mientras poseen cierto grado de aislamiento que les permite comportarse como si vivieran en un sistema distinto. Los contenedores entonces usan el kernel del sistema anfitrión, pero hacen creer a sus procesos que viven en un sistema distinto.
+
+** Conceptos de repaso
+- La virtualización modela y simula una máquina completa que tiene una memoria, CPU y periféricos virtuales. Por esto, siempre existirá cierta latencia y lentitud en esta configuración -aunque cada vez menor-.
+
+** Máximas
+- Contenedores para aplicaciones, máquinas virtuales para configuraciones (?)
+
+** Sección libre
+
+* Tabla de enrutamiento
+
+** Conceptos nuevos
+
+- Gateway
+- Comando route -n
+
+** Conceptos de repaso
+
+** Máximas
+
+** Sección libre
+
+* Resolución de nombres
+
+** Conceptos nuevos
+
+- Archivo /etc/resolv.conf
+
+** Conceptos de repaso
+
+** Máximas
+
+** Sección libre
+
+* Repositorios de Fedora y RHEL
+
+** Conceptos nuevos
+
+- Archivo anakonda-ks.cfg
+- Repositorios en RHEL
+
+** Conceptos de repaso
+
+** Máximas
+
+** Sección libre
+
+* Operadores de redireccionamiento (<, >, |)
+
+** Conceptos nuevos
+
+- Operador > y <
+
+- Operador |
+
+- Comando sort -n
+
+** Conceptos de repaso
+
+- Entrada estándar
+
+- Salida estándar
+
+- Salida de errores estándar
+
+** Máximas
+
+** Sección libre
+
+* Editores de texto
+
+** Conceptos nuevos
+
+- vi
+
+- nano
+
+- emacs
+
+** Conceptos de repaso
+
+** Máximas
+
+** Sección libre
+
+* RHEL
+
+** Conceptos nuevos
+
+- RHEL
+
+** Conceptos de repaso
+
+- Repositorios en RHEL
+
+** Máximas
+
+** Sección libre
+
+* NAT vs Bridge, exploración de segmento de red
+
+** Conceptos nuevos
+
+- NAT (configuración VM)
+
+- Bridge (configuración VM)
+
+- Comando arp
+
+- Direccón MAC
+
+** Conceptos de repaso
+
+- Comando ping
+
+** Máximas
+
+** Sección libre

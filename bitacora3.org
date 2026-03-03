@@ -43,9 +43,174 @@ La alternativa que ofrece GNOME para Virtual Box. En realidad es un front de QEM
 
 Es la generalización de estos softwares de virtualización. Es el componente de software (con features en hardware en ciertos casos) que se encarga de crear y correr máquinas virtuales.
 
-** Conceptos de repaso
+*** Qué es la virtualización?
+  
+  La virtualización es una técnica de abstracción que permite ejecutar múltiples sistemas operativos aislados sobre un mismo hardware físico
+  mediante una capa intermedia de control llamada hipervisor.
+  Para esto, se crea una representación lógica de un sistema computacional completo (CPU, memoria, dispositivos) permitiendo que múltiples
+  entornos de ejecución compartan el mismo hardware físico con aislamiento, control y eficiencia.
+  
+  En un sistema tradicional ocurre que:
 
-- Virtualizacion y emulación
+  Hardware
+  ↓
+  Sistema Operativo
+  ↓
+  Procesos
+
+En un sistema tradicional sin virtualización, la arquitectura es directa: el hardware es controlado por un sistema operativo, y sobre él se ejecutan los procesos. 
+El sistema operativo asume que tiene control exclusivo del procesador, la memoria y los dispositivos.
+
+Cuando se introduce virtualización, aparece una nueva capa entre el hardware y los sistemas operativos invitados. 
+Esta capa es el hipervisor. Los sistemas operativos que se ejecutan encima de él creen que están interactuando directamente con hardware real, 
+pero en realidad están interactuando con una representación virtual administrada por el hipervisor.
+
+En un sistema virtualizado:
+
+  Hardware
+  ↓
+  Hipervisor
+  ↓
+  Sistemas Operativos Invitados
+  ↓
+  Procesos
+
+**** Host
+Sistema físico que ejecuta el hipervisor.
+
+**** Guest
+Sistema operativo virtualizado que corre dentro de una máquina virtual.
+
+
+*** ¿Qué es un virtualizador?
+
+    Un virtualizador es el software (o conjunto de componentes) que permite crear y ejecutar máquinas virtuales (VMs), gestionando el acceso al hardware físico.
+    En términos prácticos, el virtualizador:
+    - Crea hardware "virtual" (CPU, RAM, disco, red)
+    - Aísla máquinas virtuales entre sí
+    - Controla el acceso al hardware físico
+    - Planifica el uso de recursos
+
+
+**** ¿Es lo mismo que un hipervisor?
+    En la mayoría de los contextos modernos, sí. El término *hipervisor* describe específicamente la capa que se encarga de gestionar el hardware físico y permitir la ejecución de múltiples
+    máquinas virtuales. El término *virtualizador* es más general y puede incluir no solo el hipervisor en sí, sino también herramientas de gestión, interfaces gráficas y APIs asociadas.
+
+    El funcionamiento de un hipervisor se basa en la interposición y el control. El principio central es que el hipervisor mantiene el control total del hardware físico 
+    y permite que los sistemas invitados ejecuten la mayor parte de sus instrucciones directamente en la CPU, pero intercepta aquellas que podrían comprometer el control global del sistema.
+    Un hipervisor debe garantizar:
+
+    1. Aislamiento
+      Las VMs no pueden acceder a memoria o dispositivos de otras VMs.
+
+    2. Control de recursos
+      El hipervisor decide cuánta CPU, RAM y disco recibe cada VM.
+
+    3. Transparencia
+      El sistema invitado cree que está ejecutándose en hardware real.
+
+
+*** Virtualización de CPU
+Normalmente la CPU solo puede ejecutar instrucciones para un sistema a la vez por núcleo.
+
+Desde la perspectiva de una máquina virtual, parece que dispone de uno o varios procesadores propios, 
+llamados vCPU (virtual CPUs). Sin embargo, en realidad estos comparten los núcleos físicos del sistema.
+
+El hipervisor, en coordinación con el scheduler del sistema (en el caso de Linux con KVM), asigna tiempo
+de CPU a cada vCPU. Cuando una VM deja de ejecutarse y otra comienza, se realiza un cambio de contexto
+que guarda el estado completo de la primera máquina virtual (registros, contadores, estado de ejecución)
+y restaura el de la siguiente. Este proceso es más complejo que el cambio de contexto entre procesos normales, 
+porque involucra también el estado de virtualización.
+
+Cada VM cree que tiene su propia CPU, pero en realidad:
+- Comparte la CPU física
+- Sus instrucciones privilegiadas pueden ser interceptadas por el hipervisor
+
+
+*** Virtualización de memoria
+El hipervisor mantiene el control final sobre la memoria real.
+La virtualización de memoria introduce una capa adicional de traducción de direcciones. En un sistema normal, un proceso
+utiliza direcciones virtuales que el sistema operativo traduce a direcciones físicas reales.
+En un entorno virtualizado, el sistema operativo invitado cree que está gestionando memoria física real, pero esa memoria
+es en realidad memoria física virtual. El hipervisor mantiene el control final y realiza una segunda traducción hacia la memoria
+física real del sistema.
+
+Esto significa que existe una doble traducción de direcciones: primero dentro del sistema invitado y después en el hipervisor:
+
+Memoria virtual (guest)
+↓
+Memoria física virtual
+↓
+Memoria física real 
+
+
+*** Virtualización de dispositivos
+
+Los dispositivos físicos, como discos y tarjetas de red, no pueden ser controlados directamente por múltiples sistemas operativos al mismo tiempo.
+Por ello, el hipervisor crea dispositivos virtuales. Un disco virtual, por ejemplo, puede estar representado por un archivo en el sistema host.
+Una tarjeta de red virtual puede estar conectada a un puente de red (bridge) del sistema anfitrión.
+
+En algunos casos se utilizan técnicas de *paravirtualización*, donde el sistema invitado emplea drivers especiales diseñados para interactuar de forma
+más eficiente con el hipervisor, reduciendo la sobrecarga que implicaría una emulación completa.
+
+
+*** Máquina Virtual
+Una máquina virtual (VM) es una representación lógica y aislada de una computadora completa que se ejecuta sobre un sistema físico mediante un hipervisor. Es el producto resultante de la virtualización.
+Desde la perspectiva del sistema operativo invitado, una máquina virtual se comporta como si fuera un equipo físico real, con su propio procesador, memoria, almacenamiento y dispositivos de red.
+
+Aunque el hardware que utiliza es compartido con otras máquinas virtuales, la VM opera en un entorno controlado donde no tiene acceso directo al hardware físico, 
+sino a una versión virtualizada administrada por el hipervisor.
+
+**** Componentes de una máquina virtual
+Una máquina virtual típicamente incluye:
+
+- Uno o más procesadores virtuales (vCPU).
+- Una cantidad asignada de memoria RAM virtual.
+- Un disco virtual (generalmente representado como un archivo en el host).
+- Interfaces de red virtuales.
+- Dispositivos virtualizados adicionales (USB, GPU, etc).
+
+
+*** Virtualización vs Contenedores
+
+**** Diferencia con contenedores
+Una máquina virtual incluye un sistema operativo completo con su propio kernel. Esto significa que cada VM es una instancia independiente del sistema operativo.
+En contraste, los contenedores no virtualizan hardware completo ni incluyen un kernel propio; comparten el kernel del sistema anfitrión y 
+aíslan únicamente procesos y recursos mediante mecanismos como namespaces y cgroups.
+
+Por ello, una máquina virtual es más pesada en consumo de recursos, pero ofrece un aislamiento más fuerte y mayor independencia del sistema host.
+
+  Virtualización:
+  - Cada VM tiene su propio kernel.
+  - Se virtualiza hardware completo.
+
+  Contenedores:
+  - Comparten el kernel del host.
+  - Aíslan procesos mediante namespaces y cgroups.
+  - Son más ligeros.
+
+
+*** Virtualización vs Emulación
+
+**** Definición de emulación
+
+La emulación, consiste en simular completamente una arquitectura de hardware, incluso cuando el procesador físico no coincide con la arquitectura que se desea ejecutar. 
+En este caso, cada instrucción del sistema emulado debe traducirse o interpretarse mediante software.
+
+A diferencia de la virtualización, en la emulación no se ejecutan instrucciones directamente en la CPU real cuando las arquitecturas son distintas. 
+El sistema emulador actúa como un intérprete que traduce el comportamiento de un procesador hacia otro diferente.
+Esto permite ejecutar sistemas diseñados para arquitecturas distintas (por ejemplo, correr software ARM en una máquina x86), pero implica una pérdida considerable de rendimiento.
+
+**** Diferencia fundamental
+
+La diferencia central radica en la relación entre la arquitectura del hardware real y la del sistema que se ejecuta:
+
+- En la virtualización, la arquitectura del sistema invitado es la misma que la del hardware físico.
+- En la emulación, la arquitectura puede ser distinta, porque se está simulando completamente otro tipo de procesador.
+
+En la virtualización, la CPU real ejecuta directamente la mayoría del código del sistema invitado. 
+En la emulación, la CPU real ejecuta código del emulador que interpreta o traduce las instrucciones del sistema objetivo.
+
 
 ** Máximas
 

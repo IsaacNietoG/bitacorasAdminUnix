@@ -37,17 +37,37 @@ Es un software de virtualización desarrollado por Oracle. Mediante este podemos
 
 *** Boxes
 
-La alternativa que ofrece GNOME para Virtual Box. En realidad es un front de QEMU-KVM, y por lo tanto utiliza el módulo de kernel kvm que luego deberemos de desactivar para correr virtual box.
+GNOME Boxes es una interfaz gráfica que funciona como front-end sobre tecnologías como QEMU y libvirt. Cuando el hardware lo permite, utiliza KVM (Kernel-based Virtual Machine) para acelerar la virtualización. No es un hipervisor distinto, sino una interfaz que facilita el uso de QEMU/KVM.
 
 *** Hipervisor
 
-Es la generalización de estos softwares de virtualización. Es el componente de software (con features en hardware en ciertos casos) que se encarga de crear y correr máquinas virtuales.
+Es el componente de software encargado de crear, ejecutar y administrar máquinas virtuales. Controla la asignación de CPU, memoria, almacenamiento y dispositivos de entrada/salida para cada sistema invitado.
 
 ** Conceptos de repaso
 
-- Virtualizacion y emulación
+- *Virtualización vs. Emulación*
+  - Virtualización: El sistema invitado ejecuta instrucciones directamente sobre la CPU real mediante extensiones como VT-x o AMD-V. Es eficiente y es el modelo más común actualmente.
+  - Emulación: Se simula completamente otro hardware o arquitectura distinta (por ejemplo, ARM sobre x86). Implica traducción de instrucciones y es más lenta.
+
+- *Host vs. Guest*
+  - Host: Sistema físico donde se ejecuta el hipervisor.
+  - Guest: Sistema operativo instalado dentro de la máquina virtual.
+
+- *Snapshot*
+  Un snapshot permite guardar el estado de una máquina virtual (disco y en algunos casos, memoria) para regresar a ese punto en caso de error o mala configuración.
+
+- *Imagen ISO vs. Disco Virtual*
+  - ISO: Archivo de imagen utilizado como medio de instalación o arranque.
+  - Disco virtual (VDI, VMDK, QCOW2): Archivo que actúa como disco duro persistente de la máquina virtual.
 
 ** Máximas
+
+- Si no necesitas que la máquina virtual sea visible en la red local, usa NAT.
+- El modo puente (bridged) se utiliza cuando la VM debe comportarse como un equipo independiente en la red.
+- Antes de realizar cambios importantes en una VM, crea un snapshot.
+- Virtualización no implica seguridad automática... solo proporciona aislamiento relativo.
+- Si el rendimiento es anormalmente bajo, verifica si se está usando virtualización por hardware o emulación.
+- Sin VT-x o AMD-V habilitado en BIOS/UEFI, la virtualización moderna pierde eficiencia o puede no funcionar correctamente.
 
 ** Sección libre
 
@@ -65,6 +85,15 @@ Cómo funciona: El hipervisor debe pedirle recursos al sistema operativo anfitri
 Uso común: Desarrolladores de software, estudiantes o usuarios que necesitan probar sistemas operativos en su propia PC o laptop.
 Ejemplos: Oracle VirtualBox, VMware Workstation y Parallels Desktop.
 
+- *Aceleración por hardware*
+  Las extensiones VT-x (Intel) y AMD-V (AMD) permiten ejecutar sistemas invitados con menor sobrecarga. Si están deshabilitadas en BIOS/UEFI, el hipervisor puede funcionar en modo limitado o fallar.
+
+- *Posibles conflictos de virtualización*
+  En sistemas Linux, los módulos del kernel como kvm_intel o kvm_amd pueden estar cargados. En ciertos casos, VirtualBox puede requerir acceso exclusivo a las extensiones de virtualización, lo que puede implicar descargar temporalmente dichos módulos.
+
+- *Buenas prácticas operativas*
+  Nombrar las máquinas virtuales de forma descriptiva (por ejemplo, fedora-lab-2026-02) y documentar los recursos asignados (RAM, CPU, almacenamiento) facilita reproducibilidad y mantenimiento.
+
 * Instalación de virtual box
 
 ** Conceptos nuevos
@@ -76,6 +105,15 @@ Es un acelerador de descargas que corre desde la terminal. Lo ussamos para acele
 #+begin_src
 axel <rutaArchivo>
 #+end_src
+
+Internamente utiliza la cabecera HTTP *Range* (HTTP/1.1) para solicitar partes específicas de un archivo. Si el servidor responde con:
+''Accept-Ranges: bytes'' entonces soporta descargas segmentadas.
+
+Proceso general:
+- Envía una petición HEAD para verificar soporte de rangos.
+- Divide el tamaño total del archivo en segmentos.
+- Abre múltiples conexiones paralelas solicitando bloques específicos.
+- Ensambla los bloques descargados en un solo archivo final.
 
 *** Módulos de kernel
 
@@ -91,7 +129,27 @@ rmmod kvm_intel
 
 ** Conceptos de repaso
 
+- Extensiones de virtualización por hardware
+  - VT-x (Intel)
+  - AMD-V (AMD)
+  Permiten ejecutar múltiples sistemas operativos con menor sobrecarga y mayor eficiencia.
+
+- BIOS/UEFI
+  La virtualización por hardware debe estar habilitada desde el firmware del sistema (BIOS/UEFI). Si está desactivada, el hipervisor no podrá usar aceleración.
+
+- Archivo ISO
+  Imagen de disco utilizada como medio de instalación del sistema operativo invitado.
+
+- Disco virtual
+  Archivo que representa el almacenamiento persistente de la máquina virtual (por ejemplo, VDI en VirtualBox).
+
 ** Máximas
+
+- Siempre verifica que VT-x o AMD-V estén habilitados antes de diagnosticar problemas de virtualización.
+- Para instalación inicial, usa NAT; cambia a puente solo si el caso lo exige.
+- No descargues módulos del kernel sin confirmar que realmente existe conflicto.
+- Si una descarga es lenta, confirma que el servidor soporte Accept-Ranges antes de asumir problema de red.
+- La virtualización eficiente depende más del hardware que del software.
 
 ** Sección libre
 
@@ -112,6 +170,9 @@ Conexión 1: Range: bytes=0-24999999
 Conexión 2: Range: bytes=25000000-49999999
 
 ...y así sucesivamente.
+
+- Seguridad:
+  Una VM en modo puente está expuesta a escaneo y tráfico de red como cualquier otro equipo físico. Su configuración de firewall interno sigue siendo necesaria.
 
 
 * Maquina virtual de fedora
@@ -176,9 +237,45 @@ Solo retorna al entorno gráfico principal.
 
 Esto lo usamos para configurar la VM de Fedora.
 
+- Imagen Live vs Instalación completa
+  - Live: entorno temporal para pruebas.
+  - Instalación completa: sistema persistente en disco virtual.
+
+- Espacio requerido
+  Fedora Workstation requiere aproximadamente 3.8 GB como mínimo, aunque en práctica se recomienda asignar más espacio para actualizaciones y software adicional.
+
+- NAT vs. Adaptador puente
+  - NAT: VM aislada y protegida detrás del host.
+  - Puente: VM visible como equipo independiente en la red.
+
+- Terminal del host vs terminal de la VM
+  La terminal del host ejecuta comandos en el sistema físico.  
+  La terminal dentro de la VM ejecuta comandos aislados en el sistema invitado.
+
 ** Maximas
 
+- Siempre verificar la integridad de la ISO antes de instalar (el checksum).
+- Una imagen Live no sustituye una instalación persistente.
+- No habilitar repositorios de terceros sin conocer su procedencia.
+- Asignar espacio adicional al mínimo recomendado evita problemas posteriores.
+- Diferenciar claramente cuándo se está en el host y cuándo en la VM previene errores críticos.
+
 ** Sección libre
+
+- Buenas prácticas durante instalación:
+  - Asignar al menos 2 GB de RAM para entorno gráfico fluido.
+  - Crear usuario no root para uso cotidiano.
+  - Actualizar el sistema inmediatamente después de instalar:
+    
+    #+begin_src
+    sudo dnf update
+    #+end_src
+
+- Aislamiento:
+  Aunque la VM está aislada del host, comparte hardware físico. Un uso excesivo de CPU o memoria en la VM impacta directamente el rendimiento del host.
+
+- Arquitectura:
+  La ISO debe corresponder a la arquitectura del procesador.
 
 * Lectura de archivos y comandos
 
@@ -214,21 +311,138 @@ Este comando permite tener una vista dinámica y en tiempo real de los procesos 
 
 ** Máximas
 
+- Antes de modificar un archivo en /etc, respáldalo.
+- fstab mal configurado puede impedir que el sistema arranque.
+- El load average debe interpretarse respecto al número de núcleos.
+- No descargues módulos del kernel sin verificar dependencias.
+- Firewall activo no implica configuración segura; depende de reglas definidas.
+
 ** Sección libre
+
+- Buenas prácticas al leer archivos de configuración:
+  - Usar less en lugar de cat para archivos largos:
+    
+    #+begin_src
+    less /etc/fstab
+    #+end_src
+
+
+- Sobre /proc:
+  Muchos estados dinámicos del sistema no están en archivos físicos, sino en sistemas virtuales como /proc.  
+
+  #+begin_src
+  cat /proc/cpuinfo
+  #+end_src
+
+  Esto muestra información del procesador directamente expuesta por el kernel.
+
+- Seguridad:
+  Archivos dentro de /etc definen comportamiento crítico del sistema.  
+  Modificaciones incorrectas pueden comprometer estabilidad o seguridad.
 
 * Directorios
 
 ** Conceptos nuevos
-- /proc: Es un sistema de archivos virtual ("procfs") creado en memoria de arrancar, que sirve como interfaz del kernel para obtener información en tiempo real sobre procesos, hardware y parámetros del sistema, este es un directorio extremadamente volátil, ya que no es un directorio real en el disco duro, sino un pseudo-sistema de archivos que se genera en la memoria RAM al arrancar el sistema y se elimina al apagarlo.
 
+*** /proc
+Es un sistema de archivos virtual (procfs) generado dinámicamente por el kernel y montado en memoria al iniciar el sistema.  
+No existe físicamente en el disco.
+
+Contiene información en tiempo real sobre:
+- Procesos (/proc/<PID>/)
+- CPU (/proc/cpuinfo)
+- Memoria (/proc/meminfo)
+- Parámetros del kernel (/proc/sys/)
+
+#+begin_src
+cat /proc/meminfo
+#+end_src
+
+Su contenido cambia constantemente porque refleja el estado actual del sistema.
+
+*** /dev
+Directorio que contiene archivos especiales que representan dispositivos.  
+En Unix/Linux, los dispositivos se modelan como archivos.
+
+Ejemplos:
+- /dev/sda → disco duro
+- /dev/tty → terminal
+- /dev/null → descarta toda salida
+- /dev/zero → genera flujo continuo de ceros
+
+Estos archivos no almacenan datos; actúan como interfaz hacia el hardware o dispositivos virtuales.
+
+*** /etc
+Contiene archivos de configuración del sistema.  
+No guarda binarios ni datos de usuario, sino parámetros de funcionamiento.
+
+Ejemplos:
+- /etc/fstab
+- /etc/passwd
+- /etc/hosts
+
+Es uno de los directorios más críticos del sistema.
+
+*** /var
+Almacena datos variables que cambian durante la ejecución del sistema.
+
+Incluye:
+- Logs (/var/log)
+- Caché (/var/cache)
+- Archivos temporales persistentes
+- Spool de impresión
+
+A diferencia de /etc su contenido es dinámico y crece con el uso.
 
 ** Conceptos de repaso
-- Sistema de archivos
-- BTRFS
-- Montaje de sistema de archivos
 
+*** Sistema de archivos
+Es la estructura lógica que organiza cómo se almacenan y recuperan datos en un dispositivo.
+
+Ejemplos:
+- ext4
+- BTRFS
+- XFS
+
+*** BTRFS
+Sistema de archivos moderno con características avanzadas como:
+- Snapshots
+- Compresión
+- Subvolúmenes
+- Verificación de integridad
+
+*** Montaje de sistemas de archivos
+El proceso de asociar un sistema de archivos a un directorio dentro del árbol principal (/).
+
+#+begin_src
+mount /dev/sdb1 /mnt
+#+end_src
+
+Todo en Linux se integra bajo un único árbol jerárquico que comienza en / (raíz).
 
 ** Máximas
 
+- En GNU/Linux, todo es un archivo (incluyendo dispositivos).
+- /proc y /dev no almacenan datos reales en disco.
+- Modificar archivos en /etc impacta el comportamiento global del sistema.
+- El sistema de archivos comienza en /, no existen “letras de unidad”.
+- Montar incorrectamente un sistema puede ocultar el contenido previo del directorio.
 
 ** Sección libre
+
+- Estructura jerárquica:
+  GNU/Linux no usa particiones visibles como C:, D:.  
+  Todo se organiza bajo una sola raíz (/), y otros discos se montan dentro de esa jerarquía.
+
+- IMPORTANTE:
+  Antes de manipular discos o particiones se debe verificar con
+
+  #+begin_src
+  lsblk
+  #+end_src
+
+  Esto muestra dispositivos y puntos de montaje actuales.
+
+- Seguridad y permisos:
+  Cada directorio posee permisos (rwx) para usuario, grupo y otros.  
+  Una mala configuración en directorios críticos puede exponer información sensible o bloquear servicios.

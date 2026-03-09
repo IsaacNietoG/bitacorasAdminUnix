@@ -1,0 +1,19 @@
+ #+TITLE: Bitácora Semanal 5: Administración de Sistemas Unix
+#+AUTHOR: Equipo Alpine White
+#+DATE: [2026-02-16 lun]
+#+OPTIONS: toc:2
+#+PROPERTY: header-args :exports both
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [11pt, letterpaper]
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage{palatino}                   % Tipografía elegante
+#+LATEX_HEADER: \usepackage{xcolor}                     % Colores personalizados
+
+* Información General
+- *Semana:* Del 02 de Marzo 2026 al 06 de Marzo 2026
+- *Equipo:*
+  - Arreguín Salgado Gael Emiliano
+  - Gramer Muñoz Omar Fernando
+  - López Pérez Mariana
+  - Nieto Gallegos Isaac Julián

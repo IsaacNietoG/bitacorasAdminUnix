@@ -1,23 +1,50 @@
-#+TITLE: Bitácora Semanal 5: Administración de Sistemas Unix
-#+AUTHOR: Equipo Alpine White
-#+DATE: [2026-02-16 lun]
-#+OPTIONS: toc:2
-#+PROPERTY: header-args :eval yes
-#+LATEX_CLASS: article
-#+LATEX_CLASS_OPTIONS: [11pt, letterpaper]
-#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}
-#+LATEX_HEADER: \usepackage[utf8]{inputenc}
-#+LATEX_HEADER: \usepackage{palatino}
-#+LATEX_HEADER: \usepackage{xcolor}
+% Created 2026-03-09 Mon 14:48
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{palatino}
+\usepackage{xcolor}
+\author{Equipo Alpine White}
+\date{\textit{{[}2026-02-16 Mon]}}
+\title{Bitácora Semanal 5: Administración de Sistemas Unix}
+\hypersetup{
+ pdfauthor={Equipo Alpine White},
+ pdftitle={Bitácora Semanal 5: Administración de Sistemas Unix},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 30.2 (Org mode 9.7.39)}, 
+ pdflang={English}}
+\begin{document}
 
-* Información General
+\maketitle
+\setcounter{tocdepth}{2}
+\tableofcontents
 
-- *Semana:* Del 02 de Marzo 2026 al 06 de Marzo 2026
-- *Equipo:*
-  - Arreguín Salgado Gael Emiliano
-  - Gramer Muñoz Omar Fernando
-  - López Pérez Mariana
-  - Nieto Gallegos Isaac Julián
+\section{Información General}
+\label{sec:org86b3dca}
+
+\begin{itemize}
+\item \textbf{Semana:} Del 02 de Marzo 2026 al 06 de Marzo 2026
+\item \textbf{Equipo:}
+\begin{itemize}
+\item Arreguín Salgado Gael Emiliano
+\item Gramer Muñoz Omar Fernando
+\item López Pérez Mariana
+\item Nieto Gallegos Isaac Julián
+\end{itemize}
+\end{itemize}
 
 Durante la quinta semana del curso se profundizó en diversos conceptos
 relacionados con la administración de sistemas Unix, enfocándose
@@ -27,8 +54,8 @@ largo de las sesiones se reforzó la importancia del trabajo desde la
 línea de comandos como medio fundamental para comprender el
 funcionamiento interno de Linux, así como la interacción directa con
 el hardware y los servicios del sistema operativo.
-
-** Responsabilidades
+\subsection{Responsabilidades}
+\label{sec:org0e03621}
 
 Cada integrante del equipo participó activamente en el desarrollo de la
 bitácora. Gael Emiliano se encargó de la recopilación de notas físicas
@@ -38,12 +65,14 @@ comunicación. Mariana organizó la estructura general del documento y
 su redacción principal, mientras que Isaac Julián llevó a cabo pruebas
 prácticas en el sistema y documentó el comportamiento observado en los
 comandos ejecutados.
+\section{Direcciones MAC y redes}
+\label{sec:orge8c8588}
 
-* Direcciones MAC y redes
+\subsection{Conceptos nuevos}
+\label{sec:orgff1fe63}
 
-** Conceptos nuevos
-
-*** Dirección MAC
+\subsubsection{Dirección MAC}
+\label{sec:orgb263953}
 
 La dirección MAC (Media Access Control) constituye un identificador
 único asignado físicamente a cada interfaz de red. Este identificador
@@ -57,36 +86,36 @@ del tráfico de red.
 Su uso resulta fundamental en mecanismos como el filtrado de acceso en
 routers, la identificación de dispositivos conectados y la
 administración de políticas de seguridad dentro de redes locales.
-
-*** Formato MAC de 48 bits
+\subsubsection{Formato MAC de 48 bits}
+\label{sec:org1916b99}
 
 El formato más común de dirección MAC está compuesto por seis grupos
 hexadecimales separados por dos puntos. Los primeros 24 bits corresponden
 al identificador del fabricante (OUI), asignado por organismos
 internacionales, mientras que los bits restantes identifican de forma
 única al dispositivo producido por dicho fabricante.
-
-*** Formato MAC de 64 bits
+\subsubsection{Formato MAC de 64 bits}
+\label{sec:orgb18c4f5}
 
 En redes más modernas se emplea el formato de 64 bits, el cual amplía
 el espacio de direccionamiento permitiendo soportar una mayor cantidad
 de dispositivos, especialmente en entornos inalámbricos y tecnologías
 recientes.
+\subsubsection{ip addr}
+\label{sec:orge8c074c}
 
-*** ip addr
-
-El comando =ip addr= permite visualizar todas las interfaces de red del
+El comando \texttt{ip addr} permite visualizar todas las interfaces de red del
 sistema junto con información detallada como direcciones IP,
 direcciones MAC y el estado operativo de cada interfaz. Esta
 herramienta resulta esencial para tareas de diagnóstico, ya que
 facilita verificar la conectividad y detectar configuraciones
 incorrectas.
 
-#+begin_src bash
+\begin{verbatim}
 ip addr
-#+end_src
-
-*** SSH
+\end{verbatim}
+\subsubsection{SSH}
+\label{sec:org33d6782}
 
 SSH (Secure Shell) es un protocolo que permite establecer conexiones
 remotas seguras entre equipos mediante cifrado. Gracias a este
@@ -94,233 +123,239 @@ mecanismo es posible administrar servidores, ejecutar comandos a
 distancia y transferir información sin exponer datos sensibles a la
 red.
 
-#+begin_src bash
+\begin{verbatim}
 ssh usuario@192.168.25.175
-#+end_src
-
-** Conceptos de repaso
+\end{verbatim}
+\subsection{Conceptos de repaso}
+\label{sec:org1f79a0a}
 
 Se revisaron dispositivos fundamentales de red como el router, encargado
 de interconectar distintas redes, y el access point, cuya función es
 extender la conectividad inalámbrica. Asimismo, se analizaron los
 modos de comunicación semiduplex, duplex y full duplex, diferenciados
 por la forma en que los dispositivos transmiten y reciben información.
-
-** Máximas
+\subsection{Máximas}
+\label{sec:orgd6f7e0a}
 
 La identificación única de cada interfaz de red garantiza el correcto
 funcionamiento de las comunicaciones. Asimismo, el uso de SSH representa
 una evolución hacia métodos seguros de administración remota,
 reemplazando protocolos inseguros utilizados anteriormente.
-
-** Sección libre
+\subsection{Sección libre}
+\label{sec:org6d093ca}
 
 Se discutió cómo el cableado de cobre presenta pérdidas de señal
 aproximadamente después de los cien metros, fenómeno causado por la
 atenuación eléctrica del medio físico, lo cual influye directamente en
 el diseño de infraestructuras de red.
+\section{Manipulación de archivos y texto}
+\label{sec:org0d94ec0}
 
-* Manipulación de archivos y texto
-
-** Conceptos nuevos
+\subsection{Conceptos nuevos}
+\label{sec:org8ce17e5}
 
 Durante esta sección se exploraron herramientas clásicas de Unix
 orientadas al procesamiento eficiente de texto desde la terminal,
 demostrando la filosofía del sistema basada en combinar programas
 pequeños para resolver tareas complejas.
+\subsubsection{tail}
+\label{sec:org28e6c24}
 
-*** tail
-
-El comando =tail= permite visualizar las últimas líneas de un archivo,
+El comando \texttt{tail} permite visualizar las últimas líneas de un archivo,
 siendo especialmente útil para monitorear archivos de registro en
 tiempo real sin necesidad de abrirlos completamente.
 
-#+begin_src bash
+\begin{verbatim}
 tail nombres
-#+end_src
+\end{verbatim}
 
 También admite opciones para limitar el número de líneas o bytes
 mostrados, facilitando la inspección rápida de información reciente.
 
-#+begin_src bash
+\begin{verbatim}
 tail -2 nombres
 tail -c 3 nombres
-#+end_src
+\end{verbatim}
+\subsubsection{head}
+\label{sec:orgfe3cdcf}
 
-*** head
-
-A diferencia de tail, el comando =head= muestra el inicio de un archivo,
+A diferencia de tail, el comando \texttt{head} muestra el inicio de un archivo,
 lo cual resulta práctico al analizar archivos extensos o verificar su
 estructura inicial.
 
-#+begin_src bash
+\begin{verbatim}
 head nombres
 head -3 nombres
-#+end_src
+\end{verbatim}
+\subsubsection{tr}
+\label{sec:orgd2840ad}
 
-*** tr
-
-La herramienta =tr= transforma caracteres provenientes de la entrada
+La herramienta \texttt{tr} transforma caracteres provenientes de la entrada
 estándar. Permite convertir texto, eliminar caracteres o reemplazarlos
 siguiendo patrones definidos, siendo ampliamente utilizada en procesos
 de limpieza y normalización de datos.
 
-#+begin_src bash
+\begin{verbatim}
 cat nombresD | tr 'a-z' 'A-Z'
-#+end_src
+\end{verbatim}
+\subsubsection{uniq}
+\label{sec:orge931486}
 
-*** uniq
-
-El comando =uniq= elimina líneas repetidas consecutivas dentro de un
-archivo. Generalmente se combina con =sort= para agrupar previamente
+El comando \texttt{uniq} elimina líneas repetidas consecutivas dentro de un
+archivo. Generalmente se combina con \texttt{sort} para agrupar previamente
 los datos y detectar duplicados de manera efectiva.
 
-#+begin_src bash
+\begin{verbatim}
 sort nombres | uniq
-#+end_src
+\end{verbatim}
+\subsubsection{grep}
+\label{sec:orgb2d7c5a}
 
-*** grep
-
-=grep= permite buscar patrones dentro de texto mediante expresiones
+\texttt{grep} permite buscar patrones dentro de texto mediante expresiones
 regulares. Es una herramienta fundamental para filtrar información,
 analizar registros del sistema y localizar datos específicos.
 
-#+begin_src bash
+\begin{verbatim}
 cat nombres | grep -E Er.*
-#+end_src
+\end{verbatim}
+\subsubsection{sed}
+\label{sec:org9660952}
 
-*** sed
-
-El editor de flujo =sed= posibilita modificar texto automáticamente sin
+El editor de flujo \texttt{sed} posibilita modificar texto automáticamente sin
 abrir archivos manualmente. Puede reemplazar palabras, eliminar líneas
 o transformar contenido de forma masiva, lo cual lo convierte en una
 herramienta esencial para automatización.
 
-#+begin_src bash
+\begin{verbatim}
 sed -i 's/Erick/Ayudante/' nombres
 sed '2d' nombres1
-#+end_src
+\end{verbatim}
+\subsection{Conceptos de repaso}
+\label{sec:org37a0312}
 
-** Conceptos de repaso
-
-Se reforzó el uso de *pipes* y redirecciones, mecanismos que permiten
+Se reforzó el uso de \textbf{pipes} y redirecciones, mecanismos que permiten
 encadenar comandos y construir flujos de procesamiento eficientes
 directamente desde la terminal.
-
-** Máximas
+\subsection{Máximas}
+\label{sec:orgc6ac54d}
 
 La filosofía Unix demuestra que herramientas simples, correctamente
 combinadas, pueden sustituir aplicaciones complejas y aumentar la
 eficiencia del trabajo.
-
-** Sección libre
+\subsection{Sección libre}
+\label{sec:orge98094c}
 
 Se concluyó que el dominio del procesamiento textual constituye una de
 las habilidades más importantes para la automatización dentro de Linux.
+\section{Administración del sistema y discos}
+\label{sec:orgf277edf}
 
-* Administración del sistema y discos
+\subsection{Conceptos nuevos}
+\label{sec:org185cdf7}
 
-** Conceptos nuevos
+\subsubsection{fdisk}
+\label{sec:orgd95c165}
 
-*** fdisk
-
-El comando =fdisk= permite administrar particiones de disco desde la
+El comando \texttt{fdisk} permite administrar particiones de disco desde la
 terminal. A través de esta herramienta es posible visualizar discos
 disponibles, crear nuevas particiones o eliminarlas, lo cual impacta
 directamente en la organización del almacenamiento.
 
-#+begin_src bash
+\begin{verbatim}
 fdisk -l
-#+end_src
-
-*** RAID
+\end{verbatim}
+\subsubsection{RAID}
+\label{sec:org44a58e7}
 
 RAID consiste en la combinación lógica de múltiples discos físicos con
 el objetivo de mejorar el rendimiento o aumentar la tolerancia a fallos.
 Dependiendo del nivel utilizado, puede priorizar velocidad,
 redundancia o un equilibrio entre ambas características.
-
-*** NVMe
+\subsubsection{NVMe}
+\label{sec:org576c06e}
 
 La tecnología NVMe representa una evolución en almacenamiento sólido,
 ya que utiliza el bus PCIe en lugar de SATA, ofreciendo velocidades de
 lectura y escritura considerablemente superiores y menor latencia.
-
-** Conceptos de repaso
+\subsection{Conceptos de repaso}
+\label{sec:orgd5b1388}
 
 Se revisaron conceptos relacionados con discos tradicionales y la
 configuración física del hardware, comprendiendo cómo estos elementos
 influyen en el rendimiento general del sistema.
-
-** Máximas
+\subsection{Máximas}
+\label{sec:org3dac536}
 
 El rendimiento del sistema operativo se encuentra estrechamente ligado
 a la velocidad y correcta configuración del almacenamiento.
-
-** Sección libre
+\subsection{Sección libre}
+\label{sec:org341db17}
 
 Se reflexionó sobre la relación entre hardware y software, destacando
 cómo decisiones físicas pueden impactar directamente la experiencia del
 usuario y la eficiencia del sistema.
+\section{Administración de paquetes y documentación}
+\label{sec:org3627ba3}
 
-* Administración de paquetes y documentación
+\subsection{Conceptos nuevos}
+\label{sec:org433a275}
 
-** Conceptos nuevos
+\subsubsection{dpkg}
+\label{sec:orgaa972e0}
 
-*** dpkg
-
-El gestor de paquetes =dpkg= permite instalar, eliminar y consultar
+El gestor de paquetes \texttt{dpkg} permite instalar, eliminar y consultar
 software en sistemas basados en Debian. Proporciona control directo
 sobre los paquetes del sistema, facilitando la administración manual
 del software instalado.
 
-#+begin_src bash
+\begin{verbatim}
 dpkg -l
 dpkg -i archivo.deb
 dpkg -P paquete
-#+end_src
+\end{verbatim}
+\subsubsection{chown}
+\label{sec:orgd4ace4b}
 
-*** chown
-
-El comando =chown= cambia el propietario de archivos y directorios,
+El comando \texttt{chown} cambia el propietario de archivos y directorios,
 permitiendo administrar permisos y controlar el acceso dentro del
 sistema.
 
-#+begin_src bash
+\begin{verbatim}
 sudo chown -R usuario carpeta
-#+end_src
+\end{verbatim}
+\subsubsection{man}
+\label{sec:orgc14c289}
 
-*** man
-
-La herramienta =man= proporciona acceso a la documentación oficial de
+La herramienta \texttt{man} proporciona acceso a la documentación oficial de
 cada comando instalado en el sistema, convirtiéndose en una fuente de
 consulta indispensable para el aprendizaje autónomo.
 
-#+begin_src bash
+\begin{verbatim}
 man ls
-#+end_src
+\end{verbatim}
+\subsubsection{dmidecode}
+\label{sec:orgb6cb9de}
 
-*** dmidecode
-
-El comando =dmidecode= permite obtener información detallada del
+El comando \texttt{dmidecode} permite obtener información detallada del
 hardware directamente desde la BIOS o UEFI, incluyendo fabricante,
 modelo del equipo y características de memoria.
 
-#+begin_src bash
+\begin{verbatim}
 dmidecode
-#+end_src
-
-** Conceptos de repaso
+\end{verbatim}
+\subsection{Conceptos de repaso}
+\label{sec:org3ad4ae2}
 
 Se reforzó la importancia de la documentación integrada y la correcta
 gestión del software instalado.
-
-** Máximas
+\subsection{Máximas}
+\label{sec:org254ca46}
 
 Un administrador de sistemas eficiente utiliza primero la documentación
 local antes de recurrir a fuentes externas.
+\subsection{Sección libre}
+\label{sec:org216efa4}
 
-** Sección libre
-
-El uso constante del comando =man= fomenta la autonomía técnica y el
+El uso constante del comando \texttt{man} fomenta la autonomía técnica y el
 aprendizaje continuo dentro del entorno Linux.
+\end{document}

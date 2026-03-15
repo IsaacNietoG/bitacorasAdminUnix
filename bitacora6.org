@@ -1,0 +1,342 @@
+* Archivo /etc/hosts
+
+El archivo */etc/hosts* es un archivo de configuración local utilizado por el sistema
+operativo para asociar *nombres de host* con *direcciones IP*.
+
+Nos permite realizar una resolución de nombres sin necesidad de consultar un servidor DNS.
+
+** Estructura del archivo
+
+Cada línea del archivo tiene la siguiente estructura:
+
+#+begin_src
+IP_address   hostname   alias1 alias2 ...
+#+end_src
+
+Ejemplo:
+
+#+begin_src
+127.0.0.1   localhost
+192.168.1.10 juanito 
+192.168.1.33 lupita 
+192.168.1.20 impresora impresora-local
+#+end_src
+
+** Funcionamiento
+
+Cuando una aplicación necesita resolver un nombre de host:
+
+1. El sistema revisa primero */etc/hosts*
+2. Si no encuentra coincidencias, consulta el DNS
+3. Devuelve la dirección IP correspondiente
+
+Esto depende del archivo /etc/nsswitch.conf donde se define el orden de resolución de nombres.
+
+** Conceptos de red relacionados ( repaso )
+
+- *Hostname*: nombre asignado a una máquina dentro de una red.
+- *Dirección IP*: identificador numérico único de un dispositivo en la red.
+- *Resolución de nombres*: proceso de convertir un nombre de host en una dirección IP.
+- *DNS (Domain Name System)*: sistema distribuido que traduce nombres de dominio a direcciones IP.
+
+* Ping usando nombres definidos en hosts
+
+Usamos lo anterior en clase para hacer ping entre compañeros de la clase, si un nombre está definido en */etc/hosts*, 
+es posible usarlo directamente con el comando *ping*.
+
+Ejemplo:
+
+#+begin_src
+ping juanito
+#+end_src
+
+El sistema buscará "juanito" en */etc/hosts*, obtendrá la IP asociada y enviará los paquetes ICMP a esa dirección.
+
+* Directorio ~/.ssh
+
+El directorio /.ssh contiene archivos relacionados con la autenticación segura usando *SSH (Secure Shell)*.
+Este directorio normalmente tiene permisos restrictivos para proteger las claves.
+
+** Archivos comunes
+
+- *id_rsa* → clave privada
+- *id_rsa.pub* → clave pública
+- *authorized_keys* → lista de claves públicas autorizadas para acceder a la cuenta
+- *known_hosts* → lista de hosts remotos conocidos y sus claves
+- *config* → configuración personalizada para conexiones SSH
+
+** Función
+
+Permite autenticación segura entre máquinas sin necesidad de contraseñas,
+mediante criptografía de clave pública.
+
+* ssh-keygen
+
+El comando:
+
+#+begin_src
+ssh-keygen
+#+end_src
+
+se utiliza para generar un par de claves criptográficas para autenticación SSH.
+
+** Proceso
+
+Al ejecutar el comando, el programa solicita:
+
+1. Ubicación donde guardar la clave
+
+#+begin_src
+Enter file in which to save the key (/home/user/.ssh/id_rsa)
+#+end_src
+
+2. Una *passphrase* (frase de contraseña) opcional para proteger la clave privada.
+
+#+begin_src
+Enter passphrase
+#+end_src
+
+** Resultado
+
+Se generan dos archivos:
+
+- clave privada → id_rsa
+- clave pública → id_rsa.pub
+
+La clave pública se puede copiar al servidor en:
+
+#+begin_src
+~/.ssh/authorized_keys
+#+end_src
+
+para permitir autenticación sin contraseña.
+
+
+* Creación de repositorios en Debian
+
+Esta semana durante las ayudantías vimos como crear repositorios en debian, 
+en debian el software se distribuye mediante *paquetes .deb*.
+
+Un repositorio es una colección organizada de paquetes accesible mediante herramientas como:
+
+- apt
+- apt-get
+- aptitude
+
+** Estructura básica de un repositorio
+
+Un repositorio contiene:
+
+- paquetes .deb
+- índices de paquetes
+- archivos de metadatos
+
+Ejemplo simplificado:
+
+#+begin_src
+repo/
+ ├── pool/
+ │   └── paquetes .deb
+ ├── dists/
+ │   └── stable/
+ │       └── main/
+ │           └── binary-amd64/
+ │               └── Packages
+#+end_src
+
+* Herramientas de empaquetado en Debian
+
+** dh_make
+
+Herramienta que crea la estructura inicial necesaria para empaquetar software en Debian.
+Se usa normalmente dentro del directorio del código fuente.
+
+#+begin_src
+dh_make
+#+end_src
+
+Genera el directorio:
+
+#+begin_src
+debian/
+#+end_src
+
+que contiene archivos de configuración del paquete.
+
+** debuild
+
+Compila el paquete Debian a partir del código fuente y los archivos en el directorio *debian/*.
+
+#+begin_src
+debuild
+#+end_src
+
+Resultado:
+
+- archivo *.deb*
+- archivos de control y firma
+
+* dpkg
+
+*dpkg* (Debian Package) es la herramienta base del sistema de gestión de paquetes
+de Debian y de muchas distribuciones derivadas como Ubuntu.
+
+Su función principal es *instalar, eliminar, configurar e inspeccionar paquetes
+en formato *.deb*. A diferencia de herramientas como *apt*, *dpkg no resuelve
+automáticamente dependencias*.
+
+Las herramientas de alto nivel como *apt* utilizan *dpkg* internamente para
+realizar la instalación real de los paquetes.
+
+** Estructura de un paquete .deb
+
+Un paquete *.deb* es un archivo comprimido que contiene tres componentes principales:
+
+1. *debian-binary*  
+   Archivo que indica la versión del formato del paquete Debian.
+
+2. *control.tar.gz* (o control.tar.xz)  
+   Contiene información del paquete:
+   - nombre
+   - versión
+   - dependencias
+   - scripts de instalación
+
+3. *data.tar.gz* (o data.tar.xz)  
+   Contiene los archivos reales que se instalarán en el sistema.
+
+Ejemplo para inspeccionar un paquete:
+
+#+begin_src bash
+dpkg-deb -I paquete.deb
+#+end_src
+
+Listar los archivos que contiene:
+
+#+begin_src bash
+dpkg-deb -c paquete.deb
+#+end_src
+
+
+** Base de datos de paquetes
+
+dpkg mantiene una base de datos local con información sobre los paquetes
+instalados en el sistema.
+
+Esta base de datos se encuentra en:
+
+#+begin_src
+/var/lib/dpkg/
+#+end_src
+
+** Comandos básicos
+
+*** Instalar un paquete
+
+#+begin_src bash
+sudo dpkg -i paquete.deb
+#+end_src
+
+Si existen dependencias faltantes, dpkg mostrará un error y el paquete quedará
+en estado *no configurado*.
+
+Para corregir dependencias podemos usar:
+
+#+begin_src bash
+sudo apt -f install
+#+end_src
+
+
+*** Eliminar un paquete
+
+Eliminar el paquete pero conservar archivos de configuración:
+
+#+begin_src bash
+sudo dpkg -r paquete
+#+end_src
+
+Eliminar completamente el paquete y sus configuraciones:
+
+#+begin_src bash
+sudo dpkg -P paquete
+#+end_src
+
+
+*** Listar paquetes instalados
+
+#+begin_src bash
+dpkg -l
+#+end_src
+
+
+** Relación con APT
+
+El sistema de paquetes de Debian funciona en dos niveles:
+
+Nivel bajo:
+- *dpkg* → instala y gestiona paquetes locales
+
+Nivel alto:
+- *apt*
+- *apt-get*
+- *aptitude*
+
+Estas herramientas se encargan de:
+
+- resolver dependencias
+- descargar paquetes desde repositorios
+- luego ejecutar *dpkg* para instalar.
+
+Ejemplo de flujo típico:
+
+1. apt descarga paquete
+2. apt verifica dependencias
+3. apt ejecuta dpkg para instalar
+
+
+
+* DKMS (Dynamic Kernel Module Support)
+
+Sistema que permite recompilar automáticamente módulos del kernel cuando se instala un nuevo kernel.
+Esto es útil para controladores que no están incluidos directamente en el kernel.
+
+Ejemplo típico:
+
+- drivers de GPU
+- drivers de red
+- módulos de virtualización
+
+* Compartir carpetas entre máquina virtual y anfitrión
+
+En la clase del viernes vimos que muchas plataformas de virtualización permiten compartir directorios 
+entre el sistema anfitrión y la máquina virtual.
+
+** VirtualBox
+
+1. Instalar *Guest Additions* dentro de la VM.
+2. Configurar carpeta compartida en la configuración de la máquina.
+3. Montar la carpeta dentro de Linux.
+
+Ejemplo:
+
+#+begin_src
+sudo mount -t vboxsf carpeta_compartida /mnt/compartida
+#+end_src
+
+** VMware
+
+1. Instalar *VMware Tools*
+2. Activar *Shared Folders*
+3. Las carpetas aparecen generalmente en:
+
+#+begin_src
+/mnt/hgfs/
+#+end_src
+
+** Uso
+
+Las carpetas compartidas permiten:
+
+- transferir archivos entre sistemas
+- compartir código
+- acceder a documentos del anfitrión desde la VM

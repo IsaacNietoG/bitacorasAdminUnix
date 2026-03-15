@@ -1,3 +1,33 @@
+#+TITLE: Bitácora Semanal 6: Administración de Sistemas Unix
+#+AUTHOR: Equipo Alpine White
+#+DATE: [2026-03-14 lun]
+#+OPTIONS: toc:2
+#+PROPERTY: header-args :exports both
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [11pt, letterpaper]
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage{palatino}                   % Tipografía elegante
+#+LATEX_HEADER: \usepackage{xcolor}                     % Colores personalizados
+
+* Información General
+- *Semana:* Del 9 de Marzo 2026 al 13 de Marzo 2026
+- *Equipo:*
+  - Arreguín Salgado Gael Emiliano
+  - Gramer Muñoz Omar Fernando
+  - López Pérez Mariana
+  - Nieto Gallegos Isaac Julián
+
+En esta semana el enfoque se baso en crear paquetes para debian, algunos conceptos de red, ssh y maquinas virtuales
+
+** Responsabilidades:
+
+- Gael Emiliano: Notas físicas y aportaciones en nuevos conceptos y maquetado del reporte.
+- Omar Fernando: Notas físicas y aportaciones en contenido.
+- Mariana: Desarrollo de temas principales y estructura principal.
+- Isaac Julián: Cambios menores, primeros dos temas y algunas investigaciones en Secciones Libres
+
+
 * Archivo /etc/hosts
 
 El archivo */etc/hosts* es un archivo de configuración local utilizado por el sistema

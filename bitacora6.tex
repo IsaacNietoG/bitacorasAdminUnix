@@ -1,0 +1,516 @@
+% Created 2026-03-16 Mon 21:35
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+\usepackage[utf8]{inputenc}
+\usepackage{palatino}                   % Tipografía elegante
+\usepackage{xcolor}                     % Colores personalizados
+\author{Equipo Alpine White}
+\date{\textit{{[}2026-03-14 Sat]}}
+\title{Bitácora Semanal 6: Administración de Sistemas Unix}
+\hypersetup{
+ pdfauthor={Equipo Alpine White},
+ pdftitle={Bitácora Semanal 6: Administración de Sistemas Unix},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 30.2 (Org mode 9.7.39)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+\section{Información General}
+\label{sec:orgde457f1}
+\begin{itemize}
+\item \textbf{Semana:} Del 9 de Marzo 2026 al 13 de Marzo 2026
+\item \textbf{Equipo:}
+\begin{itemize}
+\item Arreguín Salgado Gael Emiliano
+\item Gramer Muñoz Omar Fernando
+\item López Pérez Mariana
+\item Nieto Gallegos Isaac Julián
+\end{itemize}
+\end{itemize}
+
+En esta semana el enfoque se baso en crear paquetes para debian, algunos conceptos de red, ssh y maquinas virtuales
+\subsection{Responsabilidades:}
+\label{sec:org5119719}
+
+\begin{itemize}
+\item Gael Emiliano: Notas físicas y aportaciones en nuevos conceptos y maquetado del reporte.
+\item Omar Fernando: Notas físicas y aportaciones en contenido.
+\item Mariana: Desarrollo de temas principales y estructura principal.
+\item Isaac Julián: Cambios menores, primeros dos temas y algunas investigaciones en Secciones Libres
+\end{itemize}
+\section{Archivo /etc/hosts}
+\label{sec:org8a92a56}
+
+El archivo \textbf{/etc/hosts} es un archivo de configuración local utilizado por el sistema
+operativo para asociar \textbf{nombres de host} con \textbf{direcciones IP}.
+
+Nos permite realizar una resolución de nombres sin necesidad de consultar un servidor DNS.
+\subsection{Estructura del archivo}
+\label{sec:org6b48804}
+
+Cada línea del archivo tiene la siguiente estructura:
+
+\begin{verbatim}
+IP_address   hostname   alias1 alias2 ...
+\end{verbatim}
+
+Ejemplo:
+
+\begin{verbatim}
+127.0.0.1   localhost
+192.168.1.10 juanito 
+192.168.1.33 lupita 
+192.168.1.20 impresora impresora-local
+\end{verbatim}
+\subsection{Funcionamiento}
+\label{sec:orgef1133f}
+
+Cuando una aplicación necesita resolver un nombre de host:
+
+\begin{enumerate}
+\item El sistema revisa primero \textbf{/etc/hosts}
+\item Si no encuentra coincidencias, consulta el DNS
+\item Devuelve la dirección IP correspondiente
+\end{enumerate}
+
+Esto depende del archivo /etc/nsswitch.conf donde se define el orden de resolución de nombres.
+\subsection{Conceptos de red relacionados ( repaso )}
+\label{sec:orgfa1bc6b}
+
+\begin{itemize}
+\item \textbf{Hostname}: nombre asignado a una máquina dentro de una red.
+\item \textbf{Dirección IP}: identificador numérico único de un dispositivo en la red.
+\item \textbf{Resolución de nombres}: proceso de convertir un nombre de host en una dirección IP.
+\item \textbf{DNS (Domain Name System)}: sistema distribuido que traduce nombres de dominio a direcciones IP.
+\end{itemize}
+\section{Ping usando nombres definidos en hosts}
+\label{sec:org8e63a66}
+
+Usamos lo anterior en clase para hacer ping entre compañeros de la clase, si un nombre está definido en \textbf{/etc/hosts}, 
+es posible usarlo directamente con el comando \textbf{ping}.
+
+Ejemplo:
+
+\begin{verbatim}
+ping juanito
+\end{verbatim}
+
+El sistema buscará ``juanito'' en \textbf{/etc/hosts}, obtendrá la IP asociada y enviará los paquetes ICMP a esa dirección.
+\section{Directorio \textasciitilde{}/.ssh}
+\label{sec:org56a4d81}
+
+El directorio /.ssh contiene archivos relacionados con la autenticación segura usando \textbf{SSH (Secure Shell)}.
+Este directorio normalmente tiene permisos restrictivos para proteger las claves.
+\subsection{Archivos comunes}
+\label{sec:org870a670}
+
+\begin{itemize}
+\item \textbf{id\textsubscript{rsa}} → clave privada
+\item \textbf{id\textsubscript{rsa.pub}} → clave pública
+\item \textbf{authorized\textsubscript{keys}} → lista de claves públicas autorizadas para acceder a la cuenta
+\item \textbf{known\textsubscript{hosts}} → lista de hosts remotos conocidos y sus claves
+\item \textbf{config} → configuración personalizada para conexiones SSH
+\end{itemize}
+\subsection{Función}
+\label{sec:orga0fefa6}
+
+Permite autenticación segura entre máquinas sin necesidad de contraseñas,
+mediante criptografía de clave pública.
+\section{ssh-keygen}
+\label{sec:orgf64e75a}
+
+El comando:
+
+\begin{verbatim}
+ssh-keygen
+\end{verbatim}
+
+se utiliza para generar un par de claves criptográficas para autenticación SSH.
+\subsection{Proceso}
+\label{sec:orgdd5e85b}
+
+Al ejecutar el comando, el programa solicita:
+
+\begin{enumerate}
+\item Ubicación donde guardar la clave
+\end{enumerate}
+
+\begin{verbatim}
+Enter file in which to save the key (/home/user/.ssh/id_rsa)
+\end{verbatim}
+
+\begin{enumerate}
+\item Una \textbf{passphrase} (frase de contraseña) opcional para proteger la clave privada.
+\end{enumerate}
+
+\begin{verbatim}
+Enter passphrase
+\end{verbatim}
+\subsection{Resultado}
+\label{sec:orgf12943f}
+
+Se generan dos archivos:
+
+\begin{itemize}
+\item clave privada → id\textsubscript{rsa}
+\item clave pública → id\textsubscript{rsa.pub}
+\end{itemize}
+
+La clave pública se puede copiar al servidor en:
+
+\begin{verbatim}
+~/.ssh/authorized_keys
+\end{verbatim}
+
+para permitir autenticación sin contraseña.
+\subsection{Flujo de autenticación SSH}
+\label{sec:orge237fca}
+
+El proceso de autenticación mediante llaves SSH sigue un modelo de criptografía de clave pública. Esto permite verificar la identidad del usuario sin necesidad de enviar contraseñas a través de la red.
+
+El proceso general funciona de la siguiente manera:
+
+\begin{verbatim}
+Usuario (cliente)                Servidor
+
+   ssh usuario@servidor
+        |
+        |-----> Solicitud de conexión SSH
+        |
+        |<----- Servidor envía su clave pública
+        |
+Cliente verifica si el servidor está en known_hosts
+        |
+Cliente usa su clave privada
+para firmar la solicitud
+        |
+        |-----> Firma criptográfica
+        |
+Servidor verifica con la clave pública
+en ~/.ssh/authorized_keys
+        |
+        |<----- Acceso permitido
+\end{verbatim}
+
+Gracias a este mecanismo, el servidor puede verificar la identidad del usuario sin que la clave privada sea transmitida a través de la red, lo cual mejora significativamente la seguridad del sistema.
+\section{Creación de repositorios en Debian}
+\label{sec:orgf8cd5cf}
+
+Esta semana durante las ayudantías vimos como crear repositorios en debian, 
+en debian el software se distribuye mediante \textbf{paquetes .deb}.
+
+Un repositorio es una colección organizada de paquetes accesible mediante herramientas como:
+
+\begin{itemize}
+\item apt
+\item apt-get
+\item aptitude
+\end{itemize}
+\subsection{Estructura básica de un repositorio}
+\label{sec:orgb103ad4}
+
+Un repositorio contiene:
+
+\begin{itemize}
+\item paquetes .deb
+\item índices de paquetes
+\item archivos de metadatos
+\end{itemize}
+
+Ejemplo simplificado:
+
+\begin{verbatim}
+repo/
+ ├── pool/
+ │   └── paquetes .deb
+ ├── dists/
+ │   └── stable/
+ │       └── main/
+ │           └── binary-amd64/
+ │               └── Packages
+\end{verbatim}
+\section{Herramientas de empaquetado en Debian}
+\label{sec:org9d50b44}
+
+\subsection{dh\textsubscript{make}}
+\label{sec:org488a12d}
+
+Herramienta que crea la estructura inicial necesaria para empaquetar software en Debian.
+Se usa normalmente dentro del directorio del código fuente.
+
+\begin{verbatim}
+dh_make
+\end{verbatim}
+
+Genera el directorio:
+
+\begin{verbatim}
+debian/
+\end{verbatim}
+
+que contiene archivos de configuración del paquete.
+\subsection{Flujo del sistema de paquetes Debian}
+\label{sec:org93e0035}
+
+En los sistemas basados en Debian, el software se distribuye mediante paquetes \textbf{.deb}. Estos paquetes contienen los archivos necesarios para instalar una aplicación dentro del sistema.
+
+El flujo general de instalación funciona de la siguiente manera:
+
+\begin{verbatim}
+Repositorio Debian
+        |
+        |  apt update
+        v
+Lista de paquetes disponibles
+        |
+        |  apt install paquete
+        v
+Descarga paquete .deb
+        |
+        v
+Instalación con dpkg
+        |
+        v
+Archivos copiados al sistema
+
+/bin
+/usr
+/etc
+/lib
+
+        |
+        v
+Registro en base de datos
+
+/var/lib/dpkg
+\end{verbatim}
+
+Esto permite que el sistema lleve un control completo de los programas instalados, facilitando su actualización, eliminación o mantenimiento.
+\subsection{debuild}
+\label{sec:orge2afe81}
+
+Compila el paquete Debian a partir del código fuente y los archivos en el directorio \textbf{debian/}.
+
+\begin{verbatim}
+debuild
+\end{verbatim}
+
+Resultado:
+
+\begin{itemize}
+\item archivo \textbf{.deb}
+\item archivos de control y firma
+\end{itemize}
+\section{dpkg}
+\label{sec:orgbd82371}
+
+\textbf{dpkg} (Debian Package) es la herramienta base del sistema de gestión de paquetes
+de Debian y de muchas distribuciones derivadas como Ubuntu.
+
+Su función principal es \textbf{instalar, eliminar, configurar e inspeccionar paquetes
+en formato *.deb}. A diferencia de herramientas como \textbf{apt}, \textbf{dpkg no resuelve
+automáticamente dependencias}.
+
+Las herramientas de alto nivel como \textbf{apt} utilizan \textbf{dpkg} internamente para
+realizar la instalación real de los paquetes.
+\subsection{Estructura de un paquete .deb}
+\label{sec:org345f6f0}
+
+Un paquete \textbf{.deb} es un archivo comprimido que contiene tres componentes principales:
+
+\begin{enumerate}
+\item \textbf{debian-binary}  
+Archivo que indica la versión del formato del paquete Debian.
+
+\item \textbf{control.tar.gz} (o control.tar.xz)  
+Contiene información del paquete:
+\begin{itemize}
+\item nombre
+\item versión
+\item dependencias
+\item scripts de instalación
+\end{itemize}
+
+\item \textbf{data.tar.gz} (o data.tar.xz)  
+Contiene los archivos reales que se instalarán en el sistema.
+\end{enumerate}
+
+Ejemplo para inspeccionar un paquete:
+
+\begin{verbatim}
+dpkg-deb -I paquete.deb
+\end{verbatim}
+
+Listar los archivos que contiene:
+
+\begin{verbatim}
+dpkg-deb -c paquete.deb
+\end{verbatim}
+\subsection{Base de datos de paquetes}
+\label{sec:org8e2c016}
+
+dpkg mantiene una base de datos local con información sobre los paquetes
+instalados en el sistema.
+
+Esta base de datos se encuentra en:
+
+\begin{verbatim}
+/var/lib/dpkg/
+\end{verbatim}
+\subsection{Comandos básicos}
+\label{sec:org2e15f6a}
+
+\subsubsection{Instalar un paquete}
+\label{sec:orgff1e312}
+
+\begin{verbatim}
+sudo dpkg -i paquete.deb
+\end{verbatim}
+
+Si existen dependencias faltantes, dpkg mostrará un error y el paquete quedará
+en estado \textbf{no configurado}.
+
+Para corregir dependencias podemos usar:
+
+\begin{verbatim}
+sudo apt -f install
+\end{verbatim}
+\subsubsection{Eliminar un paquete}
+\label{sec:org9ae1711}
+
+Eliminar el paquete pero conservar archivos de configuración:
+
+\begin{verbatim}
+sudo dpkg -r paquete
+\end{verbatim}
+
+Eliminar completamente el paquete y sus configuraciones:
+
+\begin{verbatim}
+sudo dpkg -P paquete
+\end{verbatim}
+\subsubsection{Listar paquetes instalados}
+\label{sec:org90fdbc9}
+
+\begin{verbatim}
+dpkg -l
+\end{verbatim}
+\subsection{Comandos comunes de gestión de paquetes}
+\label{sec:org54327a9}
+
+\begin{center}
+\begin{tabular}{ll}
+Comando & Descripción\\
+\hline
+apt update & Actualiza la lista de paquetes disponibles\\
+apt upgrade & Actualiza los paquetes instalados\\
+apt install paquete & Instala un paquete\\
+apt remove paquete & Elimina un paquete\\
+dpkg -i archivo.deb & Instala un paquete manualmente\\
+dpkg -l & \\
+\end{tabular}
+\end{center}
+\subsection{Relación con APT}
+\label{sec:orgeb8834e}
+
+El sistema de paquetes de Debian funciona en dos niveles:
+
+Nivel bajo:
+\begin{itemize}
+\item \textbf{dpkg} → instala y gestiona paquetes locales
+\end{itemize}
+
+Nivel alto:
+\begin{itemize}
+\item \textbf{apt}
+\item \textbf{apt-get}
+\item \textbf{aptitude}
+\end{itemize}
+
+Estas herramientas se encargan de:
+
+\begin{itemize}
+\item resolver dependencias
+\item descargar paquetes desde repositorios
+\item luego ejecutar \textbf{dpkg} para instalar.
+\end{itemize}
+
+Ejemplo de flujo típico:
+
+\begin{enumerate}
+\item apt descarga paquete
+\item apt verifica dependencias
+\item apt ejecuta dpkg para instalar
+\end{enumerate}
+\section{DKMS (Dynamic Kernel Module Support)}
+\label{sec:orgbd3a2ce}
+
+Sistema que permite recompilar automáticamente módulos del kernel cuando se instala un nuevo kernel.
+Esto es útil para controladores que no están incluidos directamente en el kernel.
+
+Ejemplo típico:
+
+\begin{itemize}
+\item drivers de GPU
+\item drivers de red
+\item módulos de virtualización
+\end{itemize}
+\section{Compartir carpetas entre máquina virtual y anfitrión}
+\label{sec:orgee9cc3a}
+
+En la clase del viernes vimos que muchas plataformas de virtualización permiten compartir directorios 
+entre el sistema anfitrión y la máquina virtual.
+\subsection{VirtualBox}
+\label{sec:org4e386cc}
+
+\begin{enumerate}
+\item Instalar \textbf{Guest Additions} dentro de la VM.
+\item Configurar carpeta compartida en la configuración de la máquina.
+\item Montar la carpeta dentro de Linux.
+\end{enumerate}
+
+Ejemplo:
+
+\begin{verbatim}
+sudo mount -t vboxsf carpeta_compartida /mnt/compartida
+\end{verbatim}
+\subsection{VMware}
+\label{sec:org05af933}
+
+\begin{enumerate}
+\item Instalar \textbf{VMware Tools}
+\item Activar \textbf{Shared Folders}
+\item Las carpetas aparecen generalmente en:
+\end{enumerate}
+
+\begin{verbatim}
+/mnt/hgfs/
+\end{verbatim}
+\subsection{Uso}
+\label{sec:org2c4f742}
+
+Las carpetas compartidas permiten:
+
+\begin{itemize}
+\item transferir archivos entre sistemas
+\item compartir código
+\item acceder a documentos del anfitrión desde la VM
+\end{itemize}
+\end{document}

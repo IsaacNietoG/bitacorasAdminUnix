@@ -141,6 +141,35 @@ La clave pública se puede copiar al servidor en:
 
 para permitir autenticación sin contraseña.
 
+** Flujo de autenticación SSH
+
+El proceso de autenticación mediante llaves SSH sigue un modelo de criptografía de clave pública. Esto permite verificar la identidad del usuario sin necesidad de enviar contraseñas a través de la red.
+
+El proceso general funciona de la siguiente manera:
+
+#+begin_example
+Usuario (cliente)                Servidor
+
+   ssh usuario@servidor
+        |
+        |-----> Solicitud de conexión SSH
+        |
+        |<----- Servidor envía su clave pública
+        |
+Cliente verifica si el servidor está en known_hosts
+        |
+Cliente usa su clave privada
+para firmar la solicitud
+        |
+        |-----> Firma criptográfica
+        |
+Servidor verifica con la clave pública
+en ~/.ssh/authorized_keys
+        |
+        |<----- Acceso permitido
+#+end_example
+
+Gracias a este mecanismo, el servidor puede verificar la identidad del usuario sin que la clave privada sea transmitida a través de la red, lo cual mejora significativamente la seguridad del sistema.
 
 * Creación de repositorios en Debian
 
@@ -193,6 +222,42 @@ debian/
 
 que contiene archivos de configuración del paquete.
 
+** Flujo del sistema de paquetes Debian
+
+En los sistemas basados en Debian, el software se distribuye mediante paquetes *.deb*. Estos paquetes contienen los archivos necesarios para instalar una aplicación dentro del sistema.
+
+El flujo general de instalación funciona de la siguiente manera:
+
+#+begin_example
+Repositorio Debian
+        |
+        |  apt update
+        v
+Lista de paquetes disponibles
+        |
+        |  apt install paquete
+        v
+Descarga paquete .deb
+        |
+        v
+Instalación con dpkg
+        |
+        v
+Archivos copiados al sistema
+
+/bin
+/usr
+/etc
+/lib
+
+        |
+        v
+Registro en base de datos
+
+/var/lib/dpkg
+#+end_example
+
+Esto permite que el sistema lleve un control completo de los programas instalados, facilitando su actualización, eliminación o mantenimiento.
 ** debuild
 
 Compila el paquete Debian a partir del código fuente y los archivos en el directorio *debian/*.
@@ -298,6 +363,17 @@ sudo dpkg -P paquete
 dpkg -l
 #+end_src
 
+
+** Comandos comunes de gestión de paquetes
+
+| Comando | Descripción |
+|--------|-------------|
+| apt update | Actualiza la lista de paquetes disponibles |
+| apt upgrade | Actualiza los paquetes instalados |
+| apt install paquete | Instala un paquete |
+| apt remove paquete | Elimina un paquete |
+| dpkg -i archivo.deb | Instala un paquete manualmente |
+| dpkg -l |                           |
 
 ** Relación con APT
 

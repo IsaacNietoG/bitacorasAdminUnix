@@ -1,0 +1,141 @@
+% Created 2026-04-01 Wed 23:57
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+\usepackage[utf8]{inputenc}
+\usepackage{palatino}                   % Tipografía elegante
+\usepackage{xcolor}                     % Colores personalizados
+\author{Equipo Alpine White}
+\date{\textit{{[}2026-03-28 Sat]}}
+\title{Bitácora Semanal 8: Administración de Sistemas Unix}
+\hypersetup{
+ pdfauthor={Equipo Alpine White},
+ pdftitle={Bitácora Semanal 8: Administración de Sistemas Unix},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={},
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+\section{Información General}
+\label{sec:org8f46890}
+\begin{itemize}
+\item \textbf{Semana:} Del 23 de Marzo 2026 al 27 de Marzo 2026
+\item \textbf{Equipo :}
+\begin{itemize}
+\item Arreguín Salgado Gael Emiliano
+\item Gramer Muñoz Omar Fernando
+\item López Pérez Mariana
+\item Nieto Gallegos Isaac Julián
+\end{itemize}
+\end{itemize}
+
+El hilo conductor fue seguir usando \textbf{SSH} en entornos (incluido el equipo del profesor), \textbf{revisar quién tiene sesiones abiertas} con \texttt{who}, y \textbf{acercarnos a escritorio remoto} mediante \textbf{RDP}, en particular cómo \textbf{GNOME} expone la pantalla compartida usando ese enfoque. Además reforzamos el \textbf{mapeo local de nombres} en \texttt{/etc/hosts} con entradas tipo \textbf{dominio} por máquina para conectarnos entre compañeros ya con \textbf{autenticación por llaves}.
+\subsection{Responsabilidades:}
+\label{sec:org1aaa7e8}
+\begin{itemize}
+\item Gael Emiliano: Sesión SSH al equipo del docente y notas sobre \texttt{who}.
+\item Omar Fernando: Compartir escritorio en GNOME y exposición de la clase.
+\item Mariana: RDP, concepto y contexto frente a SSH.
+\item Isaac Julián: armado del documento, comentarios complementarios en general
+\end{itemize}
+\section{Conexión por SSH al equipo del profesor}
+\label{sec:org69f08cd}
+
+En laboratorio nos conectamos por \textbf{SSH} al equipo del profesor, como ejercicio de \textbf{acceso remoto autenticado} en una máquina que no es la nuestra (usuario, host conocido, puerto y llaves según lo configurado en clase).
+\subsection{Conceptos de repaso}
+\label{sec:org23ee3c7}
+\begin{itemize}
+\item Cliente \texttt{ssh usuario@host}; el servidor debe tener el demonio \texttt{sshd} activo y política de acceso (contraseña, llave, etc.) acorde al curso. Se crearon usuarios y se cargaron llaves públicas para poder acceder.
+\item La primera vez suele pedir confirmación de la \textbf{huella} del servidor (\texttt{known\_hosts}).
+\end{itemize}
+\section{Comando \texttt{who}: sesiones y usuarios conectados}
+\label{sec:orgad7010f}
+
+El comando \texttt{who} lee la información de sesiones registrada en el sistema (tradicionalmente vía \texttt{utmp} / \texttt{wtmp}) y muestra \textbf{quién tiene sesiones activas}, incluidas muchas de las abiertas por \textbf{SSH}.
+
+\begin{verbatim}
+who
+\end{verbatim}
+
+Salidas típicas incluyen \textbf{TTY}, \textbf{hora de login} y \textbf{origen} (por ejemplo una IP remota cuando la sesión es por SSH). Complementos útiles en la misma familia: \texttt{w} (más detalle y carga), \texttt{users} (lista corta).
+\subsection{Conceptos nuevos}
+\label{sec:org377324a}
+\begin{itemize}
+\item Distinguir \textbf{usuario con sesión gráfica local} de \textbf{usuario con sesión por SSH}: ambos pueden aparecer en \texttt{who}, pero el origen y el TTY ayudan a interpretarlo.
+\end{itemize}
+\subsection{Máximas}
+\label{sec:org0362f75}
+\begin{itemize}
+\item Antes de reiniciar un servidor compartido, conviene \texttt{who} (y revisar procesos críticos) para no cortar el trabajo de otros.
+\end{itemize}
+\section{RDP (Remote Desktop Protocol)}
+\label{sec:org22d1201}
+
+\textbf{RDP} es un protocolo de \textbf{escritorio remoto} . Permite ver el \textbf{escritorio completo} y, según configuración, control remoto, no solo una terminal como SSH.
+\subsection{Conceptos nuevos}
+\label{sec:org2d89b04}
+\begin{itemize}
+\item A diferencia de \textbf{SSH} (orientado a shell y túneles, aunque puede reenviar X11), RDP está pensado para \textbf{transmitir la sesión gráfica} de forma eficiente (compresión, canales, etc.).
+\item En entornos mixtos, RDP es común en administración de estaciones Windows desde Linux (clientes como \texttt{Remmina}, \texttt{freerdp}, etc.).
+\end{itemize}
+\subsection{Conceptos de repaso}
+\label{sec:org320e72e}
+\begin{itemize}
+\item \textbf{Capa de aplicación} vs. uso práctico: SSH para administración textual y automatización; RDP cuando se necesita \textbf{interfaz gráfica remota}.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:org3f53173}
+En la práctica del curso, RDP sirvió sobre todo para \textbf{entender otra forma de acceso remoto} distinta a la que ya domina el flujo con SSH en Linux.
+\section{Compartir escritorio en GNOME (basado en RDP)}
+\label{sec:orgc0d53bb}
+
+Para la \textbf{exposición o demostración} en clase de ciertas actividades, el profesor activó la función de \textbf{compartir escritorio} de \textbf{GNOME}. En versiones recientes del escritorio, el compartido puede apoyarse en \textbf{RDP} (pila \texttt{gnome-remote-desktop} u homóloga), de modo que los alumnos se conectaban con un \textbf{cliente RDP} y veían su pantalla en vivo.
+\subsection{Máximas}
+\label{sec:orgd1b301a}
+\begin{itemize}
+\item Compartir pantalla implica \textbf{superficie de riesgo}: usar contraseñas fuertes o acceso restringido y cerrar el servicio al terminar la clase.
+\end{itemize}
+\section{\texttt{/etc/hosts} con nombres tipo dominio y SSH mutuo con llaves}
+\label{sec:orge9e198a}
+
+Continuamosel ejercicio de \textbf{nombrar} cada máquina virtual de todos los estudiantes del curso en \texttt{/etc/hosts}, esta vez con entradas que recuerdan a un \textbf{dominio} o \textbf{FQDN} (por ejemplo \texttt{alumno1.asul.fc.unam.mx}), además de alias cortos si hacía falta.
+
+Objetivo: \textbf{resolver localmente} esos nombres a la IP correcta de cada compañero y poder ejecutar, sin ambigüedad:
+
+\begin{verbatim}
+ssh usuario@alumno1.asul.fc.unam.mx
+\end{verbatim}
+
+apoyados en \textbf{llaves SSH} ya intercambiadas (\texttt{authorized\_keys}), de modo que el flujo entre pares fuera coherente con la semana anterior pero con \textbf{nombres más “de red”} que un simple alias plano.
+\subsection{Conceptos de repaso}
+\label{sec:orga4aae81}
+\begin{itemize}
+\item Orden de resolución según \texttt{/etc/nsswitch.conf} (\texttt{files} antes que \texttt{dns} si así está definido).
+\item Coherencia del archivo entre todos: mismas IPs y mismos nombres acordados.
+\end{itemize}
+\subsection{Máximas}
+\label{sec:org0678160}
+\begin{itemize}
+\item Un nombre tipo dominio en \texttt{hosts} \textbf{no crea DNS real}; solo afecta a las máquinas que tengan esa línea. Para laboratorio está bien; en producción mandaría el DNS interno.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:org8936850}
+Si algún \texttt{ssh} fallaba pese a la llave, los chequeos rápidos fueron: \texttt{ping nombre}, \texttt{ssh -v} para verbosidad, y confirmar que la IP en \texttt{hosts} seguía siendo la del día (DHCP puede cambiar direcciones si no están reservadas).
+\end{document}

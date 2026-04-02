@@ -1,0 +1,202 @@
+% Created 2026-04-01 Wed 23:59
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+\usepackage[utf8]{inputenc}
+\usepackage{palatino}                   % Tipografía elegante
+\usepackage{xcolor}                     % Colores personalizados
+\author{Equipo Alpine White}
+\date{\textit{{[}2026-03-21 Sat]}}
+\title{Bitácora Semanal 7: Administración de Sistemas Unix}
+\hypersetup{
+ pdfauthor={Equipo Alpine White},
+ pdftitle={Bitácora Semanal 7: Administración de Sistemas Unix},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={},
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+\section{Información General}
+\label{sec:orgd3fad95}
+\begin{itemize}
+\item \textbf{Semana:} Del 16 de Marzo 2026 al 20 de Marzo 2026
+\item \textbf{Equipo :}
+\begin{itemize}
+\item Arreguín Salgado Gael Emiliano
+\item Gramer Muñoz Omar Fernando
+\item López Pérez Mariana
+\item Nieto Gallegos Isaac Julián
+\end{itemize}
+\end{itemize}
+
+Esta semana profundizamos en \textbf{administración de redes y conectividad remota} en Linux: SSH y su autenticación por llaves, el comando \texttt{ip} de \texttt{iproute2}, archivos de resolución de nombres y prácticas de confianza entre equipos en la red del laboratorio.
+\subsection{Responsabilidades:}
+\label{sec:org126e8c8}
+\begin{itemize}
+\item Gael Emiliano: SSH, Telnet y sección de máximas de seguridad.
+\item Omar Fernando: Comando \texttt{ip}, rutas y vecinos; prácticas de red.
+\item Mariana: \texttt{/etc/hosts}, \texttt{nsswitch.conf}, SELinux/semanage y estructura del documento.
+\item Isaac Julián: Variables de entorno, loopback, actividades prácticas y observaciones.
+\end{itemize}
+\section{Conexión y acceso remoto}
+\label{sec:org5a0f292}
+
+\subsection{Conceptos nuevos}
+\label{sec:orgfa0563d}
+
+\subsubsection{Telnet}
+\label{sec:org7d57aaa}
+Telnet es un protocolo \textbf{histórico} (aprox. 1969, entorno ARPANET) que permite sesión remota en texto plano. Por convención usa el \textbf{puerto 23}. Hoy se considera \textbf{obsoleto para administración} porque \textbf{no cifra} usuario, contraseña ni datos: cualquier intermediario en la red puede leer la sesión.
+
+\textbf{Uso razonable hoy:} diagnóstico puntual de conectividad (por ejemplo comprobar si un puerto responde o si hay ruta hasta un host), siempre entendiendo el riesgo. Para acceso remoto real en Linux se prefiere \textbf{SSH}.
+\subsubsection{Autenticación SSH con llaves (\texttt{ssh-keygen})}
+\label{sec:org477fdc7}
+SSH (Secure Shell) es el estándar para acceso remoto \textbf{cifrado}; el servicio suele escuchar en el \textbf{puerto 22}. Además de contraseña, se puede usar un \textbf{par de llaves} (privada y pública):
+
+\begin{verbatim}
+ssh-keygen
+\end{verbatim}
+
+La llave pública (\texttt{id\_rsa.pub} u otro nombre elegido) se coloca en el servidor, en \texttt{\textasciitilde{}/.ssh/authorized\_keys} del usuario destino. Así el servidor puede verificar la identidad sin enviar la contraseña por la red, lo que \textbf{reduce ataques de fuerza bruta} y mejora la higiene operativa en laboratorios y servidores.
+\subsection{Conceptos de repaso}
+\label{sec:org9b64459}
+
+\subsubsection{SSH}
+\label{sec:orgc054038}
+Protocolo de capa de aplicación para shell remoto, transferencia de archivos (\texttt{scp}, \texttt{sftp}) y túneles. El tráfico va cifrado; la identidad del servidor se valida típicamente contra \texttt{known\_hosts}.
+\subsubsection{Ping}
+\label{sec:org392ffce}
+Herramienta ICMP (u otros modos según implementación) para probar alcanzabilidad y latencia. Complementa el trabajo con \texttt{/etc/hosts} cuando los nombres de compañeros ya están mapeados a IP.
+\subsection{Máximas}
+\label{sec:org4dce017}
+\begin{itemize}
+\item \textbf{Nunca administrar producción por Telnet}; usar SSH (y, cuando aplique, VPN).
+\item \textbf{Proteger la llave privada} (\texttt{chmod 600} en \texttt{id\_rsa}, passphrase en entornos expuestos).
+\item \textbf{Deshabilitar login root por contraseña} y preferir llaves o usuarios con \texttt{sudo}, según política del curso o del sitio.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:orga8f8e92}
+En laboratorio resulta útil combinar \textbf{ping por nombre} (vía \texttt{/etc/hosts}) con \textbf{SSH por IP o nombre} una vez que la resolución local es coherente. Si dos equipos se llaman igual en \texttt{hosts}, el primero que coincida en el archivo gana: conviene acordar nombres únicos por máquina.
+\section{Administración de red en Linux: familia \texttt{ip} (\texttt{iproute2})}
+\label{sec:org09cf9fe}
+
+La suite \textbf{iproute2} reemplaza herramientas clásicas como \texttt{ifconfig} y \texttt{route} en muchas distribuciones modernas. El comando unificado es \texttt{ip}.
+\subsection{Conceptos nuevos}
+\label{sec:org12754dc}
+
+\subsubsection{\texttt{ip addr show}}
+\label{sec:orgedf5895}
+Lista interfaces con direcciones \textbf{IPv4/IPv6} y, entre otros datos, la \textbf{MAC} asociada a cada interfaz.
+
+\begin{verbatim}
+ip addr show
+\end{verbatim}
+\subsubsection{\texttt{ip link}}
+\label{sec:orgd8b8a1c}
+Enfocado en la \textbf{capa de enlace}: estado \texttt{UP/DOWN}, tipo de interfaz, MTU, etc.
+
+\begin{verbatim}
+ip link
+\end{verbatim}
+\subsubsection{\texttt{ip route}}
+\label{sec:orge9ded82}
+Muestra la \textbf{tabla de enrutamiento} (gateway por defecto, rutas estáticas, alcances).
+
+\begin{verbatim}
+ip route
+\end{verbatim}
+\subsubsection{\texttt{ip neighbour}}
+\label{sec:org3763a58}
+Equivalente moderno de la tabla ARP: \textbf{direcciones MAC} de vecinos en segmentos locales alcanzables.
+
+\begin{verbatim}
+ip neighbour
+\end{verbatim}
+\subsection{Conceptos de repaso}
+\label{sec:orgc10bcb0}
+\begin{itemize}
+\item Interfaz \textbf{loopback} (\texttt{lo}, típicamente \textbf{127.0.0.1}): tráfico del host consigo mismo; sirve para probar servicios locales (\texttt{sshd}, bases de datos, aplicaciones web en \texttt{localhost}) sin salir al cable.
+\item Diferencia entre dirección \textbf{IP} (lógica, enrutable) y \textbf{MAC} (física/lógica de enlace en LAN).
+\end{itemize}
+\subsection{Máximas}
+\label{sec:org4e32fdf}
+\begin{itemize}
+\item Antes de culpar a la aplicación, verificar \textbf{enlace} (\texttt{ip link}), \textbf{dirección} (\texttt{ip addr}) y \textbf{ruta} (\texttt{ip route}).
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:orgb19889f}
+Si un comando antiguo aparece en un tutorial (\texttt{ifconfig}), en RHEL/Fedora/Debian reciente suele existir el equivalente con \texttt{ip}; instalar \texttt{net-tools} solo por nostalgia suele ser opcional.
+\section{Configuración y seguridad del sistema}
+\label{sec:org9d2c7c2}
+
+\subsection{Conceptos nuevos}
+\label{sec:orgbf25601}
+
+\subsubsection{\texttt{/etc/nsswitch.conf}}
+\label{sec:org98e8793}
+Define el \textbf{orden} en que el sistema consulta fuentes para nombres de usuarios, grupos, hosts, etc. Para \textbf{hosts}, la línea relevante suele ser \texttt{hosts: files dns} (primero \texttt{/etc/hosts}, luego DNS). Cambiar ese orden altera el comportamiento de \texttt{ping}, \texttt{ssh} y cualquier programa que resuelva nombres.
+\subsubsection{\texttt{semanage} (SELinux)}
+\label{sec:orgf91d762}
+En sistemas con \textbf{SELinux} en modo enforcing, \texttt{semanage} permite gestionar elementos de política: puertos, booleanos, contextos de archivos, etc. Es la capa correcta para \textbf{abrir un puerto} o ajustar reglas sin desactivar SELinux por completo (lo cual sería una mala práctica en entornos serios).
+\subsection{Conceptos de repaso}
+\label{sec:orgd537396}
+
+\subsubsection{\texttt{/etc/hosts}}
+\label{sec:orgcf4406a}
+Archivo local que \textbf{mapea IP → nombre(s)}. Prioridad alta si \texttt{nsswitch} lo indica. Útil en aulas sin DNS interno o para nombres cortos entre compañeros (\texttt{ping compa1}, \texttt{ssh usuario@compa2}).
+\subsection{Máximas}
+\label{sec:org9523b9d}
+\begin{itemize}
+\item Coordinar con el grupo \textbf{qué IP corresponde a qué nombre} antes de llenar \texttt{hosts}; evita “funciona en mi máquina” por entradas inconsistentes.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:org99087b3}
+
+\subsubsection{Variables de entorno}
+\label{sec:org1e17464}
+Son pares \textbf{nombre=valor} heredados por procesos hijos. Afectan rutas de búsqueda de comandos (\texttt{PATH}), localización (\texttt{LANG}), opciones de \texttt{ssh} (\texttt{SSH\_AUTH\_SOCK}, etc.).
+
+\begin{verbatim}
+set | grep PATH
+env | grep SSH
+\end{verbatim}
+
+Filtrar con \texttt{grep} ayuda cuando la salida de \texttt{set} es muy larga.
+\section{Actividades prácticas reportadas}
+\label{sec:org1d61359}
+
+Resumen de lo trabajado en clase
+
+\begin{enumerate}
+\item \textbf{Mapeo de red:} Edición de \texttt{/etc/hosts} con las IPs de compañeros y nombres acordados para identificación en la red local.
+\item \textbf{Intercambio de llaves:} Copia de \texttt{id\_rsa.pub} al \texttt{authorized\_keys} de otros nodos para establecer \textbf{confianza mutua} sin contraseña en cada inicio de sesión.
+\item \textbf{Ejecución remota por SSH:} Una vez configurada la autenticación por llave, comandos de diagnóstico en equipos remotos, por ejemplo:
+\end{enumerate}
+
+\begin{verbatim}
+ssh usuario@compañero 'uptime'
+ssh usuario@compañero 'hostname'
+ssh usuario@compañero 'who'
+\end{verbatim}
+
+\begin{enumerate}
+\item \textbf{Análisis inalámbrico (conceptual):} Repaso de \textbf{ancho de banda} y de cómo el \textbf{SSID} identifica la red Wi-Fi en el punto de acceso; útil para relacionar la capa física/enlace con lo que vemos en \texttt{ip link} en interfaces \texttt{wlan*}.
+\end{enumerate}
+\end{document}

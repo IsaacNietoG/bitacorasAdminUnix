@@ -1,6 +1,7 @@
-% Created 2026-03-16 Mon 21:35
+% Created 2026-04-01 Wed 23:08
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt, letterpaper]{article}
+
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
@@ -24,7 +25,7 @@
  pdftitle={Bitácora Semanal 6: Administración de Sistemas Unix},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 30.2 (Org mode 9.7.39)}, 
+ pdfcreator={},
  pdflang={English}}
 \begin{document}
 
@@ -33,7 +34,7 @@
 \tableofcontents
 
 \section{Información General}
-\label{sec:orgde457f1}
+\label{sec:orga430dcd}
 \begin{itemize}
 \item \textbf{Semana:} Del 9 de Marzo 2026 al 13 de Marzo 2026
 \item \textbf{Equipo:}
@@ -47,7 +48,7 @@
 
 En esta semana el enfoque se baso en crear paquetes para debian, algunos conceptos de red, ssh y maquinas virtuales
 \subsection{Responsabilidades:}
-\label{sec:org5119719}
+\label{sec:orgf4205cb}
 
 \begin{itemize}
 \item Gael Emiliano: Notas físicas y aportaciones en nuevos conceptos y maquetado del reporte.
@@ -56,14 +57,14 @@ En esta semana el enfoque se baso en crear paquetes para debian, algunos concept
 \item Isaac Julián: Cambios menores, primeros dos temas y algunas investigaciones en Secciones Libres
 \end{itemize}
 \section{Archivo /etc/hosts}
-\label{sec:org8a92a56}
+\label{sec:org39dbf4d}
 
 El archivo \textbf{/etc/hosts} es un archivo de configuración local utilizado por el sistema
 operativo para asociar \textbf{nombres de host} con \textbf{direcciones IP}.
 
 Nos permite realizar una resolución de nombres sin necesidad de consultar un servidor DNS.
 \subsection{Estructura del archivo}
-\label{sec:org6b48804}
+\label{sec:orgbf3cd88}
 
 Cada línea del archivo tiene la siguiente estructura:
 
@@ -80,7 +81,7 @@ Ejemplo:
 192.168.1.20 impresora impresora-local
 \end{verbatim}
 \subsection{Funcionamiento}
-\label{sec:orgef1133f}
+\label{sec:org4022d38}
 
 Cuando una aplicación necesita resolver un nombre de host:
 
@@ -92,7 +93,7 @@ Cuando una aplicación necesita resolver un nombre de host:
 
 Esto depende del archivo /etc/nsswitch.conf donde se define el orden de resolución de nombres.
 \subsection{Conceptos de red relacionados ( repaso )}
-\label{sec:orgfa1bc6b}
+\label{sec:orgef04ed7}
 
 \begin{itemize}
 \item \textbf{Hostname}: nombre asignado a una máquina dentro de una red.
@@ -101,7 +102,7 @@ Esto depende del archivo /etc/nsswitch.conf donde se define el orden de resoluci
 \item \textbf{DNS (Domain Name System)}: sistema distribuido que traduce nombres de dominio a direcciones IP.
 \end{itemize}
 \section{Ping usando nombres definidos en hosts}
-\label{sec:org8e63a66}
+\label{sec:orgccbb46e}
 
 Usamos lo anterior en clase para hacer ping entre compañeros de la clase, si un nombre está definido en \textbf{/etc/hosts}, 
 es posible usarlo directamente con el comando \textbf{ping}.
@@ -114,12 +115,12 @@ ping juanito
 
 El sistema buscará ``juanito'' en \textbf{/etc/hosts}, obtendrá la IP asociada y enviará los paquetes ICMP a esa dirección.
 \section{Directorio \textasciitilde{}/.ssh}
-\label{sec:org56a4d81}
+\label{sec:orgcdac668}
 
 El directorio /.ssh contiene archivos relacionados con la autenticación segura usando \textbf{SSH (Secure Shell)}.
 Este directorio normalmente tiene permisos restrictivos para proteger las claves.
 \subsection{Archivos comunes}
-\label{sec:org870a670}
+\label{sec:orga166107}
 
 \begin{itemize}
 \item \textbf{id\textsubscript{rsa}} → clave privada
@@ -129,12 +130,12 @@ Este directorio normalmente tiene permisos restrictivos para proteger las claves
 \item \textbf{config} → configuración personalizada para conexiones SSH
 \end{itemize}
 \subsection{Función}
-\label{sec:orga0fefa6}
+\label{sec:org2cc610b}
 
 Permite autenticación segura entre máquinas sin necesidad de contraseñas,
 mediante criptografía de clave pública.
 \section{ssh-keygen}
-\label{sec:orgf64e75a}
+\label{sec:org853a0c3}
 
 El comando:
 
@@ -144,7 +145,7 @@ ssh-keygen
 
 se utiliza para generar un par de claves criptográficas para autenticación SSH.
 \subsection{Proceso}
-\label{sec:orgdd5e85b}
+\label{sec:org6cabc20}
 
 Al ejecutar el comando, el programa solicita:
 
@@ -164,7 +165,7 @@ Enter file in which to save the key (/home/user/.ssh/id_rsa)
 Enter passphrase
 \end{verbatim}
 \subsection{Resultado}
-\label{sec:orgf12943f}
+\label{sec:org6017813}
 
 Se generan dos archivos:
 
@@ -181,7 +182,7 @@ La clave pública se puede copiar al servidor en:
 
 para permitir autenticación sin contraseña.
 \subsection{Flujo de autenticación SSH}
-\label{sec:orge237fca}
+\label{sec:org99eac07}
 
 El proceso de autenticación mediante llaves SSH sigue un modelo de criptografía de clave pública. Esto permite verificar la identidad del usuario sin necesidad de enviar contraseñas a través de la red.
 
@@ -211,7 +212,7 @@ en ~/.ssh/authorized_keys
 
 Gracias a este mecanismo, el servidor puede verificar la identidad del usuario sin que la clave privada sea transmitida a través de la red, lo cual mejora significativamente la seguridad del sistema.
 \section{Creación de repositorios en Debian}
-\label{sec:orgf8cd5cf}
+\label{sec:org1c92da0}
 
 Esta semana durante las ayudantías vimos como crear repositorios en debian, 
 en debian el software se distribuye mediante \textbf{paquetes .deb}.
@@ -224,7 +225,7 @@ Un repositorio es una colección organizada de paquetes accesible mediante herra
 \item aptitude
 \end{itemize}
 \subsection{Estructura básica de un repositorio}
-\label{sec:orgb103ad4}
+\label{sec:org98393ab}
 
 Un repositorio contiene:
 
@@ -247,10 +248,10 @@ repo/
  │               └── Packages
 \end{verbatim}
 \section{Herramientas de empaquetado en Debian}
-\label{sec:org9d50b44}
+\label{sec:org6ec8e36}
 
 \subsection{dh\textsubscript{make}}
-\label{sec:org488a12d}
+\label{sec:orgdfb25f2}
 
 Herramienta que crea la estructura inicial necesaria para empaquetar software en Debian.
 Se usa normalmente dentro del directorio del código fuente.
@@ -267,7 +268,7 @@ debian/
 
 que contiene archivos de configuración del paquete.
 \subsection{Flujo del sistema de paquetes Debian}
-\label{sec:org93e0035}
+\label{sec:org43bbbbc}
 
 En los sistemas basados en Debian, el software se distribuye mediante paquetes \textbf{.deb}. Estos paquetes contienen los archivos necesarios para instalar una aplicación dentro del sistema.
 
@@ -304,7 +305,7 @@ Registro en base de datos
 
 Esto permite que el sistema lleve un control completo de los programas instalados, facilitando su actualización, eliminación o mantenimiento.
 \subsection{debuild}
-\label{sec:orge2afe81}
+\label{sec:org355bf25}
 
 Compila el paquete Debian a partir del código fuente y los archivos en el directorio \textbf{debian/}.
 
@@ -319,7 +320,7 @@ Resultado:
 \item archivos de control y firma
 \end{itemize}
 \section{dpkg}
-\label{sec:orgbd82371}
+\label{sec:orgbd11714}
 
 \textbf{dpkg} (Debian Package) es la herramienta base del sistema de gestión de paquetes
 de Debian y de muchas distribuciones derivadas como Ubuntu.
@@ -331,7 +332,7 @@ automáticamente dependencias}.
 Las herramientas de alto nivel como \textbf{apt} utilizan \textbf{dpkg} internamente para
 realizar la instalación real de los paquetes.
 \subsection{Estructura de un paquete .deb}
-\label{sec:org345f6f0}
+\label{sec:org9d96cc6}
 
 Un paquete \textbf{.deb} es un archivo comprimido que contiene tres componentes principales:
 
@@ -364,7 +365,7 @@ Listar los archivos que contiene:
 dpkg-deb -c paquete.deb
 \end{verbatim}
 \subsection{Base de datos de paquetes}
-\label{sec:org8e2c016}
+\label{sec:org117b6a7}
 
 dpkg mantiene una base de datos local con información sobre los paquetes
 instalados en el sistema.
@@ -375,10 +376,10 @@ Esta base de datos se encuentra en:
 /var/lib/dpkg/
 \end{verbatim}
 \subsection{Comandos básicos}
-\label{sec:org2e15f6a}
+\label{sec:org28b28c1}
 
 \subsubsection{Instalar un paquete}
-\label{sec:orgff1e312}
+\label{sec:org3781aed}
 
 \begin{verbatim}
 sudo dpkg -i paquete.deb
@@ -393,7 +394,7 @@ Para corregir dependencias podemos usar:
 sudo apt -f install
 \end{verbatim}
 \subsubsection{Eliminar un paquete}
-\label{sec:org9ae1711}
+\label{sec:org878f43a}
 
 Eliminar el paquete pero conservar archivos de configuración:
 
@@ -407,13 +408,13 @@ Eliminar completamente el paquete y sus configuraciones:
 sudo dpkg -P paquete
 \end{verbatim}
 \subsubsection{Listar paquetes instalados}
-\label{sec:org90fdbc9}
+\label{sec:org41eb4ab}
 
 \begin{verbatim}
 dpkg -l
 \end{verbatim}
 \subsection{Comandos comunes de gestión de paquetes}
-\label{sec:org54327a9}
+\label{sec:org92722ad}
 
 \begin{center}
 \begin{tabular}{ll}
@@ -428,7 +429,7 @@ dpkg -l & \\
 \end{tabular}
 \end{center}
 \subsection{Relación con APT}
-\label{sec:orgeb8834e}
+\label{sec:org6dff278}
 
 El sistema de paquetes de Debian funciona en dos niveles:
 
@@ -460,7 +461,7 @@ Ejemplo de flujo típico:
 \item apt ejecuta dpkg para instalar
 \end{enumerate}
 \section{DKMS (Dynamic Kernel Module Support)}
-\label{sec:orgbd3a2ce}
+\label{sec:org9ecd078}
 
 Sistema que permite recompilar automáticamente módulos del kernel cuando se instala un nuevo kernel.
 Esto es útil para controladores que no están incluidos directamente en el kernel.
@@ -473,12 +474,12 @@ Ejemplo típico:
 \item módulos de virtualización
 \end{itemize}
 \section{Compartir carpetas entre máquina virtual y anfitrión}
-\label{sec:orgee9cc3a}
+\label{sec:org32e8156}
 
 En la clase del viernes vimos que muchas plataformas de virtualización permiten compartir directorios 
 entre el sistema anfitrión y la máquina virtual.
 \subsection{VirtualBox}
-\label{sec:org4e386cc}
+\label{sec:org2c182f6}
 
 \begin{enumerate}
 \item Instalar \textbf{Guest Additions} dentro de la VM.
@@ -492,7 +493,7 @@ Ejemplo:
 sudo mount -t vboxsf carpeta_compartida /mnt/compartida
 \end{verbatim}
 \subsection{VMware}
-\label{sec:org05af933}
+\label{sec:orgc94263b}
 
 \begin{enumerate}
 \item Instalar \textbf{VMware Tools}
@@ -504,7 +505,7 @@ sudo mount -t vboxsf carpeta_compartida /mnt/compartida
 /mnt/hgfs/
 \end{verbatim}
 \subsection{Uso}
-\label{sec:org2c4f742}
+\label{sec:org06f3ac2}
 
 Las carpetas compartidas permiten:
 

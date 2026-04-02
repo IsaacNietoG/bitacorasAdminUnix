@@ -1,0 +1,155 @@
+#+TITLE: Bitácora Semanal 7: Administración de Sistemas Unix
+#+AUTHOR: Equipo Alpine White
+#+DATE: [2026-03-21 sat]
+#+OPTIONS: toc:2
+#+PROPERTY: header-args :exports both :eval never
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [11pt, letterpaper]
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage{palatino}                   % Tipografía elegante
+#+LATEX_HEADER: \usepackage{xcolor}                     % Colores personalizados
+
+* Información General
+- *Semana:* Del 16 de Marzo 2026 al 20 de Marzo 2026
+- *Equipo :*
+  - Arreguín Salgado Gael Emiliano
+  - Gramer Muñoz Omar Fernando
+  - López Pérez Mariana
+  - Nieto Gallegos Isaac Julián
+
+Esta semana profundizamos en *administración de redes y conectividad remota* en Linux: SSH y su autenticación por llaves, el comando =ip= de =iproute2=, archivos de resolución de nombres y prácticas de confianza entre equipos en la red del laboratorio.
+
+** Responsabilidades:
+- Gael Emiliano: SSH, Telnet y sección de máximas de seguridad.
+- Omar Fernando: Comando =ip=, rutas y vecinos; prácticas de red.
+- Mariana: =/etc/hosts=, =nsswitch.conf=, SELinux/semanage y estructura del documento.
+- Isaac Julián: Variables de entorno, loopback, actividades prácticas y observaciones.
+
+
+* Conexión y acceso remoto
+
+** Conceptos nuevos
+
+*** Telnet
+Telnet es un protocolo *histórico* (aprox. 1969, entorno ARPANET) que permite sesión remota en texto plano. Por convención usa el *puerto 23*. Hoy se considera *obsoleto para administración* porque *no cifra* usuario, contraseña ni datos: cualquier intermediario en la red puede leer la sesión.
+
+*Uso razonable hoy:* diagnóstico puntual de conectividad (por ejemplo comprobar si un puerto responde o si hay ruta hasta un host), siempre entendiendo el riesgo. Para acceso remoto real en Linux se prefiere *SSH*.
+
+*** Autenticación SSH con llaves (=ssh-keygen=)
+SSH (Secure Shell) es el estándar para acceso remoto *cifrado*; el servicio suele escuchar en el *puerto 22*. Además de contraseña, se puede usar un *par de llaves* (privada y pública):
+
+#+begin_src bash
+ssh-keygen
+#+end_src
+
+La llave pública (=id_rsa.pub= u otro nombre elegido) se coloca en el servidor, en =~/.ssh/authorized_keys= del usuario destino. Así el servidor puede verificar la identidad sin enviar la contraseña por la red, lo que *reduce ataques de fuerza bruta* y mejora la higiene operativa en laboratorios y servidores.
+
+** Conceptos de repaso
+
+*** SSH
+Protocolo de capa de aplicación para shell remoto, transferencia de archivos (=scp=, =sftp=) y túneles. El tráfico va cifrado; la identidad del servidor se valida típicamente contra =known_hosts=.
+
+*** Ping
+Herramienta ICMP (u otros modos según implementación) para probar alcanzabilidad y latencia. Complementa el trabajo con =/etc/hosts= cuando los nombres de compañeros ya están mapeados a IP.
+
+** Máximas
+- *Nunca administrar producción por Telnet*; usar SSH (y, cuando aplique, VPN).
+- *Proteger la llave privada* (=chmod 600= en =id_rsa=, passphrase en entornos expuestos).
+- *Deshabilitar login root por contraseña* y preferir llaves o usuarios con =sudo=, según política del curso o del sitio.
+
+** Sección libre
+En laboratorio resulta útil combinar *ping por nombre* (vía =/etc/hosts=) con *SSH por IP o nombre* una vez que la resolución local es coherente. Si dos equipos se llaman igual en =hosts=, el primero que coincida en el archivo gana: conviene acordar nombres únicos por máquina.
+
+
+* Administración de red en Linux: familia =ip= (=iproute2=)
+
+La suite *iproute2* reemplaza herramientas clásicas como =ifconfig= y =route= en muchas distribuciones modernas. El comando unificado es =ip=.
+
+** Conceptos nuevos
+
+*** =ip addr show=
+Lista interfaces con direcciones *IPv4/IPv6* y, entre otros datos, la *MAC* asociada a cada interfaz.
+
+#+begin_src bash
+ip addr show
+#+end_src
+
+*** =ip link=
+Enfocado en la *capa de enlace*: estado =UP/DOWN=, tipo de interfaz, MTU, etc.
+
+#+begin_src bash
+ip link
+#+end_src
+
+*** =ip route=
+Muestra la *tabla de enrutamiento* (gateway por defecto, rutas estáticas, alcances).
+
+#+begin_src bash
+ip route
+#+end_src
+
+*** =ip neighbour=
+Equivalente moderno de la tabla ARP: *direcciones MAC* de vecinos en segmentos locales alcanzables.
+
+#+begin_src bash
+ip neighbour
+#+end_src
+
+** Conceptos de repaso
+- Interfaz *loopback* (=lo=, típicamente *127.0.0.1*): tráfico del host consigo mismo; sirve para probar servicios locales (=sshd=, bases de datos, aplicaciones web en =localhost=) sin salir al cable.
+- Diferencia entre dirección *IP* (lógica, enrutable) y *MAC* (física/lógica de enlace en LAN).
+
+** Máximas
+- Antes de culpar a la aplicación, verificar *enlace* (=ip link=), *dirección* (=ip addr=) y *ruta* (=ip route=).
+
+** Sección libre
+Si un comando antiguo aparece en un tutorial (=ifconfig=), en RHEL/Fedora/Debian reciente suele existir el equivalente con =ip=; instalar =net-tools= solo por nostalgia suele ser opcional.
+
+
+* Configuración y seguridad del sistema
+
+** Conceptos nuevos
+
+*** =/etc/nsswitch.conf=
+Define el *orden* en que el sistema consulta fuentes para nombres de usuarios, grupos, hosts, etc. Para *hosts*, la línea relevante suele ser =hosts: files dns= (primero =/etc/hosts=, luego DNS). Cambiar ese orden altera el comportamiento de =ping=, =ssh= y cualquier programa que resuelva nombres.
+
+*** =semanage= (SELinux)
+En sistemas con *SELinux* en modo enforcing, =semanage= permite gestionar elementos de política: puertos, booleanos, contextos de archivos, etc. Es la capa correcta para *abrir un puerto* o ajustar reglas sin desactivar SELinux por completo (lo cual sería una mala práctica en entornos serios).
+
+** Conceptos de repaso
+
+*** =/etc/hosts=
+Archivo local que *mapea IP → nombre(s)*. Prioridad alta si =nsswitch= lo indica. Útil en aulas sin DNS interno o para nombres cortos entre compañeros (=ping compa1=, =ssh usuario@compa2=).
+
+** Máximas
+- Coordinar con el grupo *qué IP corresponde a qué nombre* antes de llenar =hosts=; evita “funciona en mi máquina” por entradas inconsistentes.
+
+** Sección libre
+
+*** Variables de entorno
+Son pares *nombre=valor* heredados por procesos hijos. Afectan rutas de búsqueda de comandos (=PATH=), localización (=LANG=), opciones de =ssh= (=SSH_AUTH_SOCK=, etc.).
+
+#+begin_src bash
+set | grep PATH
+env | grep SSH
+#+end_src
+
+Filtrar con =grep= ayuda cuando la salida de =set= es muy larga.
+
+
+* Actividades prácticas reportadas
+
+Resumen de lo trabajado en clase
+
+1. *Mapeo de red:* Edición de =/etc/hosts= con las IPs de compañeros y nombres acordados para identificación en la red local.
+2. *Intercambio de llaves:* Copia de =id_rsa.pub= al =authorized_keys= de otros nodos para establecer *confianza mutua* sin contraseña en cada inicio de sesión.
+3. *Ejecución remota por SSH:* Una vez configurada la autenticación por llave, comandos de diagnóstico en equipos remotos, por ejemplo:
+
+#+begin_src bash
+ssh usuario@compañero 'uptime'
+ssh usuario@compañero 'hostname'
+ssh usuario@compañero 'who'
+#+end_src
+
+4. *Análisis inalámbrico (conceptual):* Repaso de *ancho de banda* y de cómo el *SSID* identifica la red Wi-Fi en el punto de acceso; útil para relacionar la capa física/enlace con lo que vemos en =ip link= en interfaces =wlan*=.

@@ -1,0 +1,100 @@
+#+TITLE: Bitácora Semanal 8: Administración de Sistemas Unix
+#+AUTHOR: Equipo Alpine White
+#+DATE: [2026-03-28 sat]
+#+OPTIONS: toc:2
+#+PROPERTY: header-args :exports both :eval never
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [11pt, letterpaper]
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage{palatino}                   % Tipografía elegante
+#+LATEX_HEADER: \usepackage{xcolor}                     % Colores personalizados
+
+* Información General
+- *Semana:* Del 23 de Marzo 2026 al 27 de Marzo 2026
+- *Equipo :*
+  - Arreguín Salgado Gael Emiliano
+  - Gramer Muñoz Omar Fernando
+  - López Pérez Mariana
+  - Nieto Gallegos Isaac Julián
+
+El hilo conductor fue seguir usando *SSH* en entornos (incluido el equipo del profesor), *revisar quién tiene sesiones abiertas* con =who=, y *acercarnos a escritorio remoto* mediante *RDP*, en particular cómo *GNOME* expone la pantalla compartida usando ese enfoque. Además reforzamos el *mapeo local de nombres* en =/etc/hosts= con entradas tipo *dominio* por máquina para conectarnos entre compañeros ya con *autenticación por llaves*.
+
+** Responsabilidades:
+- Gael Emiliano: Sesión SSH al equipo del docente y notas sobre =who=.
+- Omar Fernando: Compartir escritorio en GNOME y exposición de la clase.
+- Mariana: RDP, concepto y contexto frente a SSH. 
+- Isaac Julián: armado del documento, comentarios complementarios en general
+
+
+* Conexión por SSH al equipo del profesor
+
+En laboratorio nos conectamos por *SSH* al equipo del profesor, como ejercicio de *acceso remoto autenticado* en una máquina que no es la nuestra (usuario, host conocido, puerto y llaves según lo configurado en clase).
+
+** Conceptos de repaso
+- Cliente =ssh usuario@host=; el servidor debe tener el demonio =sshd= activo y política de acceso (contraseña, llave, etc.) acorde al curso. Se crearon usuarios y se cargaron llaves públicas para poder acceder.
+- La primera vez suele pedir confirmación de la *huella* del servidor (=known_hosts=).
+
+
+* Comando =who=: sesiones y usuarios conectados
+
+El comando =who= lee la información de sesiones registrada en el sistema (tradicionalmente vía =utmp= / =wtmp=) y muestra *quién tiene sesiones activas*, incluidas muchas de las abiertas por *SSH*.
+
+#+begin_src bash
+who
+#+end_src
+
+Salidas típicas incluyen *TTY*, *hora de login* y *origen* (por ejemplo una IP remota cuando la sesión es por SSH). Complementos útiles en la misma familia: =w= (más detalle y carga), =users= (lista corta).
+
+** Conceptos nuevos
+- Distinguir *usuario con sesión gráfica local* de *usuario con sesión por SSH*: ambos pueden aparecer en =who=, pero el origen y el TTY ayudan a interpretarlo.
+
+** Máximas
+- Antes de reiniciar un servidor compartido, conviene =who= (y revisar procesos críticos) para no cortar el trabajo de otros.
+
+
+* RDP (Remote Desktop Protocol)
+
+*RDP* es un protocolo de *escritorio remoto* . Permite ver el *escritorio completo* y, según configuración, control remoto, no solo una terminal como SSH.
+
+** Conceptos nuevos
+- A diferencia de *SSH* (orientado a shell y túneles, aunque puede reenviar X11), RDP está pensado para *transmitir la sesión gráfica* de forma eficiente (compresión, canales, etc.).
+- En entornos mixtos, RDP es común en administración de estaciones Windows desde Linux (clientes como =Remmina=, =freerdp=, etc.).
+
+** Conceptos de repaso
+- *Capa de aplicación* vs. uso práctico: SSH para administración textual y automatización; RDP cuando se necesita *interfaz gráfica remota*.
+
+** Sección libre
+En la práctica del curso, RDP sirvió sobre todo para *entender otra forma de acceso remoto* distinta a la que ya domina el flujo con SSH en Linux.
+
+
+* Compartir escritorio en GNOME (basado en RDP)
+
+Para la *exposición o demostración* en clase de ciertas actividades, el profesor activó la función de *compartir escritorio* de *GNOME*. En versiones recientes del escritorio, el compartido puede apoyarse en *RDP* (pila =gnome-remote-desktop= u homóloga), de modo que los alumnos se conectaban con un *cliente RDP* y veían su pantalla en vivo.
+
+** Máximas
+- Compartir pantalla implica *superficie de riesgo*: usar contraseñas fuertes o acceso restringido y cerrar el servicio al terminar la clase.
+
+
+* =/etc/hosts= con nombres tipo dominio y SSH mutuo con llaves
+
+Continuamosel ejercicio de *nombrar* cada máquina virtual de todos los estudiantes del curso en =/etc/hosts=, esta vez con entradas que recuerdan a un *dominio* o *FQDN* (por ejemplo =alumno1.asul.fc.unam.mx=), además de alias cortos si hacía falta.
+
+Objetivo: *resolver localmente* esos nombres a la IP correcta de cada compañero y poder ejecutar, sin ambigüedad:
+
+#+begin_src bash
+ssh usuario@alumno1.asul.fc.unam.mx
+#+end_src
+
+apoyados en *llaves SSH* ya intercambiadas (=authorized_keys=), de modo que el flujo entre pares fuera coherente con la semana anterior pero con *nombres más “de red”* que un simple alias plano.
+
+** Conceptos de repaso
+- Orden de resolución según =/etc/nsswitch.conf= (=files= antes que =dns= si así está definido).
+- Coherencia del archivo entre todos: mismas IPs y mismos nombres acordados.
+
+** Máximas
+- Un nombre tipo dominio en =hosts= *no crea DNS real*; solo afecta a las máquinas que tengan esa línea. Para laboratorio está bien; en producción mandaría el DNS interno.
+
+** Sección libre
+Si algún =ssh= fallaba pese a la llave, los chequeos rápidos fueron: =ping nombre=, =ssh -v= para verbosidad, y confirmar que la IP en =hosts= seguía siendo la del día (DHCP puede cambiar direcciones si no están reservadas).
+

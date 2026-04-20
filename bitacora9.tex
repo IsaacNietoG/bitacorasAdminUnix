@@ -1,0 +1,262 @@
+% Created 2026-04-20 Mon 13:00
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+\usepackage[utf8]{inputenc}
+\usepackage{palatino}                   % Tipografía elegante
+\usepackage{xcolor}                     % Colores personalizados
+\author{Equipo Alpine White}
+\date{\textit{{[}2026-03-10 Tue]}}
+\title{Bitácora Semanal 9: Administración de Sistemas Unix}
+\hypersetup{
+ pdfauthor={Equipo Alpine White},
+ pdftitle={Bitácora Semanal 9: Administración de Sistemas Unix},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={},
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+\section{Información General}
+\label{sec:org3568afd}
+\begin{itemize}
+\item \textbf{Semana:} Del 6 de Abril 2026 al 10 de Abril 2026
+\item \textbf{Equipo:}
+\begin{itemize}
+\item Arreguín Salgado Gael Emiliano
+\item Gramer Muñoz Omar Fernando
+\item López Pérez Mariana
+\item Nieto Gallegos Isaac Julián
+\end{itemize}
+\end{itemize}
+\subsection{Responsabilidades:}
+\label{sec:orgec807a5}
+\begin{itemize}
+\item Gael Emiliano: Bloque \textbf{Kernel, disco y mensajes}; \textbf{Software libre e historia}.
+\item Omar Fernando: Bloque \textbf{SSH, puertos y superficie de ataque}; \textbf{NoMachine y componentes}.
+\item Mariana: Bloque \textbf{Directorios, logs y línea de comandos}; \textbf{Caso XZ Utils}.
+\item Isaac Julián: Coordinación de secciones, máximas y Caso XZ Utils.
+\end{itemize}
+\section{Kernel, disco y mensajes del sistema}
+\label{sec:orge106629}
+
+\subsection{Conceptos nuevos}
+\label{sec:org99f8349}
+
+\subsubsection{\texttt{dmesg}}
+\label{sec:org9b7f543}
+Muestra el \textbf{búfer de mensajes del kernel}; sirve para diagnosticar \textbf{hardware}, \textbf{controladores} y eventos en el \textbf{arranque} o en caliente.
+
+\begin{verbatim}
+dmesg | less
+\end{verbatim}
+\subsubsection{MBR (Master Boot Record)}
+\label{sec:orgb5bafb6}
+En discos con esquema \textbf{MBR} clásico, es el \textbf{primer sector}: contiene \textbf{código de arranque} y la \textbf{tabla de particiones} (frente a \textbf{GPT}, más apto para discos grandes y UEFI moderno).
+\subsubsection{IP homologada (pública)}
+\label{sec:org1b711c7}
+Dirección \textbf{única globalmente} que permite a un equipo presentarse a \textbf{Internet} sin ser solo “detrás de un NAT” como única cara hacia la red pública; contrasta con direcciones \textbf{privadas} (\texttt{RFC1918}).
+\subsection{Conceptos de repaso}
+\label{sec:org175cf36}
+
+\begin{itemize}
+\item Flujo general de \textbf{arranque}: firmware → cargador → kernel → \texttt{init} / systemd.
+\item Diferencia entre \textbf{partición} de datos y particiones de \textbf{arranque} / \texttt{/boot} según cómo esté montado el sistema en el curso.
+\end{itemize}
+\subsection{Máximas}
+\label{sec:org8ed0481}
+
+\begin{itemize}
+\item Antes de culpar a la aplicación, mirar si el \textbf{kernel} vio el dispositivo (\texttt{dmesg} tras enchufar USB, disco o NIC).
+\item \textbf{MBR vs. GPT} no es pedantería: define cómo se particiona y hasta dónde puede crecer un disco de arranque.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:orgb1a6dd6}
+
+\begin{itemize}
+\item \texttt{dmesg -w} (si está disponible) permite seguir el flujo en vivo; en sistemas con \texttt{journalctl -k} parte del historial también vive en el journal.
+\end{itemize}
+\section{Software libre e historia}
+\label{sec:orgc0f9691}
+
+\subsection{Conceptos nuevos}
+\label{sec:orgf497db7}
+
+\subsubsection{Término \textbf{open source} y la OSI}
+\label{sec:orgac61712}
+El movimiento \textbf{open source}, impulsado por la \textbf{Open Source Initiative}, enfatiza \textbf{beneficios prácticos} y empresariales del código abierto; el matiz no es idéntico al discurso político-filosófico del \textbf{software libre}.
+\subsubsection{Línea temporal clave}
+\label{sec:org0a28cf6}
+\begin{itemize}
+\item \textbf{1983:} Richard Stallman anuncia el proyecto \textbf{GNU}.
+\item \textbf{1985:} Fundación de la \textbf{FSF} y difusión de las \textbf{cuatro libertades}.
+\item \textbf{Años 90:} \textbf{Linus Torvalds} desarrolla el \textbf{núcleo Linux}; junto con herramientas GNU se habla de \textbf{GNU/Linux}.
+\end{itemize}
+\subsection{Conceptos de repaso}
+\label{sec:orgea6b8a0}
+
+\begin{itemize}
+\item \textbf{Código libre (free software):} libertad de \textbf{ejecutar}, \textbf{copiar}, \textbf{distribuir}, \textbf{estudiar}, \textbf{cambiar} y \textbf{mejorar} el software; el eje es la \textbf{libertad}, no solo el precio cero.
+\item Relación GNU ↔ Linux vista en semanas previas del curso.
+\end{itemize}
+\subsection{Máximas}
+\label{sec:org3a5076a}
+
+\begin{itemize}
+\item Entender \textbf{por qué} existe la FSF ayuda a leer licencias (\texttt{GPL}, \texttt{MIT}, etc.) sin confundir “abierto” con “sin obligaciones”.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:org1f33d12}
+
+\begin{itemize}
+\item En clase se contrastó \textbf{“gratis”} frente a \textbf{“libre”}: un programa puede ser de pago y libre, o gratis y no libre.
+\end{itemize}
+\section{SSH, puertos y superficie de ataque}
+\label{sec:orgb007b3e}
+
+\subsection{Conceptos nuevos}
+\label{sec:org2d86eaa}
+
+\subsubsection{Backdoor (puerta trasera)}
+\label{sec:orgefeb0c1}
+Vulnerabilidad o mecanismo \textbf{insertado} para \textbf{saltarse la autenticación} normal y obtener acceso no autorizado.
+\subsubsection{Ofuscación de puertos}
+\label{sec:orgee0acb2}
+Mover un servicio (p. ej. SSH) fuera del \textbf{puerto estándar} para reducir \textbf{ruido} de escaneos automáticos; \textbf{no reemplaza} llaves, parches ni buenas políticas.
+\subsubsection{\texttt{/etc/ssh/sshd\_config}}
+\label{sec:org0f32f51}
+Archivo principal del \textbf{demonio} \texttt{sshd} (puerto, métodos de autenticación, opciones de cifrado). Tras editar: \textbf{validar sintaxis} (\texttt{sshd -t}) y \textbf{recargar} el servicio (\texttt{systemctl reload sshd} o equivalente).
+\subsection{Conceptos de repaso}
+\label{sec:orgf1ad792}
+
+\begin{itemize}
+\item \textbf{SSH:} acceso remoto \textbf{cifrado} (puerto \textbf{22} por defecto).
+\item \textbf{Puerto 23 / Telnet:} acceso remoto \textbf{sin} cifrado; obsoleto para administración seria.
+\item \textbf{\texttt{netstat}}: conexiones, rutas e interfaces; en muchas distros el reemplazo habitual es \texttt{ss}.
+\end{itemize}
+
+\begin{verbatim}
+netstat -tlnp
+\end{verbatim}
+\subsection{Máximas}
+\label{sec:org17c840b}
+
+\begin{itemize}
+\item Cambiar el puerto de SSH sin actualizar \textbf{firewall} y \textbf{documentación interna} genera incidentes evitables.
+\item \texttt{netstat} o \texttt{ss} antes de cerrar servicios: saber \textbf{quién} está conectado y \textbf{qué} escucha.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:org854b3f9}
+
+\begin{itemize}
+\item En Debian/Ubuntu el paquete \texttt{net-tools} sigue trayendo \texttt{netstat}; en RHEL/Fedora moderno a menudo solo \texttt{ss} está instalado por defecto.
+\end{itemize}
+\section{NoMachine y componentes del sistema}
+\label{sec:org587ff46}
+
+\subsection{Conceptos nuevos}
+\label{sec:org98b24d1}
+
+\subsubsection{NoMachine (tecnología NX)}
+\label{sec:orga72c709}
+Software de \textbf{escritorio remoto} basado en \textbf{NX}, orientado a sesiones \textbf{rápidas} con mal ancho de banda; suele ofrecer \textbf{control completo} del escritorio y \textbf{transferencia de archivos}.
+\subsection{Conceptos de repaso}
+\label{sec:orga89930e}
+
+\begin{itemize}
+\item \textbf{\texttt{/usr/lib}}: bibliotecas y piezas de aplicaciones.
+\item \textbf{\texttt{/var/log}}: registros del sistema y de servicios.
+\item Bibliotecas compartidas (sufijo \texttt{.so}, shared objects).
+\item \textbf{systemd:} arranque y gestión de unidades de servicio.
+\item \textbf{SELinux:} controles \textbf{MAC} sobre lo que un proceso puede leer/escribir/abrir.
+\end{itemize}
+\subsection{Máximas}
+\label{sec:org9b76064}
+
+\begin{itemize}
+\item Herramientas como \textbf{NoMachine} facilitan la \textbf{administración a distancia} cuando hace falta \textbf{GUI} fluida, no solo terminal.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:org523d226}
+
+\begin{itemize}
+\item Si \textbf{SELinux} bloquea algo “que debería funcionar”, los \textbf{AVC} en logs y \texttt{ausearch} / \texttt{sealert} (según distro) suelen explicar el denegado mejor que desactivar SELinux.
+\end{itemize}
+\section{Directorios del sistema, logs y línea de comandos}
+\label{sec:org9533ab1}
+
+\subsection{Conceptos nuevos}
+\label{sec:org52f272c}
+
+\subsubsection{Monitoreo de \texttt{auth.log} (y equivalentes)}
+\label{sec:org961a5c6}
+En Debian/Ubuntu, \texttt{/var/log/auth.log} concentra intentos de \textbf{SSH}, \texttt{sudo}, etc.; sirve para ver \textbf{patrones} de fuerza bruta y configurar respuesta (llaves, \texttt{Fail2ban}, políticas del curso).
+\subsubsection{Procesamiento con \texttt{grep}, \texttt{awk}, \texttt{sed}, \texttt{cut}}
+\label{sec:org598620e}
+Encadenar estas herramientas para \textbf{filtrar}, \textbf{recortar columnas} y \textbf{normalizar} archivos de miles de líneas al auditar logs.
+\subsection{Conceptos de repaso}
+\label{sec:orgcd36b53}
+
+\begin{itemize}
+\item Papel de \texttt{/bin}, \texttt{/etc}, \texttt{/lib}, \texttt{/usr} y \texttt{/var} (binarios esenciales, configuración, librerías core, jerarquía secundaria, \textbf{datos variables}).
+\item Idea general de que \texttt{/var} almacena información \textbf{dinámica} (logs, colas, cachés) que \textbf{crece} con el tiempo.
+\end{itemize}
+\subsection{Máximas}
+\label{sec:orga946aa9}
+
+\begin{itemize}
+\item Los \textbf{logs} permiten detectar \textbf{errores}, \textbf{patrones} y \textbf{comportamientos anómalos}; sin ellos solo queda adivinar.
+\item Vigilar \textbf{espacio en disco} en \texttt{/var} (\texttt{df}, \texttt{du}) evita que un log desbordado tumbe servicios.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:org5b8a68c}
+
+\begin{itemize}
+\item En sistemas con \textbf{systemd}, \texttt{journalctl -u ssh} (o nombre del servicio) complementa o sustituye archivos bajo \texttt{/var/log} según configuración de \texttt{rsyslog} vs. journal.
+\end{itemize}
+\section{Cadena de suministro: incidente XZ Utils}
+\label{sec:org912fc39}
+
+\subsection{Conceptos nuevos}
+\label{sec:orgc5d0853}
+
+\subsubsection{Ataque a la cadena de suministro (2024)}
+\label{sec:org8d749fd}
+El caso \textbf{XZ Utils} ilustró cómo un actor puede \textbf{ganar confianza} en el mantenimiento e insertar una \textbf{puerta trasera} sofisticada en una librería muy usada; lecciones sobre \textbf{revisión de cambios}, \textbf{firmas}, \textbf{reproducibilidad} y \textbf{gobernanza} del proyecto.
+\subsection{Conceptos de repaso}
+\label{sec:org14c3626}
+
+\begin{itemize}
+\item Definición de \textbf{backdoor} y diferencia respecto a un \textbf{bug} accidental.
+\item Relación con \textbf{código libre}: más ojos no garantizan seguridad si el proceso de revisión falla.
+\end{itemize}
+\subsection{Máximas}
+\label{sec:orgc085692}
+
+\begin{itemize}
+\item \textbf{Confianza} en mantenedores debe ir acompañada de \textbf{procesos} (CI, revisores, transparencia en scripts de construcción).
+\item Un solo módulo comprometido puede afectar a \textbf{muchos} sistemas aguas abajo.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:org8d0728f}
+
+\begin{itemize}
+\item En clase se mencionó verificar \textbf{firmas} y \textbf{hashes} de tarballs oficiales antes de compilar paquetes sensibles en entornos de administración.
+\end{itemize}
+\end{document}

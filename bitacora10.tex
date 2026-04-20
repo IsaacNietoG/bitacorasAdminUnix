@@ -1,0 +1,260 @@
+% Created 2026-04-20 Mon 13:02
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt, letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+\usepackage[utf8]{inputenc}
+\usepackage{palatino}                   % Tipografía elegante
+\usepackage{xcolor}                     % Colores personalizados
+\author{Equipo Alpine White}
+\date{\textit{{[}2026-04-20 Mon]}}
+\title{Bitácora Semanal 10: Administración de Sistemas Unix}
+\hypersetup{
+ pdfauthor={Equipo Alpine White},
+ pdftitle={Bitácora Semanal 10: Administración de Sistemas Unix},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={},
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+\section{Información General}
+\label{sec:orge581e29}
+\begin{itemize}
+\item \textbf{Semana:} Del 13 de Abril 2026 al 17 de Abril 2026
+\item \textbf{Equipo:}
+\begin{itemize}
+\item Arreguín Salgado Gael Emiliano
+\item Gramer Muñoz Omar Fernando
+\item López Pérez Mariana
+\item Nieto Gallegos Isaac Julián
+\end{itemize}
+\end{itemize}
+
+La instalación y configuración de \textbf{XAMPP} la vimos principalmente en \textbf{sesiones con el profesor} (estructura de \texttt{/opt/lampp/}, despliegue, logs y bibliotecas faltantes). En el \textbf{laboratorio presencial} el foco fue otro: \textbf{acceso al servidor RHEL} vía \textbf{Tailscale}, la \textbf{entrega del reporte} sobre la vulnerabilidad \textbf{XZ Utils}, y una \textbf{lista de actividades colaborativas} entre cuentas del mismo host (\texttt{echo}, \texttt{write}, \texttt{wall}, \texttt{who}, \texttt{chat.log}, \texttt{crontab} y \textbf{respaldo de homes}).
+\subsection{Responsabilidades:}
+\label{sec:org053edf2}
+\begin{itemize}
+\item Gael Emiliano: XAMPP (resumen con el profesor); actividades \texttt{wall}, \texttt{who}
+\item Omar Fernando: Tailscale, acceso al RHEL y notas de red (\texttt{100.x}).
+\item Mariana: actividades del laboratorio y notas de red.
+\item Isaac Julián: \texttt{crontab}, actividades del laboratorio, backup programado; armado del documento.
+\end{itemize}
+\section{XAMPP con el profesor (sesiones de curso)}
+\label{sec:org6bce521}
+
+\subsection{Conceptos nuevos}
+\label{sec:orgfc18ab0}
+
+\subsubsection{Qué consolidamos}
+\label{sec:org29c2ac6}
+\textbf{XAMPP} agrupa \textbf{Apache}, \textbf{MariaDB/MySQL}, \textbf{PHP} y \textbf{Perl} bajo \texttt{/opt/lampp/}, controlado con el script \texttt{lampp} (\texttt{start} / \texttt{stop}). Revisamos \texttt{htdocs}, configuración bajo \texttt{etc}, y \textbf{logs} en \texttt{logs/error\_log} cuando faltaban \texttt{.so} del sistema; el flujo fue \textbf{log → paquete de la distro} (\texttt{dnf install} / \texttt{apt install}).
+
+\begin{verbatim}
+sudo /opt/lampp/lampp start
+sudo tail -n 30 /opt/lampp/logs/error_log
+\end{verbatim}
+\subsection{Conceptos de repaso}
+\label{sec:orgf17139f}
+
+\begin{itemize}
+\item \textbf{FHS} y uso de \texttt{/opt} para software “de terceros” en su propio árbol.
+\item \textbf{Apache} + \textbf{PHP} + \textbf{motor SQL} como stack típico de aplicación web.
+\end{itemize}
+\subsection{Máximas}
+\label{sec:org47107b5}
+
+\begin{itemize}
+\item XAMPP en el curso es \textbf{laboratorio}; en producción se prefiere stack empaquetado por la distro y endurecido.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:orgd8daeea}
+\section{Acceso al servidor RHEL vía Tailscale}
+\label{sec:org0ee71cb}
+
+\subsection{Conceptos nuevos}
+\label{sec:orgd0fc1e0}
+
+\subsubsection{Invitación y ventana de tiempo}
+\label{sec:org8f5b6ba}
+El docente compartió un \textbf{enlace de invitación} a la consola de administración de Tailscale para que cada quien \textbf{validara la conexión} con el \textbf{usuario y contraseña ya existentes} en el servidor RHEL. El acceso por invitación estuvo \textbf{abierto hasta las 21:00} del día de la práctica.
+
+\begin{verbatim}
+https://login.tailscale.com/admin/invite/*REDACTADO*
+\end{verbatim}
+\subsubsection{IP en la malla Tailscale}
+\label{sec:orgb51620e}
+La dirección que se reportó para el servidor en la red \textbf{Tailscale} fue \textbf{100.125.166.2} (rango típico \textbf{CGNAT} \texttt{100.64.0.0/10} de Tailscale).
+\subsection{Conceptos de repaso}
+\label{sec:org9091df0}
+
+\begin{itemize}
+\item \textbf{SSH} sobre IP alcanzable: una vez en la malla VPN, el servidor RHEL se administra como cualquier otro host remoto del curso.
+\item Diferencia entre IP \textbf{de aula / LAN} e IP \textbf{100.x} de la overlay.
+\end{itemize}
+\subsection{Máximas}
+\label{sec:orgb00f04a}
+
+\begin{itemize}
+\item Los \textbf{enlaces de invitación} caducan o se revocan; no asumirlos como acceso permanente. Antes de publicar esta bitácora en un repo \textbf{público}, conviene \textbf{redactar} el token si aún vigente.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:orgf17d0d6}
+
+\begin{itemize}
+\item Tailscale simplifica conectividad entre máquinas dispersas, pero la \textbf{política de confianza} (quién entra a la tailnet) sigue siendo responsabilidad del administrador del curso.
+\end{itemize}
+\section{Entrega: reporte de la vulnerabilidad XZ Utils}
+\label{sec:orgd9d4189}
+
+\subsection{Conceptos nuevos}
+\label{sec:orgd1640f5}
+
+\subsubsection{Entregable del curso}
+\label{sec:orgc9331b4}
+Además de las tareas en el servidor, la práctica incluyó \textbf{documentar lo trabajado} sobre la \textbf{vulnerabilidad / puerta trasera en XZ Utils} (cadena de suministro, confianza en mantenedores, lecciones operativas), enlazando con lo ya visto en la \textbf{bitácora 9}.
+\subsection{Conceptos de repaso}
+\label{sec:org98b35d5}
+
+\begin{itemize}
+\item Definición de \textbf{backdoor} frente a \textbf{bug} accidental.
+\item Revisión de \textbf{logs} y de \textbf{integridad} de paquetes como hábito de administración.
+\end{itemize}
+\subsection{Máximas}
+\label{sec:org9e3bbfa}
+
+\begin{itemize}
+\item Un reporte breve pero \textbf{accionable} (qué revisar en sus propios sistemas) vale más que un copiar-pegar genérico.
+\end{itemize}
+\section{Actividades presenciales (0–4): archivos, mensajes y sesiones}
+\label{sec:orgc3a84e7}
+
+El docente propuso el siguiente guion en el \textbf{laboratorio presencial} (si alcanzaba el tiempo):
+\subsection{Conceptos nuevos}
+\label{sec:orgcac8748}
+
+\subsubsection{Actividad 0 — \texttt{crontab.log} personal}
+\label{sec:org82fbd9e}
+Cada quien crea un archivo \texttt{/home/<usuario>/crontab.log} como \textbf{destino} de mensajes posteriores.
+\subsubsection{Actividad 1 — \texttt{echo} al \texttt{crontab.log} de compañeros}
+\label{sec:org55082e1}
+Practicar \textbf{redirección} de salida hacia el archivo de otro usuario (requiere permisos adecuados en el archivo o en el directorio, según lo permitido en el servidor del curso).
+\subsubsection{Actividad 1.1 — \texttt{write}}
+\label{sec:org35c872a}
+Enviar mensajes \textbf{interactivos} a la terminal de un compañero con \texttt{write usuario tty} (el \texttt{tty} sale de \texttt{who}).
+\subsubsection{Actividad 2 — \texttt{wall}}
+\label{sec:org1449f0b}
+Mensaje a \textbf{todas} las terminales conectadas; detectar \textbf{problemas} (permisos, usuarios sin consola, etc.) y \textbf{resolverlos}.
+\subsubsection{Actividad 3 — \texttt{who}}
+\label{sec:org8add1b6}
+Listar \textbf{quién está conectado} y desde qué TTY/origen; base para \texttt{write} y para auditoría rápida.
+\subsubsection{Actividad 4 — chat entre dos o más con \texttt{chat.log}}
+\label{sec:org5ea308d}
+Conversación coordinada dejando \textbf{trazas} en \texttt{\textasciitilde{}/chat.log} (o ruta acordada), con \textbf{permisos} ajustados para que todos los participantes puedan \textbf{escribir} (por ejemplo grupo común + \texttt{chmod g+w}, o política explícita del profesor).
+\subsection{Conceptos de repaso}
+\label{sec:orgab9176f}
+
+\begin{itemize}
+\item Redirección \texttt{>}, \texttt{>{}>{}}; permisos \texttt{chmod}, propietario \texttt{chown}.
+\item \texttt{utmp} / \texttt{wtmp} como fuente de datos para \texttt{who}.
+\end{itemize}
+\subsection{Máximas}
+\label{sec:org7367539}
+
+\begin{itemize}
+\item \texttt{wall} y \texttt{write} molestan si no hay \textbf{acuerdo de aula}; en producción casi siempre están restringidos.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:orga59f678}
+
+\begin{itemize}
+\item Para el “chat” por archivo, \texttt{tee -a chat.log} desde varias sesiones es una forma simple de \textbf{agregar} líneas sin pisar el archivo entero.
+\end{itemize}
+\section{Actividades presenciales (5–6): difusión masiva y \texttt{crontab}}
+\label{sec:orgd877263}
+
+\subsection{Conceptos nuevos}
+\label{sec:orgdca2fcb}
+
+\subsubsection{Actividad 5 — \texttt{echo} a \textbf{todos} los \texttt{crontab.log} de la clase}
+\label{sec:orgd309b27}
+Preferentemente mediante un \textbf{script} que recorra la lista de usuarios (o homes) y appenda una línea a cada \texttt{/home/<user>/crontab.log}, manejando errores por \textbf{permiso denegado}.
+\subsubsection{Actividad 6 — \texttt{crontab} cada cinco minutos}
+\label{sec:org3f3dad8}
+Automatizar un mensaje periódico (cada \textbf{5 minutos}) dirigido a \textbf{todos} los usuarios de la clase, y que el \textbf{script} deje constancia en un \textbf{log propio} de \textbf{quién sí recibió el mensaje} y \textbf{quién no} (por ejemplo exit code de cada append o prueba de escritura).
+
+Ejemplo de línea en crontab (ajustando ruta del script):
+
+\begin{verbatim}
+*/5 * * * * /home/usuario/bin/broadcast_clase.sh >> /home/usuario/broadcast.log 2>&1
+\end{verbatim}
+\subsection{Conceptos de repaso}
+\label{sec:org068bc5c}
+
+\begin{itemize}
+\item Sintaxis de \textbf{crontab}: minuto, hora, día del mes, mes, día de la semana.
+\item \texttt{crontab -e} para editar la tabla del usuario actual.
+\end{itemize}
+\subsection{Máximas}
+\label{sec:orge1af4d1}
+
+\begin{itemize}
+\item Un cron que escribe en \textbf{homes ajenos} exige \textbf{disciplina de permisos} y \textbf{paths absolutos}; depurar con redirección de stderr al log del script.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:orga969b36}
+
+\begin{itemize}
+\item Probar el script \textbf{una vez a mano} antes de meterlo en cron; cron tiene un \textbf{PATH} mínimo y no carga el mismo entorno que una shell interactiva.
+\end{itemize}
+\section{Actividad 7: respaldo automatizado de homes}
+\label{sec:orgb1d3844}
+
+\subsection{Conceptos nuevos}
+\label{sec:orgc8a0938}
+
+\subsubsection{Especificación del docente}
+\label{sec:org20cf3b1}
+\textbf{Backup de los homes} de los usuarios, \textbf{exactamente} a las \textbf{13:59} (1:59 pm) \textbf{todos los martes}.
+
+En \texttt{crontab} tradicional (domingo=0 o 7):
+
+\begin{verbatim}
+59 13 * * 2 /ruta/al/script_backup_homes.sh
+\end{verbatim}
+
+Donde el \textbf{2} en el campo “día de la semana” corresponde a \textbf{martes} en la convención habitual \texttt{0=domingo … =6=sábado (verificar con =man 5 crontab} en el RHEL del laboratorio por si la convención del curso difiere).
+\subsection{Conceptos de repaso}
+\label{sec:org7419675}
+
+\begin{itemize}
+\item \texttt{tar}, \texttt{rsync} o copia con \texttt{cp -a} según lo exigiera la práctica; exclusiones (\texttt{-{}-{}exclude}.cache=, etc.) para no inflar el respaldo.
+\end{itemize}
+\subsection{Máximas}
+\label{sec:org25cd424}
+
+\begin{itemize}
+\item Un backup sin \textbf{verificación} (listar el archivo generado, tamaño, integridad) es solo “esperanza”; al menos un \texttt{ls -lh} del artefacto tras la primera corrida programada.
+\end{itemize}
+\subsection{Sección libre}
+\label{sec:org73fad57}
+
+\begin{itemize}
+\item A las 13:59 el aula puede estar \textbf{cambiando archivos}; conviene que el script sea \textbf{idempotente} o use snapshots si el curso lo introduce más adelante.
+\end{itemize}
+\end{document}

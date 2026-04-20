@@ -1,6 +1,6 @@
 #+TITLE: Bitácora Semanal 10: Administración de Sistemas Unix
 #+AUTHOR: Equipo Alpine White
-#+DATE: [2026-04-13 lun]
+#+DATE: [2026-04-20 lun]
 #+OPTIONS: toc:2
 #+PROPERTY: header-args :exports both :eval never
 #+LATEX_CLASS: article

@@ -1,0 +1,187 @@
+#+TITLE: Bitácora Semanal 9: Administración de Sistemas Unix
+#+AUTHOR: Equipo Alpine White
+#+DATE: [2026-03-10 lun]
+#+OPTIONS: toc:2
+#+PROPERTY: header-args :exports both :eval never
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [11pt, letterpaper]
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage{palatino}                   % Tipografía elegante
+#+LATEX_HEADER: \usepackage{xcolor}                     % Colores personalizados
+
+* Información General
+- *Semana:* Del 6 de Abril 2026 al 10 de Abril 2026
+- *Equipo:*
+  - Arreguín Salgado Gael Emiliano
+  - Gramer Muñoz Omar Fernando
+  - López Pérez Mariana
+  - Nieto Gallegos Isaac Julián
+
+** Responsabilidades:
+- Gael Emiliano: Bloque *Kernel, disco y mensajes*; *Software libre e historia*.
+- Omar Fernando: Bloque *SSH, puertos y superficie de ataque*; *NoMachine y componentes*.
+- Mariana: Bloque *Directorios, logs y línea de comandos*; *Caso XZ Utils*.
+- Isaac Julián: Coordinación de secciones, máximas y Caso XZ Utils.
+
+
+* Kernel, disco y mensajes del sistema
+
+** Conceptos nuevos
+
+*** =dmesg=
+Muestra el *búfer de mensajes del kernel*; sirve para diagnosticar *hardware*, *controladores* y eventos en el *arranque* o en caliente.
+
+#+begin_src bash
+dmesg | less
+#+end_src
+
+*** MBR (Master Boot Record)
+En discos con esquema *MBR* clásico, es el *primer sector*: contiene *código de arranque* y la *tabla de particiones* (frente a *GPT*, más apto para discos grandes y UEFI moderno).
+
+*** IP homologada (pública)
+Dirección *única globalmente* que permite a un equipo presentarse a *Internet* sin ser solo “detrás de un NAT” como única cara hacia la red pública; contrasta con direcciones *privadas* (=RFC1918=).
+
+** Conceptos de repaso
+
+- Flujo general de *arranque*: firmware → cargador → kernel → =init= / systemd.
+- Diferencia entre *partición* de datos y particiones de *arranque* / =/boot= según cómo esté montado el sistema en el curso.
+
+** Máximas
+
+- Antes de culpar a la aplicación, mirar si el *kernel* vio el dispositivo (=dmesg= tras enchufar USB, disco o NIC).
+- *MBR vs. GPT* no es pedantería: define cómo se particiona y hasta dónde puede crecer un disco de arranque.
+
+** Sección libre
+
+- =dmesg -w= (si está disponible) permite seguir el flujo en vivo; en sistemas con =journalctl -k= parte del historial también vive en el journal.
+
+
+* Software libre e historia
+
+** Conceptos nuevos
+
+*** Término *open source* y la OSI
+El movimiento *open source*, impulsado por la *Open Source Initiative*, enfatiza *beneficios prácticos* y empresariales del código abierto; el matiz no es idéntico al discurso político-filosófico del *software libre*.
+
+*** Línea temporal clave
+- *1983:* Richard Stallman anuncia el proyecto *GNU*.
+- *1985:* Fundación de la *FSF* y difusión de las *cuatro libertades*.
+- *Años 90:* *Linus Torvalds* desarrolla el *núcleo Linux*; junto con herramientas GNU se habla de *GNU/Linux*.
+
+** Conceptos de repaso
+
+- *Código libre (free software):* libertad de *ejecutar*, *copiar*, *distribuir*, *estudiar*, *cambiar* y *mejorar* el software; el eje es la *libertad*, no solo el precio cero.
+- Relación GNU ↔ Linux vista en semanas previas del curso.
+
+** Máximas
+
+- Entender *por qué* existe la FSF ayuda a leer licencias (=GPL=, =MIT=, etc.) sin confundir “abierto” con “sin obligaciones”.
+
+** Sección libre
+
+- En clase se contrastó *“gratis”* frente a *“libre”*: un programa puede ser de pago y libre, o gratis y no libre.
+
+
+* SSH, puertos y superficie de ataque
+
+** Conceptos nuevos
+
+*** Backdoor (puerta trasera)
+Vulnerabilidad o mecanismo *insertado* para *saltarse la autenticación* normal y obtener acceso no autorizado.
+
+*** Ofuscación de puertos
+Mover un servicio (p. ej. SSH) fuera del *puerto estándar* para reducir *ruido* de escaneos automáticos; *no reemplaza* llaves, parches ni buenas políticas.
+
+*** =/etc/ssh/sshd_config=
+Archivo principal del *demonio* =sshd= (puerto, métodos de autenticación, opciones de cifrado). Tras editar: *validar sintaxis* (=sshd -t=) y *recargar* el servicio (=systemctl reload sshd= o equivalente).
+
+** Conceptos de repaso
+
+- *SSH:* acceso remoto *cifrado* (puerto *22* por defecto).
+- *Puerto 23 / Telnet:* acceso remoto *sin* cifrado; obsoleto para administración seria.
+- *=netstat=*: conexiones, rutas e interfaces; en muchas distros el reemplazo habitual es =ss=.
+
+#+begin_src bash
+netstat -tlnp
+#+end_src
+
+** Máximas
+
+- Cambiar el puerto de SSH sin actualizar *firewall* y *documentación interna* genera incidentes evitables.
+- =netstat= o =ss= antes de cerrar servicios: saber *quién* está conectado y *qué* escucha.
+
+** Sección libre
+
+- En Debian/Ubuntu el paquete =net-tools= sigue trayendo =netstat=; en RHEL/Fedora moderno a menudo solo =ss= está instalado por defecto.
+
+
+* NoMachine y componentes del sistema
+
+** Conceptos nuevos
+
+*** NoMachine (tecnología NX)
+Software de *escritorio remoto* basado en *NX*, orientado a sesiones *rápidas* con mal ancho de banda; suele ofrecer *control completo* del escritorio y *transferencia de archivos*.
+
+** Conceptos de repaso
+
+- *=/usr/lib=*: bibliotecas y piezas de aplicaciones.
+- *=/var/log=*: registros del sistema y de servicios.
+- Bibliotecas compartidas (sufijo =.so=, shared objects).
+- *systemd:* arranque y gestión de unidades de servicio.
+- *SELinux:* controles *MAC* sobre lo que un proceso puede leer/escribir/abrir.
+
+** Máximas
+
+- Herramientas como *NoMachine* facilitan la *administración a distancia* cuando hace falta *GUI* fluida, no solo terminal.
+
+** Sección libre
+
+- Si *SELinux* bloquea algo “que debería funcionar”, los *AVC* en logs y =ausearch= / =sealert= (según distro) suelen explicar el denegado mejor que desactivar SELinux.
+
+
+* Directorios del sistema, logs y línea de comandos
+
+** Conceptos nuevos
+
+*** Monitoreo de =auth.log= (y equivalentes)
+En Debian/Ubuntu, =/var/log/auth.log= concentra intentos de *SSH*, =sudo=, etc.; sirve para ver *patrones* de fuerza bruta y configurar respuesta (llaves, =Fail2ban=, políticas del curso).
+
+*** Procesamiento con =grep=, =awk=, =sed=, =cut=
+Encadenar estas herramientas para *filtrar*, *recortar columnas* y *normalizar* archivos de miles de líneas al auditar logs.
+
+** Conceptos de repaso
+
+- Papel de =/bin=, =/etc=, =/lib=, =/usr= y =/var= (binarios esenciales, configuración, librerías core, jerarquía secundaria, *datos variables*).
+- Idea general de que =/var= almacena información *dinámica* (logs, colas, cachés) que *crece* con el tiempo.
+
+** Máximas
+
+- Los *logs* permiten detectar *errores*, *patrones* y *comportamientos anómalos*; sin ellos solo queda adivinar.
+- Vigilar *espacio en disco* en =/var= (=df=, =du=) evita que un log desbordado tumbe servicios.
+
+** Sección libre
+
+- En sistemas con *systemd*, =journalctl -u ssh= (o nombre del servicio) complementa o sustituye archivos bajo =/var/log= según configuración de =rsyslog= vs. journal.
+
+
+* Cadena de suministro: incidente XZ Utils
+
+** Conceptos nuevos
+
+*** Ataque a la cadena de suministro (2024)
+El caso *XZ Utils* ilustró cómo un actor puede *ganar confianza* en el mantenimiento e insertar una *puerta trasera* sofisticada en una librería muy usada; lecciones sobre *revisión de cambios*, *firmas*, *reproducibilidad* y *gobernanza* del proyecto.
+
+** Conceptos de repaso
+
+- Definición de *backdoor* y diferencia respecto a un *bug* accidental.
+- Relación con *código libre*: más ojos no garantizan seguridad si el proceso de revisión falla.
+
+** Máximas
+
+- *Confianza* en mantenedores debe ir acompañada de *procesos* (CI, revisores, transparencia en scripts de construcción).
+- Un solo módulo comprometido puede afectar a *muchos* sistemas aguas abajo.
+
+** Sección libre
+
+- En clase se mencionó verificar *firmas* y *hashes* de tarballs oficiales antes de compilar paquetes sensibles en entornos de administración.

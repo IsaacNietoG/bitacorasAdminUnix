@@ -1,0 +1,194 @@
+#+TITLE: Bitácora Semanal 10: Administración de Sistemas Unix
+#+AUTHOR: Equipo Alpine White
+#+DATE: [2026-04-13 lun]
+#+OPTIONS: toc:2
+#+PROPERTY: header-args :exports both :eval never
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [11pt, letterpaper]
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}      % Márgenes decentes
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage{palatino}                   % Tipografía elegante
+#+LATEX_HEADER: \usepackage{xcolor}                     % Colores personalizados
+
+* Información General
+- *Semana:* Del 13 de Abril 2026 al 17 de Abril 2026
+- *Equipo:*
+  - Arreguín Salgado Gael Emiliano
+  - Gramer Muñoz Omar Fernando
+  - López Pérez Mariana
+  - Nieto Gallegos Isaac Julián
+
+La instalación y configuración de *XAMPP* la vimos principalmente en *sesiones con el profesor* (estructura de =/opt/lampp/=, despliegue, logs y bibliotecas faltantes). En el *laboratorio presencial* el foco fue otro: *acceso al servidor RHEL* vía *Tailscale*, la *entrega del reporte* sobre la vulnerabilidad *XZ Utils*, y una *lista de actividades colaborativas* entre cuentas del mismo host (=echo=, =write=, =wall=, =who=, =chat.log=, =crontab= y *respaldo de homes*).
+
+** Responsabilidades:
+- Gael Emiliano: XAMPP (resumen con el profesor); actividades =wall=, =who=
+- Omar Fernando: Tailscale, acceso al RHEL y notas de red (=100.x=).
+- Mariana: actividades del laboratorio y notas de red.
+- Isaac Julián: =crontab=, actividades del laboratorio, backup programado; armado del documento.
+
+
+* XAMPP con el profesor (sesiones de curso)
+
+** Conceptos nuevos
+
+*** Qué consolidamos
+*XAMPP* agrupa *Apache*, *MariaDB/MySQL*, *PHP* y *Perl* bajo =/opt/lampp/=, controlado con el script =lampp= (=start= / =stop=). Revisamos =htdocs=, configuración bajo =etc=, y *logs* en =logs/error_log= cuando faltaban =.so= del sistema; el flujo fue *log → paquete de la distro* (=dnf install= / =apt install=).
+
+#+begin_src bash
+sudo /opt/lampp/lampp start
+sudo tail -n 30 /opt/lampp/logs/error_log
+#+end_src
+
+** Conceptos de repaso
+
+- *FHS* y uso de =/opt= para software “de terceros” en su propio árbol.
+- *Apache* + *PHP* + *motor SQL* como stack típico de aplicación web.
+
+** Máximas
+
+- XAMPP en el curso es *laboratorio*; en producción se prefiere stack empaquetado por la distro y endurecido.
+
+** Sección libre
+
+
+* Acceso al servidor RHEL vía Tailscale
+
+** Conceptos nuevos
+
+*** Invitación y ventana de tiempo
+El docente compartió un *enlace de invitación* a la consola de administración de Tailscale para que cada quien *validara la conexión* con el *usuario y contraseña ya existentes* en el servidor RHEL. El acceso por invitación estuvo *abierto hasta las 21:00* del día de la práctica.
+
+#+begin_example
+https://login.tailscale.com/admin/invite/*REDACTADO*
+#+end_example
+
+*** IP en la malla Tailscale
+La dirección que se reportó para el servidor en la red *Tailscale* fue *100.125.166.2* (rango típico *CGNAT* =100.64.0.0/10= de Tailscale).
+
+** Conceptos de repaso
+
+- *SSH* sobre IP alcanzable: una vez en la malla VPN, el servidor RHEL se administra como cualquier otro host remoto del curso.
+- Diferencia entre IP *de aula / LAN* e IP *100.x* de la overlay.
+
+** Máximas
+
+- Los *enlaces de invitación* caducan o se revocan; no asumirlos como acceso permanente. Antes de publicar esta bitácora en un repo *público*, conviene *redactar* el token si aún vigente.
+
+** Sección libre
+
+- Tailscale simplifica conectividad entre máquinas dispersas, pero la *política de confianza* (quién entra a la tailnet) sigue siendo responsabilidad del administrador del curso.
+
+
+* Entrega: reporte de la vulnerabilidad XZ Utils
+
+** Conceptos nuevos
+
+*** Entregable del curso
+Además de las tareas en el servidor, la práctica incluyó *documentar lo trabajado* sobre la *vulnerabilidad / puerta trasera en XZ Utils* (cadena de suministro, confianza en mantenedores, lecciones operativas), enlazando con lo ya visto en la *bitácora 9*.
+
+** Conceptos de repaso
+
+- Definición de *backdoor* frente a *bug* accidental.
+- Revisión de *logs* y de *integridad* de paquetes como hábito de administración.
+
+** Máximas
+
+- Un reporte breve pero *accionable* (qué revisar en sus propios sistemas) vale más que un copiar-pegar genérico.
+
+
+
+* Actividades presenciales (0–4): archivos, mensajes y sesiones
+
+El docente propuso el siguiente guion en el *laboratorio presencial* (si alcanzaba el tiempo):
+
+** Conceptos nuevos
+
+*** Actividad 0 — =crontab.log= personal
+Cada quien crea un archivo =/home/<usuario>/crontab.log= como *destino* de mensajes posteriores.
+
+*** Actividad 1 — =echo= al =crontab.log= de compañeros
+Practicar *redirección* de salida hacia el archivo de otro usuario (requiere permisos adecuados en el archivo o en el directorio, según lo permitido en el servidor del curso).
+
+*** Actividad 1.1 — =write=
+Enviar mensajes *interactivos* a la terminal de un compañero con =write usuario tty= (el =tty= sale de =who=).
+
+*** Actividad 2 — =wall=
+Mensaje a *todas* las terminales conectadas; detectar *problemas* (permisos, usuarios sin consola, etc.) y *resolverlos*.
+
+*** Actividad 3 — =who=
+Listar *quién está conectado* y desde qué TTY/origen; base para =write= y para auditoría rápida.
+
+*** Actividad 4 — chat entre dos o más con =chat.log=
+Conversación coordinada dejando *trazas* en =~/chat.log= (o ruta acordada), con *permisos* ajustados para que todos los participantes puedan *escribir* (por ejemplo grupo común + =chmod g+w=, o política explícita del profesor).
+
+** Conceptos de repaso
+
+- Redirección =>=, =>>=; permisos =chmod=, propietario =chown=.
+- =utmp= / =wtmp= como fuente de datos para =who=.
+
+** Máximas
+
+- =wall= y =write= molestan si no hay *acuerdo de aula*; en producción casi siempre están restringidos.
+
+** Sección libre
+
+- Para el “chat” por archivo, =tee -a chat.log= desde varias sesiones es una forma simple de *agregar* líneas sin pisar el archivo entero.
+
+
+* Actividades presenciales (5–6): difusión masiva y =crontab=
+
+** Conceptos nuevos
+
+*** Actividad 5 — =echo= a *todos* los =crontab.log= de la clase
+Preferentemente mediante un *script* que recorra la lista de usuarios (o homes) y appenda una línea a cada =/home/<user>/crontab.log=, manejando errores por *permiso denegado*.
+
+*** Actividad 6 — =crontab= cada cinco minutos
+Automatizar un mensaje periódico (cada *5 minutos*) dirigido a *todos* los usuarios de la clase, y que el *script* deje constancia en un *log propio* de *quién sí recibió el mensaje* y *quién no* (por ejemplo exit code de cada append o prueba de escritura).
+
+Ejemplo de línea en crontab (ajustando ruta del script):
+
+#+begin_src text
+*/5 * * * * /home/usuario/bin/broadcast_clase.sh >> /home/usuario/broadcast.log 2>&1
+#+end_src
+
+** Conceptos de repaso
+
+- Sintaxis de *crontab*: minuto, hora, día del mes, mes, día de la semana.
+- =crontab -e= para editar la tabla del usuario actual.
+
+** Máximas
+
+- Un cron que escribe en *homes ajenos* exige *disciplina de permisos* y *paths absolutos*; depurar con redirección de stderr al log del script.
+
+** Sección libre
+
+- Probar el script *una vez a mano* antes de meterlo en cron; cron tiene un *PATH* mínimo y no carga el mismo entorno que una shell interactiva.
+
+
+* Actividad 7: respaldo automatizado de homes
+
+** Conceptos nuevos
+
+*** Especificación del docente
+*Backup de los homes* de los usuarios, *exactamente* a las *13:59* (1:59 pm) *todos los martes*.
+
+En =crontab= tradicional (domingo=0 o 7):
+
+#+begin_src text
+59 13 * * 2 /ruta/al/script_backup_homes.sh
+#+end_src
+
+Donde el *2* en el campo “día de la semana” corresponde a *martes* en la convención habitual =0=domingo … =6=sábado (verificar con =man 5 crontab= en el RHEL del laboratorio por si la convención del curso difiere).
+
+** Conceptos de repaso
+
+- =tar=, =rsync= o copia con =cp -a= según lo exigiera la práctica; exclusiones (=--exclude=.cache=, etc.) para no inflar el respaldo.
+
+** Máximas
+
+- Un backup sin *verificación* (listar el archivo generado, tamaño, integridad) es solo “esperanza”; al menos un =ls -lh= del artefacto tras la primera corrida programada.
+
+** Sección libre
+
+- A las 13:59 el aula puede estar *cambiando archivos*; conviene que el script sea *idempotente* o use snapshots si el curso lo introduce más adelante.
+

@@ -1,0 +1,344 @@
+#+TITLE: Bitácora Semanal 13: Administración de Sistemas Unix/Linux
+#+AUTHOR: Equipo Alpine White
+#+DATE: [2026-05-04 may]
+#+OPTIONS: toc:2
+#+PROPERTY: header-args :exports code :eval never-export
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [11pt, letterpaper]
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage{palatino}
+#+LATEX_HEADER: \usepackage{xcolor}
+
+* Información General
+
+- *Semana:* Semana 13
+- *Materia:* Administración de Sistemas Unix/Linux
+- *Docente:* Luis Enrique Serrano Gutiérrez
+- *Equipo:*
+
+  - Arreguín Salgado Gael Emiliano
+  - López Pérez Mariana
+  - Nieto Gallegos Isaac Julián
+
+Durante esta semana se trabajó con tecnologías relacionadas con almacenamiento redundante, sistemas de archivos y compartición de recursos en red mediante NFS. La práctica permitió comprender cómo Linux administra arreglos RAID, integra múltiples sistemas de archivos y comparte almacenamiento entre equipos dentro de una red local.
+
+El enfoque principal consistió en explorar configuraciones RAID utilizando LVM, comprender el funcionamiento de la paridad y reforzar conceptos relacionados con montaje de sistemas de archivos remotos mediante NFS.
+
+** Responsabilidades
+
+- Gael Emiliano: Investigación y documentación técnica relacionada con RAID, sistemas de archivos y configuraciones de almacenamiento redundate.
+
+- Mariana: Captura de temas vistos en laboratorio y ampliación de conceptos relacionados con NFS y montaje de recursos compartidos.
+
+- Isaac Julián: Revisión final, adaptación al formato org-mode y compilación del documento.
+
+---
+
+* RAID y almacenamiento redundante
+
+** Conceptos nuevos
+
+*** ¿Qué es RAID?
+
+RAID (Redundant Array of Independent Disks) es una técnica que permite combinar varios discos duros o SSD para mejorar:
+
+- Velocidad
+- Seguridad de datos
+- Tolerancia a fallos
+- Rendimiento general
+
+RAID permite distribuir información entre varios dispositivos físicos según distintos niveles o estrategias.
+
+---
+
+*** RAID 0
+
+RAID 0 divide los datos entre varios discos para incrementar considerablemente el rendimiento.
+
+Ventajas:
+
+- Mayor velocidad de lectura y escritura
+- Aprovechamiento completo del espacio
+
+Desventajas:
+
+- No existe redundancia
+- Si falla un disco, se pierde toda la información
+
+Por esta razón RAID 0 se utiliza principalmente cuando el rendimiento es más importante que la seguridad de los datos.
+
+---
+
+*** RAID 1
+
+RAID 1 utiliza una técnica de espejo (mirroring), duplicando la información entre dos discos.
+
+Ventajas:
+
+- Alta tolerancia a fallos
+- Protección de información
+- Recuperación rápida
+
+Desventajas:
+
+- Solo se aprovecha la mitad del espacio disponible
+
+Este tipo de RAID es utilizado cuando la disponibilidad y la integridad de los datos son prioritarias.
+
+---
+
+*** RAID 5
+
+RAID 5 distribuye datos y paridad entre múltiples discos.
+
+Características:
+
+- Requiere mínimo 3 discos
+- Mantiene redundancia
+- Ofrece buen rendimiento
+- Optimiza espacio disponible
+
+Gracias al uso de paridad, el sistema puede reconstruir información si uno de los discos falla.
+
+---
+
+*** Paridad
+
+La paridad consiste en un cálculo matemático utilizado para reconstruir datos perdidos dentro de un arreglo RAID.
+
+Generalmente se utiliza una operación XOR para generar información redundante distribuida entre discos.
+
+Si un disco falla:
+
+- Los datos faltantes pueden recalcularse
+- El sistema continúa funcionando
+- No se pierde información inmediatamente
+
+---
+
+* Sistemas de archivos
+
+** Conceptos nuevos
+
+*** ext4
+
+ext4 es uno de los sistemas de archivos más utilizados en Linux debido a su estabilidad y rendimiento.
+
+Características:
+
+- Journaling
+- Buen rendimiento general
+- Alta compatibilidad
+- Bajo consumo de recursos
+
+---
+
+*** XFS
+
+XFS es un sistema de archivos avanzado optimizado para:
+
+- Alto rendimiento
+- Grandes volúmenes de datos
+- Archivos de gran tamaño
+
+Es ampliamente utilizado en servidores empresariales y sistemas de almacenamiento masivo.
+
+---
+
+*** NTFS
+
+NTFS es el sistema de archivos principal utilizado por Windows.
+
+Características:
+
+- Soporte para permisos
+- Journaling
+- Compresión
+- Cifrado
+- Manejo de archivos grandes
+
+En Linux se requiere soporte adicional para escritura segura.
+
+---
+
+*** ntfs-3g
+
+~ntfs-3g~ es un controlador de código abierto que permite a Linux leer y escribir particiones NTFS.
+
+Esto facilita:
+
+- Compatibilidad con Windows
+- Transferencia de datos
+- Sistemas híbridos Linux/Windows
+
+Durante la práctica fue necesario instalar manualmente los paquetes RPM de ntfs-3g debido a que RHEL no lo incluía por defecto.
+
+---
+
+* Compartición de recursos mediante NFS
+
+** Conceptos de repaso
+
+*** ¿Qué es NFS?
+
+NFS (Network File System) es un protocolo que permite compartir directorios y archivos entre sistemas Linux mediante red.
+
+Gracias a NFS:
+
+- Los recursos remotos pueden utilizarse como si fueran locales
+- Los archivos pueden centralizarse
+- Se facilita la administración en entornos multiusuario
+
+---
+
+*** Servidor NFS
+
+El servidor NFS es el equipo encargado de compartir directorios hacia otros sistemas.
+
+La configuración de directorios compartidos se realiza mediante:
+
+#+begin_src bash :results verbatim
+/etc/exports
+#+end_src
+
+---
+
+*** Cliente NFS
+
+El cliente NFS es el sistema que accede a los recursos compartidos proporcionados por el servidor.
+
+---
+
+*** showmount -e
+
+El comando:
+
+#+begin_src bash :results verbatim
+showmount -e servidor
+#+end_src
+
+permite visualizar qué directorios está exportando un servidor NFS y verificar permisos de acceso.
+
+---
+
+*** Montaje manual con mount
+
+Para conectar manualmente un recurso compartido NFS se utiliza:
+
+#+begin_src bash :results verbatim
+sudo mount servidor:/ruta/compartida /mnt/nfs
+#+end_src
+
+Requisitos:
+
+- El servidor NFS debe estar activo
+- El recurso debe estar correctamente exportado
+- El cliente debe tener soporte NFS instalado
+- El directorio de montaje debe existir
+
+---
+
+*** Verificación del montaje
+
+Después del montaje, se puede verificar el acceso mediante:
+
+#+begin_src bash :results verbatim
+ls -la /mnt/nfs
+#+end_src
+
+---
+
+* LVM y administración flexible de almacenamiento
+
+** Conceptos de repaso
+
+LVM continúa siendo una de las herramientas más importantes para abstraer almacenamiento físico y permitir administración dinámica de discos.
+
+Componentes principales:
+
+- PV (Physical Volume)
+- VG (Volume Group)
+- LV (Logical Volume)
+
+Durante la práctica se reforzó el proceso de:
+
+- Crear volúmenes físicos con ~pvcreate~
+- Expandir grupos mediante ~vgextend~
+- Aumentar capacidad usando ~lvextend~
+- Redimensionar sistemas de archivos con ~resize2fs~
+
+---
+
+* Herramientas complementarias
+
+** exportfs -av
+
+Este comando aplica inmediatamente cambios realizados en ~/etc/exports~ sin necesidad de reiniciar completamente el servicio NFS.
+
+#+begin_src bash :results verbatim
+exportfs -av
+#+end_src
+
+---
+
+** python3 -m http.server
+
+Herramienta rápida utilizada para crear un servidor web temporal.
+
+#+begin_src bash :results verbatim
+python3 -m http.server
+#+end_src
+
+Durante la práctica fue utilizada para transferir paquetes RPM desde la máquina anfitriona hacia una máquina virtual aislada sin acceso a internet.
+
+---
+
+* Conceptos de repaso
+
+- Linux utiliza abstracciones avanzadas para separar hardware físico y administración lógica.
+- RAID mejora disponibilidad y rendimiento dependiendo de la configuración utilizada.
+- NFS facilita el acceso compartido a recursos dentro de una red.
+- Los sistemas de archivos pueden coexistir sobre la misma infraestructura LVM sin conflictos.
+
+---
+
+* Máximas
+
+ - “RAID 0 apuesta todo al rendimiento; si un disco falla, todo se pierde. La velocidad tiene un precio.”
+
+ - “RAID 5 es el equilibrio que busca todo administrador: rendimiento, redundancia y espacio razonable en un solo arreglo.”
+
+ - “Un Volume Group no es un disco; es una reserva de espacio que puede crecer, encogerse y reorganizarse sin que el sistema lo note.”
+
+ - “ext4, xfs y NTFS sobre el mismo servidor no es redundancia; es demostrar que LVM no le importa qué sistema de archivos vive encima.”
+ - “pvcreate convierte en materia prima a un disco para que LVM pueda moldearlo a su voluntad.”
+
+---
+
+* Sección libre
+
+- Los arreglos RAID permiten adaptar el almacenamiento según necesidades específicas de rendimiento o seguridad.
+
+- ~showmount -e~ es una herramienta esencial para verificar exportaciones NFS activas.
+
+#+begin_src bash :results verbatim
+showmount -e
+#+end_src
+
+- ~ntfs-3g~ mejora considerablemente la interoperabilidad entre Linux y Windows.
+- NFS permite compartir recursos de red de manera transparente para usuarios y aplicaciones.
+
+- LVM facilita el crecimiento dinámico del almacenamiento sin necesidad de detener servicios.
+
+---
+
+* Realimentación y reflexión de aprendizajes
+
+Durante esta semana se comprendió cómo Linux integra múltiples tecnologías de almacenamiento y compartición de recursos dentro de un mismo entorno administrativo.
+
+La práctica con RAID permitió observar cómo diferentes estrategias priorizan rendimiento, redundancia o equilibrio entre ambos. RAID 0 mostró la importancia del rendimiento, RAID 1 reforzó conceptos de tolerancia a fallos y RAID 5 introdujo el uso práctico de paridad para recuperación de datos.
+
+El trabajo con NFS permitió entender cómo Linux comparte recursos remotos de forma transparente mediante montaje de directorios, facilitando administración centralizada y colaboración entre sistemas.
+
+Finalmente, el uso combinado de LVM, múltiples sistemas de archivos y herramientas como ntfs-3g mostró cómo Linux puede integrar distintos tipos de almacenamiento y plataformas sin perder flexibilidad ni estabilidad.

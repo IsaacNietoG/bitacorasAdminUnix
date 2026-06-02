@@ -1,0 +1,236 @@
+#+TITLE: Bitácora Semanal 12: Administración de Sistemas Unix/Linux
+#+AUTHOR: Equipo Alpine White
+#+DATE: [2026-04-28 mar]
+#+OPTIONS: toc:2 num:t title:t
+#+PROPERTY: header-args :exports code :eval never-export
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [11pt, letterpaper]
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage[T1]{fontenc}
+#+LATEX_HEADER: \usepackage{lmodern}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+* Información General
+
+- *Semana:* Semana 12
+- *Materia:* Administración de Sistemas Unix/Linux
+- *Docente:* Luis Enrique Serrano Gutiérrez
+- *Equipo:*
+
+  - Arreguín Salgado Gael Emiliano
+  - López Pérez Mariana
+  - Nieto Gallegos Isaac Julián
+
+Durante esta semana se trabajó principalmente con herramientas avanzadas de administración del sistema relacionadas con permisos privilegiados mediante =sudoers=, el uso de memoria virtual con particiones *swap* y técnicas de búsqueda avanzada de archivos utilizando el comando =find=.
+
+El objetivo de la práctica fue comprender cómo Linux administra recursos críticos del sistema, tanto desde la perspectiva de seguridad como desde la gestión eficiente de almacenamiento, memoria y monitoreo de archivos.
+
+** Responsabilidades
+
+- *Gael Emiliano:* Documentación de comandos relacionados con swap, permisos administrativos y ejemplos prácticos del comando =find=.
+- *Mariana:* Captura y ampliación de conceptos vistos en laboratorio relacionados con administración de permisos y búsqueda avanzada.
+- *Isaac Julián:* Corrección técnica, adaptación a formato Org Mode y compilación final del documento.
+
+- Administración de privilegios con sudoers
+
+** Conceptos nuevos
+
+*** ¿Qué es sudo?
+
+El comando =sudo= permite ejecutar instrucciones con privilegios administrativos de manera controlada sin iniciar sesión directamente como el usuario root.
+
+Esto representa una capa adicional de seguridad, ya que permite otorgar permisos específicos únicamente a determinados usuarios o grupos.
+
+#+begin_src bash :results verbatim
+sudo apt update
+#+end_src
+
+*** Archivo /etc/sudoers
+
+El archivo =/etc/sudoers= define qué usuarios o grupos pueden ejecutar comandos con privilegios elevados.
+
+Este archivo es extremadamente importante porque controla directamente la delegación de privilegios administrativos. Una mala configuración puede comprometer la seguridad del sistema o incluso impedir el acceso administrativo.
+
+*** visudo
+
+La edición del archivo sudoers debe realizarse mediante:
+
+#+begin_src bash :results verbatim
+visudo
+#+end_src
+
+=visudo= verifica automáticamente la sintaxis antes de guardar cambios, evitando errores que podrían bloquear permisos administrativos.
+
+*** Alias en sudoers
+
+Para simplificar configuraciones complejas, sudoers permite crear alias especializados.
+
+- =Host_Alias= :: agrupa múltiples máquinas o hosts bajo un mismo nombre lógico.
+- =User_Alias= :: agrupa usuarios para asignar permisos de manera colectiva.
+- =Cmnd_Alias= :: agrupa comandos específicos mediante rutas absolutas.
+
+Ejemplo:
+
+#+begin_src bash :results verbatim
+Cmnd_Alias SERVICIOS = /usr/bin/systemctl, /usr/bin/apt
+#+end_src
+
+*** NOPASSWD
+
+La opción =NOPASSWD= permite ejecutar comandos administrativos sin solicitar contraseña.
+
+#+begin_src bash :results verbatim
+omar ALL=(ALL) NOPASSWD: ALL
+#+end_src
+
+Esta opción debe utilizarse cuidadosamente, ya que elimina una capa importante de verificación de seguridad.
+
+*** Grupo admins
+
+Linux permite gestionar privilegios mediante grupos. Los usuarios pertenecientes al grupo =admins= pueden compartir permisos administrativos definidos dentro del archivo sudoers.
+
+Esto simplifica la administración en servidores con múltiples usuarios.
+
+* Búsqueda avanzada con find
+
+** Conceptos nuevos
+
+*** ¿Qué es find?
+
+El comando =find= permite localizar archivos y directorios utilizando múltiples criterios de búsqueda.
+
+A diferencia de búsquedas simples por nombre, =find= funciona como una herramienta de auditoría y análisis del sistema.
+
+*** Búsqueda por tamaño
+
+La opción =-size= permite buscar archivos según su tamaño.
+
+#+begin_src bash :results verbatim
+find /home -size 10M
+#+end_src
+
+Esto resulta útil para localizar archivos grandes que consumen espacio innecesario.
+
+*** Búsqueda por tipo
+
+La opción =-type= permite filtrar resultados según el tipo de archivo.
+
+#+begin_src bash :results verbatim
+find /home -type f
+#+end_src
+
+Tipos comunes:
+-  =f= :: archivos normales.
+- =d= :: directorios.
+- =l= :: enlaces simbólicos.
+
+*** Búsqueda por usuario
+
+La opción =-user= permite localizar archivos pertenecientes a un usuario específico.
+
+#+begin_src bash :results verbatim
+find /home -user mariana
+#+end_src
+
+Esto puede utilizarse para auditorías de permisos o rastreo de archivos dentro del sistema.
+
+*** find -mtime
+
+El criterio =-mtime= permite localizar archivos según la fecha de última modificación.
+
+#+begin_src bash :results verbatim
+find /var/log -mtime -7
+#+end_src
+
+Este tipo de búsqueda es especialmente útil para limpieza de logs temporales o monitoreo de actividad reciente.
+
+* Administración de memoria virtual: Swap
+
+** Conceptos nuevos
+
+*** ¿Qué es la memoria swap?
+
+La memoria swap es un espacio del disco duro utilizado como memoria virtual cuando la RAM física comienza a agotarse.
+
+Linux mueve temporalmente páginas de memoria poco utilizadas hacia swap para liberar RAM y mantener el funcionamiento estable del sistema.
+
+*** Partición swap
+
+Una partición swap es una partición dedicada exclusivamente al intercambio de memoria.
+
+Funciones principales:
+
+- Ampliar virtualmente la memoria RAM.
+- Evitar fallos por falta de memoria.
+- Soportar hibernación del sistema.
+
+*** mkswap
+
+El comando =mkswap= prepara una partición o archivo para ser utilizado como swap.
+
+#+begin_src bash :results verbatim
+sudo mkswap /dev/sdb2
+#+end_src
+
+*** swapon y swapoff
+
+Estas herramientas activan o desactivan inmediatamente el uso de swap.
+
+#+begin_src bash :results verbatim
+sudo swapon /dev/sdb2
+sudo swapoff /dev/sdb2
+#+end_src
+
+Esto permite administrar dinámicamente la memoria virtual sin reiniciar el sistema.
+
+* Conceptos de repaso
+
+- Linux utiliza mecanismos de abstracción tanto para almacenamiento como para privilegios administrativos.
+- El kernel administra memoria física y virtual mediante intercambio de páginas.
+- Herramientas como =find= permiten auditorías avanzadas del sistema.
+- La administración correcta de permisos es fundamental para la seguridad en sistemas Unix/Linux.
+
+* Máximas
+
+- “El =-user= en find no es un filtro menor; es auditoría: saber quién dejó qué y dónde.”
+- “Un filtro de =-type= en find es la diferencia entre encontrar lo que buscas y perderte en el ruido.”
+- “La partición swap no es señal de que la RAM falló; es la red de seguridad que evita que el sistema caiga cuando la memoria se agota.”
+- “sudoers no es una lista de permisos; es una declaración formal de confianza entre el sistema y sus usuarios.”
+- “Swap no reemplaza a la RAM; la extiende en el peor momento, cuando más se necesita.”
+- “find con =-size= no mide el archivo; mide cuánto espacio le estás cediendo al sistema sin saberlo.”
+
+* Sección libre
+
+- =cat= permite visualizar el contenido de archivos de texto directamente desde terminal.
+
+#+begin_src bash :results verbatim
+cat archivo.txt
+#+end_src
+
+- =nano= es un editor de texto sencillo utilizado comúnmente en terminal Linux.
+
+#+begin_src bash :results verbatim
+nano archivo.txt
+#+end_src
+
+- =sudo -l= permite verificar qué privilegios posee un usuario dentro del sistema.
+
+#+begin_src bash :results verbatim
+sudo -l
+#+end_src
+
+- Las configuraciones de =sudoers= deben mantenerse lo más restrictivas posible para evitar escalamiento innecesario de privilegios.
+- La swap funciona como mecanismo de contingencia para mantener estabilidad bajo presión de memoria.
+
+- Realimentación y reflexión de aprendizajes
+
+Durante esta semana se comprendió que la administración de sistemas Linux no se limita únicamente al manejo de archivos o servicios, sino también a la correcta gestión de seguridad, permisos y recursos críticos del sistema.
+
+La práctica con =sudoers= permitió observar cómo Linux implementa control granular sobre privilegios administrativos. La utilización de alias y reglas específicas mostró que cada línea del archivo representa una decisión de seguridad importante.
+
+Por otra parte, el trabajo con memoria swap permitió entender cómo el kernel administra memoria virtual cuando la RAM física resulta insuficiente. Más allá de ser simplemente “memoria lenta”, swap funciona como un mecanismo estratégico para preservar la estabilidad del sistema bajo alta carga.
+
+Finalmente, el uso avanzado del comando =find= permitió comprender cómo Linux ofrece herramientas poderosas de auditoría y administración. Combinando filtros como =-size=, =-type=, =-user= y =-mtime=, es posible localizar información crítica dentro del sistema de forma eficiente y precisa.

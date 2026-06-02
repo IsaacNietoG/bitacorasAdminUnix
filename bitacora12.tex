@@ -1,0 +1,458 @@
+% Created 2026-06-01 Mon 23:19
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{palatino}
+\usepackage{xcolor}
+\author{Equipo Alpine White}
+\date{\textit{{[}2026-04-21 Tue]}}
+\title{Bitácora Semanal 11: Administración de Sistemas Unix/Linux}
+\hypersetup{
+ pdfauthor={Equipo Alpine White},
+ pdftitle={Bitácora Semanal 11: Administración de Sistemas Unix/Linux},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 30.2 (Org mode 9.7.39)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+\section{Información General}
+\label{sec:org787b849}
+
+\begin{itemize}
+\item \textbf{Semana:} Semana 11
+\item \textbf{Materia:} Administración de Sistemas Unix/Linux
+\item \textbf{Docente:} Luis Enrique Serrano Gutiérrez
+\item \textbf{Equipo:}
+
+\begin{itemize}
+\item Arreguín Salgado Gael Emiliano
+\item López Pérez Mariana
+\item Nieto Gallegos Isaac Julián
+\end{itemize}
+\end{itemize}
+
+Durante esta semana se trabajó con tecnologías fundamentales para la administración de servicios en Linux, especialmente sincronización de tiempo mediante NTP y Chrony, automatización de montajes con AutoFS y ampliación dinámica de almacenamiento utilizando LVM.
+
+La práctica permitió comprender cómo Linux automatiza tareas críticas del sistema y cómo herramientas modernas facilitan la administración eficiente de servidores y recursos de red.
+\subsection{Responsabilidades}
+\label{sec:org5a08167}
+
+Gael Emiliano:
+Investigación y documentación de herramientas NTP, configuración de Chrony y conceptos relacionados con sincronización de tiempo.
+
+Mariana:
+Captura de temas vistos en clase, ampliación de conceptos relacionados con AutoFS y administración dinámica de servicios.
+
+Isaac Julián:
+Revisión técnica, adaptación del formato org-mode y compilación final del documento.
+
+---
+\section{Sincronización de tiempo con NTP y Chrony}
+\label{sec:org75a362f}
+
+\subsection{Conceptos nuevos}
+\label{sec:org72dc1dc}
+
+\subsubsection{¿Qué es un servidor?}
+\label{sec:org825dedd}
+
+Un servidor es un sistema de hardware o software que proporciona recursos, servicios o datos a otros equipos llamados clientes mediante una red.
+
+En esta práctica se trabajó con un servidor NTP, encargado de sincronizar la hora de otros dispositivos dentro de la red.
+
+---
+\subsubsection{¿Qué es NTP?}
+\label{sec:orgfe15c5b}
+
+NTP (Network Time Protocol) es un protocolo utilizado para sincronizar relojes entre computadoras y dispositivos de red.
+
+Mantener la hora sincronizada es fundamental en servidores Linux porque:
+
+\begin{itemize}
+\item Permite registros de logs consistentes
+\item Facilita auditorías
+\item Evita errores de autenticación
+\item Sincroniza servicios distribuidos
+\end{itemize}
+
+---
+\subsubsection{Chrony}
+\label{sec:org1014d01}
+
+Chrony es una implementación moderna y flexible del protocolo NTP.
+
+Permite sincronizar el reloj del sistema con:
+
+\begin{itemize}
+\item Servidores NTP
+\item Receptores GPS
+\item Fuentes manuales de tiempo
+\end{itemize}
+
+Además, puede funcionar tanto como cliente como servidor NTP.
+
+Ventajas principales:
+
+\begin{itemize}
+\item Mayor precisión
+\item Mejor rendimiento en redes inestables
+\item Sincronización más rápida
+\item Ideal para laptops o sistemas intermitentes
+\end{itemize}
+
+---
+\subsubsection{Configuración de Chrony como servidor NTP}
+\label{sec:orgaa48a8a}
+
+Uno de los puntos más importantes de la práctica fue convertir chrony en un servidor NTP funcional.
+
+El primer paso consistió en configurar las fuentes de sincronización dentro de:
+
+\begin{verbatim}
+/etc/chrony.conf
+\end{verbatim}
+
+Posteriormente se agregó la directiva:
+
+\begin{verbatim}
+allow 192.168.0.0/24
+\end{verbatim}
+
+Esta línea permite que equipos de la red local puedan sincronizarse con el servidor.
+
+Después de modificar la configuración, fue necesario reiniciar el servicio:
+
+\begin{verbatim}
+systemctl restart chronyd
+\end{verbatim}
+
+---
+\subsubsection{Herramienta chronyc}
+\label{sec:org2d665bd}
+
+\texttt{chronyc} es la herramienta administrativa utilizada para controlar y monitorear Chrony.
+
+Ejemplo:
+
+\begin{verbatim}
+chronyc sources -v
+\end{verbatim}
+
+\phantomsection
+\label{}
+\begin{verbatim}
+
+  .-- Source mode  '^' = server, '=' = peer, '#' = local clock.
+ / .- Source state '*' = current best, '+' = combined, '-' = not combined,
+| /             'x' = may be in error, '~' = too variable, '?' = unusable.
+||                                                 .- xxxx [ yyyy ] +/- zzzz
+||      Reachability register (octal) -.           |  xxxx = adjusted offset,
+||      Log2(Polling interval) --.      |          |  yyyy = measured offset,
+||                                \     |          |  zzzz = estimated error.
+||                                 |    |           \
+MS Name/IP address         Stratum Poll Reach LastRx Last sample               
+===============================================================================
+\end{verbatim}
+
+Este comando muestra:
+
+\begin{itemize}
+\item Estrato del servidor
+\item Retardo de sincronización
+\item Estado de cada fuente
+\item Fuentes preferidas o falsas
+\end{itemize}
+
+---
+\subsubsection{Stratum (Nivel de Estrato)}
+\label{sec:org84ebca8}
+
+El stratum representa la distancia jerárquica respecto a una fuente oficial de tiempo.
+
+\begin{itemize}
+\item Stratum 0 → relojes atómicos o GPS
+\item Stratum 1 → servidores conectados directamente
+\item Stratum 2 → sincronizados con stratum 1
+\end{itemize}
+
+Mientras más bajo sea el stratum, más precisa suele ser la referencia de tiempo.
+
+---
+\section{AutoFS y montaje automático}
+\label{sec:orgf4310f7}
+
+\subsection{Conceptos nuevos}
+\label{sec:org0a11f7e}
+
+\subsubsection{¿Qué es AutoFS?}
+\label{sec:org0fbed4a}
+
+AutoFS (Automounter File System) es un servicio que permite montar sistemas de archivos dinámicamente bajo demanda.
+
+A diferencia de \texttt{/etc/fstab}, AutoFS:
+
+\begin{itemize}
+\item No monta recursos al iniciar el sistema
+\item Monta únicamente cuando el recurso es utilizado
+\item Libera automáticamente recursos inactivos
+\end{itemize}
+
+Esto mejora:
+
+\begin{itemize}
+\item Rendimiento
+\item Uso de memoria
+\item Administración de recursos de red
+\end{itemize}
+
+---
+\subsubsection{auto.master}
+\label{sec:org14af8a7}
+
+El archivo:
+
+\begin{verbatim}
+/etc/auto.master
+\end{verbatim}
+
+define los puntos de montaje principales utilizados por AutoFS.
+
+Este archivo redirige hacia mapas secundarios como:
+
+\begin{itemize}
+\item auto.misc
+\item auto.home
+\item auto.users
+\end{itemize}
+
+---
+\subsubsection{Ventajas de AutoFS}
+\label{sec:org26dd011}
+
+\begin{itemize}
+\item Reduce montajes innecesarios
+\item Libera recursos automáticamente
+\item Ideal para sistemas NFS
+\item Evita bloqueos al inicio del sistema
+\item Mejora administración de recursos remotos
+\end{itemize}
+
+---
+\section{Administración de almacenamiento con LVM}
+\label{sec:orge6792eb}
+
+\subsection{Conceptos de repaso}
+\label{sec:org3c25c54}
+
+LVM permite administrar almacenamiento mediante capas lógicas en lugar de depender directamente de particiones físicas.
+
+Componentes principales:
+
+\begin{itemize}
+\item PV (Physical Volume)
+\item VG (Volume Group)
+\item LV (Logical Volume)
+\end{itemize}
+
+Durante la práctica se reforzó el proceso de:
+
+\begin{itemize}
+\item Agregar discos con \texttt{vgextend}
+\item Expandir almacenamiento con \texttt{lvextend}
+\item Redimensionar sistemas de archivos usando \texttt{resize2fs}
+\end{itemize}
+
+---
+\subsubsection{Device Mapper}
+\label{sec:org02170fc}
+
+El \textbf{device mapper} funciona como intermediario entre el sistema de archivos y el almacenamiento físico.
+
+Gracias a esta capa:
+
+\begin{itemize}
+\item LVM puede abstraer discos físicos
+\item El filesystem no necesita conocer el hardware real
+\item El almacenamiento puede crecer dinámicamente
+\end{itemize}
+
+---
+\section{Herramientas NTP}
+\label{sec:org46ad3c6}
+
+\subsection{ntpd}
+\label{sec:org385821e}
+
+Servicio tradicional de sincronización NTP.
+
+Características:
+
+\begin{itemize}
+\item Funciona continuamente
+\item Puede actuar como cliente o servidor
+\item Muy estable
+\item Más antiguo
+\end{itemize}
+
+---
+\subsection{chronyd}
+\label{sec:org88ccfa7}
+
+Servicio moderno utilizado actualmente como reemplazo de \texttt{ntpd}.
+
+Ventajas:
+
+\begin{itemize}
+\item Más rápido
+\item Más preciso
+\item Mejor para sistemas portátiles
+\item Más eficiente en redes variables
+\end{itemize}
+
+---
+\subsection{ntpdate}
+\label{sec:orga75ffac}
+
+Herramienta utilizada para sincronización manual puntual.
+
+Características:
+
+\begin{itemize}
+\item No funciona como servicio
+\item Realiza sincronización única
+\item Actualmente está en desuso
+\end{itemize}
+
+---
+\section{MySQL y almacenamiento interno}
+\label{sec:org429bd81}
+
+\subsection{Conceptos de repaso}
+\label{sec:orgc2b4dd9}
+
+Se revisó la estructura interna de almacenamiento de MySQL dentro de XAMPP.
+
+\begin{verbatim}
+/opt/lampp/var/mysql# ls -la
+\end{verbatim}
+
+Esto permite visualizar archivos asociados a las bases de datos.
+
+---
+\subsubsection{Archivos .ibd}
+\label{sec:org6b5ccfa}
+
+Los archivos \texttt{.ibd} almacenan:
+
+\begin{itemize}
+\item Datos reales de tablas
+\item Índices InnoDB
+\item Información persistente del motor de almacenamiento
+\end{itemize}
+
+Estos archivos se encuentran comúnmente dentro de:
+
+\begin{verbatim}
+/opt/lampp/var/mysql/
+\end{verbatim}
+
+---
+\section{Conceptos de repaso}
+\label{sec:orgdc44530}
+
+\begin{itemize}
+\item Linux automatiza múltiples servicios críticos mediante demonios especializados.
+\item La sincronización de tiempo es esencial para redes, servidores y auditorías.
+\item AutoFS mejora considerablemente la administración dinámica de recursos remotos.
+\item LVM continúa siendo una de las tecnologías más importantes para administración flexible de almacenamiento.
+\end{itemize}
+
+---
+\section{Máximas}
+\label{sec:org06b6453}
+
+\subsubsection{“chrony no solo sincroniza el reloj; elige dinámicamente la fuente más precisa disponible en la red.”}
+\label{sec:orgc3ec53e}
+
+\subsubsection{“AutoFS no monta cuando arranca el sistema; monta cuando alguien realmente necesita el recurso.”}
+\label{sec:org81b5c70}
+
+\subsubsection{“El device mapper es el intermediario silencioso que hace posible que LVM funcione sin que el sistema de archivos sepa nada del disco físico.”}
+\label{sec:org1cc99ab}
+
+\subsubsection{“Extender un LV sin redimensionar el filesystem es como ampliar el cuarto pero no mover las paredes: el espacio existe pero no se puede usar.”}
+\label{sec:org47637f6}
+
+\subsubsection{“Un timeout en AutoFS no es un error; es eficiencia: liberar recursos que nadie está usando.”}
+\label{sec:org2440163}
+
+\subsubsection{“El stratum actúa tal que: cuanto más bajo, más cerca estás de la fuente original del tiempo.”}
+\label{sec:org9f23921}
+
+---
+\section{Sección libre}
+\label{sec:org3657383}
+
+\begin{itemize}
+\item Los mirrors son copias distribuidas de repositorios de software utilizadas para mejorar velocidad y disponibilidad.
+
+\item \texttt{chronyc sources -v} permite verificar detalladamente las fuentes NTP activas.
+\end{itemize}
+
+\begin{verbatim}
+chronyc sources -v
+\end{verbatim}
+
+\phantomsection
+\label{}
+\begin{verbatim}
+
+  .-- Source mode  '^' = server, '=' = peer, '#' = local clock.
+ / .- Source state '*' = current best, '+' = combined, '-' = not combined,
+| /             'x' = may be in error, '~' = too variable, '?' = unusable.
+||                                                 .- xxxx [ yyyy ] +/- zzzz
+||      Reachability register (octal) -.           |  xxxx = adjusted offset,
+||      Log2(Polling interval) --.      |          |  yyyy = measured offset,
+||                                \     |          |  zzzz = estimated error.
+||                                 |    |           \
+MS Name/IP address         Stratum Poll Reach LastRx Last sample               
+===============================================================================
+\end{verbatim}
+
+\begin{itemize}
+\item AutoFS es especialmente útil en entornos NFS donde múltiples recursos remotos deben montarse dinámicamente.
+
+\item El almacenamiento administrado con LVM permite crecimiento sin tiempo de inactividad.
+
+\item Chrony es actualmente una de las soluciones preferidas para sincronización NTP moderna en Linux.
+\end{itemize}
+
+---
+\section{Realimentación y reflexión de aprendizajes}
+\label{sec:org8881613}
+
+Durante esta semana se comprendió cómo Linux automatiza servicios críticos relacionados con sincronización de tiempo, almacenamiento y administración de recursos remotos.
+
+La configuración de Chrony como servidor NTP permitió observar la importancia de mantener sistemas sincronizados dentro de una red. Más allá de simplemente “tener la hora correcta”, la sincronización precisa impacta directamente en auditorías, autenticación y funcionamiento distribuido de servicios.
+
+AutoFS mostró una forma mucho más eficiente de manejar recursos remotos, permitiendo que el sistema monte directorios únicamente cuando son necesarios y liberándolos automáticamente tras periodos de inactividad.
+
+Finalmente, la integración con LVM reforzó la idea de que Linux utiliza capas de abstracción para desacoplar hardware físico y administración lógica. Esto permite ampliar almacenamiento sin reiniciar sistemas ni afectar servicios activos, algo esencial en entornos profesionales y empresariales.
+\end{document}

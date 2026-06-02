@@ -1,0 +1,449 @@
+#+TITLE: Bitácora Semanal 11: Administración de Sistemas Unix/Linux
+#+AUTHOR: Equipo Alpine White
+#+DATE: [2026-04-21 mar]
+#+OPTIONS: toc:2 num:t title:t
+#+PROPERTY: header-args :exports code :eval never-export
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [11pt, letterpaper]
+
+#+LATEX_HEADER: \usepackage[margin=2.4cm]{geometry}
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage[T1]{fontenc}
+#+LATEX_HEADER: \usepackage{lmodern}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+* Información General
+
+- *Semana:* Semana 11
+- *Materia:* Administración de Sistemas Unix/Linux
+- *Docente:* Luis Enrique Serrano Gutiérrez
+- *Equipo:*
+  * Arreguín Salgado Gael Emiliano
+  * López Pérez Mariana
+  * Nieto Gallegos Isaac Julián
+
+Durante esta semana se trabajó con tres tecnologías importantes dentro de la administración de sistemas Linux: sincronización de tiempo mediante NTP y Chrony, montaje automático de recursos con AutoFS y administración flexible de almacenamiento mediante LVM.
+
+El objetivo principal fue comprender cómo Linux automatiza tareas críticas mediante servicios, archivos de configuración y capas de abstracción. Estas herramientas permiten que el sistema sea más estable, escalable y eficiente en ambientes de servidor.
+
+** Responsabilidades
+- *Gael Emiliano:* Documentación de configuración de Chrony, comandos NTP y explicación del servidor de hora.
+- *Mariana:* Captura de conceptos vistos en clase y ampliación de AutoFS, NFS y recursos remotos.
+- *Isaac Julián:* Revisión del archivo Org, bloques de código, formato y compilación final.
+
+\newpage
+
+* Sincronización de tiempo con NTP y Chrony
+
+** Conceptos nuevos
+
+*** Servidor
+
+Un servidor es un sistema físico o lógico que proporciona servicios, datos o recursos a otros equipos llamados clientes.
+
+En esta práctica se trabajó con un servidor NTP, encargado de permitir que otros equipos de la red sincronicen su reloj con una fuente de tiempo confiable.
+
+*** NTP
+
+NTP significa /Network Time Protocol/. Es un protocolo utilizado para sincronizar relojes de computadoras, servidores y dispositivos de red.
+
+Mantener la hora correcta es importante porque afecta:
+
+- Logs del sistema.
+- Auditorías.
+- Certificados digitales.
+- Autenticación.
+- Bases de datos.
+- Tareas programadas.
+- Servicios distribuidos.
+
+Sin una hora sincronizada, los eventos del sistema pueden quedar registrados en orden incorrecto, dificultando diagnósticos y revisiones de seguridad.
+
+*** Chrony
+
+Chrony es una implementación moderna del protocolo NTP.
+
+Está formada principalmente por:
+
+- =chronyd=: demonio encargado de sincronizar el reloj.
+- =chronyc=: herramienta para consultar y administrar Chrony.
+- =/etc/chrony.conf=: archivo principal de configuración.
+
+Chrony puede funcionar como cliente NTP o como servidor NTP para otros equipos dentro de una red local.
+
+*** chronyd
+
+=chronyd= es el servicio que se ejecuta en segundo plano y ajusta el reloj del sistema.
+
+#+begin_src bash :results verbatim
+systemctl status chronyd
+#+end_src
+
+Después de modificar la configuración, se debe reiniciar:
+
+#+begin_src bash :results verbatim
+sudo systemctl restart chronyd
+#+end_src
+
+*** chronyc
+
+=chronyc= permite consultar el estado de Chrony.
+
+#+begin_src bash :results verbatim
+chronyc sources -v
+#+end_src
+
+Este comando muestra información sobre:
+
+- Fuente de sincronización.
+- Stratum.
+- Retardo.
+- Precisión.
+- Estado de cada servidor.
+
+*** Stratum
+
+El stratum indica la distancia jerárquica respecto a una fuente original de tiempo.
+
+- *Stratum 0:* reloj atómico o GPS.
+- *Stratum 1:* servidor conectado directamente al Stratum 0.
+- *Stratum 2:* servidor sincronizado con Stratum 1.
+- *Stratum 3:* servidor sincronizado con Stratum 2.
+
+Mientras menor sea el stratum, más cerca se encuentra la fuente original de tiempo.
+
+** Configuración de Chrony como servidor NTP
+
+El archivo principal de configuración es:
+
+#+begin_src bash :results verbatim
+/etc/chrony.conf
+#+end_src
+
+Ejemplo de configuración:
+
+#+begin_src conf :results verbatim
+server ntp.lab.int iburst
+allow 192.168.0.0/24
+driftfile /var/lib/chrony/drift
+makestep 1.0 3
+rtcsync
+logdir /var/log/chrony
+#+end_src
+
+La directiva =allow= permite que los clientes de una subred consulten al servidor NTP.
+
+Después de configurar Chrony:
+
+#+begin_src bash :results verbatim
+sudo systemctl restart chronyd
+#+end_src
+
+También se debe permitir NTP en el firewall:
+
+#+begin_src bash :results verbatim
+sudo firewall-cmd --add-service=ntp --permanent
+sudo firewall-cmd --reload
+#+end_src
+
+** Conceptos de repaso
+
+- Un servicio en Linux suele ejecutarse como demonio.
+- =systemctl= permite administrar servicios.
+- Los archivos en =/etc= contienen configuración persistente.
+- Un servidor puede compartir tiempo, archivos, datos o autenticación.
+- La sincronización de tiempo facilita auditorías y diagnóstico.
+
+** Máximas
+- “Chrony no solo sincroniza el reloj; elige dinámicamente la fuente más precisa disponible en la red.”
+- “Un servidor con hora incorrecta registra eventos correctos en momentos incorrectos.”
+- “El stratum indica cercanía a la fuente original, pero la calidad real también depende de la red.”
+- “NTP no es decoración del sistema; es base para auditoría, seguridad y diagnóstico.”
+
+** Sección libre
+
+=ntpd= fue durante mucho tiempo el servicio tradicional de sincronización NTP, pero en sistemas modernos Chrony suele ser preferido por su rapidez y precisión.
+
+=ntpdate= permite sincronización puntual, aunque actualmente está en desuso.
+
+También puede revisarse el estado general del tiempo con:
+
+#+begin_src bash :results verbatim
+timedatectl
+#+end_src
+
+\newpage
+
+* AutoFS y montaje automático de recursos
+
+** Conceptos nuevos
+
+*** AutoFS
+
+AutoFS es un servicio que permite montar sistemas de archivos automáticamente bajo demanda.
+
+A diferencia de =/etc/fstab=, AutoFS no monta recursos al iniciar el sistema. Solo los monta cuando un usuario o proceso intenta acceder a ellos.
+
+Esto es útil para recursos remotos porque evita que el arranque dependa de servidores externos.
+
+*** Diferencia entre fstab y AutoFS
+
+=/etc/fstab= monta recursos durante el arranque.
+
+AutoFS funciona de otra manera:
+
+- Espera a que se acceda al recurso.
+- Monta automáticamente el directorio.
+- Mantiene el recurso disponible mientras se usa.
+- Lo desmonta después de un tiempo de inactividad.
+
+Esta lógica reduce consumo de recursos y evita bloqueos si el servidor remoto no está disponible.
+
+*** auto.master
+
+=/etc/auto.master= es el archivo principal de AutoFS.
+
+Ejemplo:
+
+#+begin_src conf :results verbatim
+/home/remoto /etc/auto.users
+#+end_src
+
+Esto indica que los montajes dentro de =/home/remoto= serán definidos por el archivo =/etc/auto.users=.
+
+*** Mapas secundarios
+
+Los mapas secundarios definen qué recurso remoto se monta.
+
+Ejemplo:
+
+#+begin_src conf :results verbatim
+usuario -rw servidor:/export/home/usuario
+#+end_src
+
+Con esta regla, AutoFS monta el recurso cuando se accede al directorio correspondiente.
+
+*** Timeout
+
+El timeout permite desmontar recursos inactivos automáticamente.
+
+Esto no representa un error, sino una forma de liberar recursos de red y evitar conexiones innecesarias.
+
+** Conceptos de repaso
+
+- NFS permite compartir directorios en red.
+- =mount= realiza montajes manuales.
+- =/etc/fstab= realiza montajes persistentes.
+- AutoFS monta bajo demanda.
+- El montaje integra recursos externos al árbol local de directorios.
+
+** Máximas
+
+- “AutoFS no monta cuando arranca el sistema; monta cuando alguien realmente necesita el recurso.”
+- “Un timeout en AutoFS no es un error; es eficiencia.”
+- “Montar bajo demanda evita depender de recursos remotos durante el arranque.”
+- “AutoFS convierte recursos de red en accesos casi transparentes para el usuario.”
+
+** Sección libre
+
+Para reiniciar AutoFS:
+
+#+begin_src bash :results verbatim
+sudo systemctl restart autofs
+#+end_src
+
+Para revisar su estado:
+
+#+begin_src bash :results verbatim
+systemctl status autofs
+#+end_src
+
+AutoFS es útil en laboratorios, servidores multiusuario y redes donde se comparten directorios mediante NFS.
+
+\newpage
+
+* LVM y administración dinámica de almacenamiento
+
+** Conceptos nuevos
+
+*** LVM
+
+LVM permite administrar almacenamiento mediante capas lógicas en lugar de depender directamente de particiones físicas rígidas.
+
+Su estructura principal es:
+
+- *PV:* Physical Volume.
+- *VG:* Volume Group.
+- *LV:* Logical Volume.
+
+Esta organización permite crecer, redistribuir y reorganizar almacenamiento de forma más flexible.
+
+*** Physical Volume
+
+Un PV es un disco o partición preparado para LVM.
+
+#+begin_src bash :results verbatim
+sudo pvcreate /dev/sdb
+#+end_src
+
+*** Volume Group
+
+Un VG es una reserva de almacenamiento formada por uno o varios PV.
+
+#+begin_src bash :results verbatim
+sudo vgextend vg_datos /dev/sdb
+#+end_src
+
+=vgextend= permite agregar un disco nuevo al grupo de volúmenes.
+
+*** Logical Volume
+
+Un LV es el volumen que finalmente usa el sistema como si fuera una partición.
+
+#+begin_src bash :results verbatim
+sudo lvextend -L +10G /dev/vg_datos/home
+#+end_src
+
+Después de ampliar el LV, se debe ampliar el filesystem.
+
+*** resize2fs
+
+En sistemas ext4, =resize2fs= permite que el filesystem use el nuevo espacio disponible.
+
+#+begin_src bash :results verbatim
+sudo resize2fs /dev/vg_datos/home
+#+end_src
+
+=lvextend= amplía el contenedor lógico y =resize2fs= amplía el contenido interno del sistema de archivos.
+
+*** Device mapper
+
+El device mapper es una capa del kernel que permite crear dispositivos virtuales a partir de dispositivos físicos.
+
+Gracias a esta capa, LVM puede presentar volúmenes lógicos al sistema sin que las aplicaciones conozcan la distribución física real del almacenamiento.
+
+** Conceptos de repaso
+
+- LVM desacopla almacenamiento físico y lógico.
+- =pvcreate= prepara discos.
+- =vgextend= amplía grupos de volúmenes.
+- =lvextend= amplía volúmenes lógicos.
+- =resize2fs= amplía el filesystem.
+- El filesystem no necesita conocer directamente el hardware físico.
+
+** Máximas
+
+- “El device mapper es el intermediario silencioso que hace posible que LVM funcione.”
+- “Extender un LV sin redimensionar el filesystem es ampliar el cuarto sin mover las paredes.”
+- “LVM permite que el almacenamiento crezca al ritmo del sistema.”
+- “Un volumen lógico no es solo espacio; es flexibilidad administrativa.”
+
+** Sección libre
+
+Durante la práctica se relacionó LVM con instalaciones donde directorios como =/home=, =/var= y =/tmp= pueden configurarse como volúmenes lógicos.
+
+Esto permite crecer partes específicas del sistema sin afectar todo el disco.
+
+\newpage
+
+* XAMPP, MySQL y archivos de base de datos
+
+** Conceptos nuevos
+
+*** XAMPP
+
+XAMPP integra herramientas necesarias para crear un entorno web local.
+
+Incluye:
+
+- Apache.
+- MariaDB o MySQL.
+- PHP.
+- Perl.
+
+Sirve para probar aplicaciones web sin configurar cada servicio manualmente.
+
+*** Directorio de MySQL en XAMPP
+
+En XAMPP, las bases de datos suelen estar en:
+
+#+begin_src bash :results verbatim
+/opt/lampp/var/mysql
+#+end_src
+
+Para revisar su contenido:
+
+#+begin_src bash :results verbatim
+ls -la /opt/lampp/var/mysql
+#+end_src
+
+*** Archivos .ibd
+
+Los archivos =.ibd= pertenecen al motor InnoDB.
+
+Almacenan:
+- Datos reales de tablas.
+- Índices.
+- Información persistente del motor.
+
+Esto muestra que una base de datos también depende del sistema de archivos.
+
+** Conceptos de repaso
+
+- MySQL administra datos como archivos.
+- Linux controla permisos, rutas y almacenamiento.
+- =ls -la= muestra permisos y propietarios.
+- Los servicios web también dependen del filesystem.
+
+** Máximas
+
+- “Una base de datos también termina siendo archivo, permisos y almacenamiento.”
+- “XAMPP simplifica el laboratorio, pero no elimina la lógica real del servidor.”
+- “MySQL organiza datos; Linux decide cómo se guardan en disco.”
+
+** Sección libre
+
+Revisar el directorio de MySQL ayuda a conectar servicios con almacenamiento real. Aunque se interactúe con bases de datos mediante SQL, sus datos viven físicamente como archivos.
+
+\newpage
+
+* Realimentación y reflexión de aprendizajes
+
+Esta semana permitió comprender cómo Linux automatiza servicios críticos mediante herramientas especializadas.
+
+Chrony mostró que la sincronización de tiempo es indispensable para logs, auditorías, autenticación y coordinación entre equipos. Sin hora confiable, diagnosticar errores se vuelve más difícil.
+
+AutoFS permitió entender una forma eficiente de montar recursos remotos. En lugar de montar todo durante el arranque, el sistema monta únicamente cuando alguien accede al recurso.
+
+LVM reforzó la importancia de la abstracción en Linux. Separar PV, VG, LV y filesystem permite ampliar almacenamiento sin rediseñar todo el sistema.
+
+La revisión de archivos internos de MySQL en XAMPP conectó los servicios con el sistema de archivos. Aunque MySQL trabaje a nivel de base de datos, sus datos dependen de archivos, permisos y almacenamiento físico.
+
+En conjunto, la semana mostró que administrar Linux implica comprender la relación entre red, tiempo, almacenamiento, servicios y archivos.
+
+* Comandos relevantes de la semana
+
+#+begin_src bash :results verbatim
+systemctl status chronyd
+sudo systemctl restart chronyd
+chronyc sources -v
+sudo firewall-cmd --add-service=ntp --permanent
+sudo firewall-cmd --reload
+sudo systemctl restart autofs
+systemctl status autofs
+sudo pvcreate /dev/sdb
+sudo vgextend vg_datos /dev/sdb
+sudo lvextend -L +10G /dev/vg_datos/home
+sudo resize2fs /dev/vg_datos/home
+ls -la /opt/lampp/var/mysql
+#+end_src
+
+* Cierre
+
+La Bitácora Semanal 11 integra tres ideas centrales: sincronización, automatización y abstracción.
+
+Chrony representa la sincronización del sistema con una fuente confiable de tiempo. AutoFS representa la automatización del acceso a recursos remotos. LVM representa la abstracción del almacenamiento físico en estructuras lógicas más flexibles.
+
+Estas herramientas demuestran que Linux permite construir sistemas más estables, escalables y administrables.

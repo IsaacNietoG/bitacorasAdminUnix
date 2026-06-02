@@ -1,0 +1,347 @@
+#+TITLE: Bitácora Semanal 11: Administración de Sistemas Unix/Linux
+#+AUTHOR: Equipo Alpine White
+#+DATE: [2026-04-21 mar]
+#+OPTIONS: toc:2
+#+PROPERTY: header-args :exports both
+#+LATEX_CLASS: article
+#+LATEX_CLASS_OPTIONS: [11pt, letterpaper]
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage{palatino}
+#+LATEX_HEADER: \usepackage{xcolor}
+
+* Información General
+
+- *Semana:* Semana 11
+- *Materia:* Administración de Sistemas Unix/Linux
+- *Docente:* Luis Enrique Serrano Gutiérrez
+- *Equipo:*
+
+  * Arreguín Salgado Gael Emiliano
+  * López Pérez Mariana
+  * Nieto Gallegos Isaac Julián
+
+Durante esta semana se trabajó con tecnologías fundamentales para la administración de servicios en Linux, especialmente sincronización de tiempo mediante NTP y Chrony, automatización de montajes con AutoFS y ampliación dinámica de almacenamiento utilizando LVM.
+
+La práctica permitió comprender cómo Linux automatiza tareas críticas del sistema y cómo herramientas modernas facilitan la administración eficiente de servidores y recursos de red.
+
+** Responsabilidades
+
+Gael Emiliano:
+Investigación y documentación de herramientas NTP, configuración de Chrony y conceptos relacionados con sincronización de tiempo.
+
+Mariana:
+Captura de temas vistos en clase, ampliación de conceptos relacionados con AutoFS y administración dinámica de servicios.
+
+Isaac Julián:
+Revisión técnica, adaptación del formato org-mode y compilación final del documento.
+
+---
+
+* Sincronización de tiempo con NTP y Chrony
+
+** Conceptos nuevos
+
+*** ¿Qué es un servidor?
+
+Un servidor es un sistema de hardware o software que proporciona recursos, servicios o datos a otros equipos llamados clientes mediante una red.
+
+En esta práctica se trabajó con un servidor NTP, encargado de sincronizar la hora de otros dispositivos dentro de la red.
+
+---
+
+*** ¿Qué es NTP?
+
+NTP (Network Time Protocol) es un protocolo utilizado para sincronizar relojes entre computadoras y dispositivos de red.
+
+Mantener la hora sincronizada es fundamental en servidores Linux porque:
+
+- Permite registros de logs consistentes
+- Facilita auditorías
+- Evita errores de autenticación
+- Sincroniza servicios distribuidos
+
+---
+
+*** Chrony
+
+Chrony es una implementación moderna y flexible del protocolo NTP.
+
+Permite sincronizar el reloj del sistema con:
+
+- Servidores NTP
+- Receptores GPS
+- Fuentes manuales de tiempo
+
+Además, puede funcionar tanto como cliente como servidor NTP.
+
+Ventajas principales:
+
+- Mayor precisión
+- Mejor rendimiento en redes inestables
+- Sincronización más rápida
+- Ideal para laptops o sistemas intermitentes
+
+---
+
+*** Configuración de Chrony como servidor NTP
+
+Uno de los puntos más importantes de la práctica fue convertir chrony en un servidor NTP funcional.
+
+El primer paso consistió en configurar las fuentes de sincronización dentro de:
+
+#+begin_src bash :results verbatim
+/etc/chrony.conf
+#+end_src
+
+Posteriormente se agregó la directiva:
+
+#+begin_src bash :results verbatim
+allow 192.168.0.0/24
+#+end_src
+
+Esta línea permite que equipos de la red local puedan sincronizarse con el servidor.
+
+Después de modificar la configuración, fue necesario reiniciar el servicio:
+
+#+begin_src bash :results verbatim
+systemctl restart chronyd
+#+end_src
+
+---
+
+*** Herramienta chronyc
+
+~chronyc~ es la herramienta administrativa utilizada para controlar y monitorear Chrony.
+
+Ejemplo:
+
+#+begin_src bash :results verbatim
+chronyc sources -v
+#+end_src
+
+Este comando muestra:
+
+- Estrato del servidor
+- Retardo de sincronización
+- Estado de cada fuente
+- Fuentes preferidas o falsas
+
+---
+
+*** Stratum (Nivel de Estrato)
+
+El stratum representa la distancia jerárquica respecto a una fuente oficial de tiempo.
+
+- Stratum 0 → relojes atómicos o GPS
+- Stratum 1 → servidores conectados directamente
+- Stratum 2 → sincronizados con stratum 1
+
+Mientras más bajo sea el stratum, más precisa suele ser la referencia de tiempo.
+
+---
+
+* AutoFS y montaje automático
+
+** Conceptos nuevos
+
+*** ¿Qué es AutoFS?
+
+AutoFS (Automounter File System) es un servicio que permite montar sistemas de archivos dinámicamente bajo demanda.
+
+A diferencia de ~/etc/fstab~, AutoFS:
+
+- No monta recursos al iniciar el sistema
+- Monta únicamente cuando el recurso es utilizado
+- Libera automáticamente recursos inactivos
+
+Esto mejora:
+
+- Rendimiento
+- Uso de memoria
+- Administración de recursos de red
+
+---
+
+*** auto.master
+
+El archivo:
+
+#+begin_src bash :results verbatim
+/etc/auto.master
+#+end_src
+
+define los puntos de montaje principales utilizados por AutoFS.
+
+Este archivo redirige hacia mapas secundarios como:
+
+- auto.misc
+- auto.home
+- auto.users
+
+---
+
+*** Ventajas de AutoFS
+
+- Reduce montajes innecesarios
+- Libera recursos automáticamente
+- Ideal para sistemas NFS
+- Evita bloqueos al inicio del sistema
+- Mejora administración de recursos remotos
+
+---
+
+* Administración de almacenamiento con LVM
+
+** Conceptos de repaso
+
+LVM permite administrar almacenamiento mediante capas lógicas en lugar de depender directamente de particiones físicas.
+
+Componentes principales:
+
+- PV (Physical Volume)
+- VG (Volume Group)
+- LV (Logical Volume)
+
+Durante la práctica se reforzó el proceso de:
+
+- Agregar discos con ~vgextend~
+- Expandir almacenamiento con ~lvextend~
+- Redimensionar sistemas de archivos usando ~resize2fs~
+
+---
+
+*** Device Mapper
+
+El *device mapper* funciona como intermediario entre el sistema de archivos y el almacenamiento físico.
+
+Gracias a esta capa:
+
+- LVM puede abstraer discos físicos
+- El filesystem no necesita conocer el hardware real
+- El almacenamiento puede crecer dinámicamente
+
+---
+
+* Herramientas NTP
+
+** ntpd
+
+Servicio tradicional de sincronización NTP.
+
+Características:
+
+- Funciona continuamente
+- Puede actuar como cliente o servidor
+- Muy estable
+- Más antiguo
+
+---
+
+** chronyd
+
+Servicio moderno utilizado actualmente como reemplazo de ~ntpd~.
+
+Ventajas:
+
+- Más rápido
+- Más preciso
+- Mejor para sistemas portátiles
+- Más eficiente en redes variables
+
+---
+
+** ntpdate
+
+Herramienta utilizada para sincronización manual puntual.
+
+Características:
+
+- No funciona como servicio
+- Realiza sincronización única
+- Actualmente está en desuso
+
+---
+
+* MySQL y almacenamiento interno
+
+** Conceptos de repaso
+
+Se revisó la estructura interna de almacenamiento de MySQL dentro de XAMPP.
+
+#+begin_src bash :results verbatim
+/opt/lampp/var/mysql# ls -la
+#+end_src
+
+Esto permite visualizar archivos asociados a las bases de datos.
+
+---
+
+*** Archivos .ibd
+
+Los archivos ~.ibd~ almacenan:
+
+- Datos reales de tablas
+- Índices InnoDB
+- Información persistente del motor de almacenamiento
+
+Estos archivos se encuentran comúnmente dentro de:
+
+#+begin_src bash :results verbatim
+/opt/lampp/var/mysql/
+#+end_src
+
+---
+
+* Conceptos de repaso
+
+- Linux automatiza múltiples servicios críticos mediante demonios especializados.
+- La sincronización de tiempo es esencial para redes, servidores y auditorías.
+- AutoFS mejora considerablemente la administración dinámica de recursos remotos.
+- LVM continúa siendo una de las tecnologías más importantes para administración flexible de almacenamiento.
+
+---
+
+* Máximas
+
+*** “chrony no solo sincroniza el reloj; elige dinámicamente la fuente más precisa disponible en la red.”
+
+*** “AutoFS no monta cuando arranca el sistema; monta cuando alguien realmente necesita el recurso.”
+
+*** “El device mapper es el intermediario silencioso que hace posible que LVM funcione sin que el sistema de archivos sepa nada del disco físico.”
+
+*** “Extender un LV sin redimensionar el filesystem es como ampliar el cuarto pero no mover las paredes: el espacio existe pero no se puede usar.”
+
+*** “Un timeout en AutoFS no es un error; es eficiencia: liberar recursos que nadie está usando.”
+
+*** “El stratum actúa tal que: cuanto más bajo, más cerca estás de la fuente original del tiempo.”
+
+---
+
+* Sección libre
+
+- Los mirrors son copias distribuidas de repositorios de software utilizadas para mejorar velocidad y disponibilidad.
+
+- ~chronyc sources -v~ permite verificar detalladamente las fuentes NTP activas.
+
+#+begin_src bash :results verbatim
+chronyc sources -v
+#+end_src
+
+- AutoFS es especialmente útil en entornos NFS donde múltiples recursos remotos deben montarse dinámicamente.
+
+- El almacenamiento administrado con LVM permite crecimiento sin tiempo de inactividad.
+
+- Chrony es actualmente una de las soluciones preferidas para sincronización NTP moderna en Linux.
+
+---
+
+* Realimentación y reflexión de aprendizajes
+
+Durante esta semana se comprendió cómo Linux automatiza servicios críticos relacionados con sincronización de tiempo, almacenamiento y administración de recursos remotos.
+
+La configuración de Chrony como servidor NTP permitió observar la importancia de mantener sistemas sincronizados dentro de una red. Más allá de simplemente “tener la hora correcta”, la sincronización precisa impacta directamente en auditorías, autenticación y funcionamiento distribuido de servicios.
+
+AutoFS mostró una forma mucho más eficiente de manejar recursos remotos, permitiendo que el sistema monte directorios únicamente cuando son necesarios y liberándolos automáticamente tras periodos de inactividad.
+
+Finalmente, la integración con LVM reforzó la idea de que Linux utiliza capas de abstracción para desacoplar hardware físico y administración lógica. Esto permite ampliar almacenamiento sin reiniciar sistemas ni afectar servicios activos, algo esencial en entornos profesionales y empresariales.

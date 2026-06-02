@@ -1,0 +1,376 @@
+% Created 2026-06-01 Mon 23:52
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+\author{Equipo Alpine White}
+\date{\textit{{[}2026-05-25 Mon]}}
+\title{Bitácora Semanal XX: Administración de Sistemas Unix/Linux}
+\hypersetup{
+ pdfauthor={Equipo Alpine White},
+ pdftitle={Bitácora Semanal XX: Administración de Sistemas Unix/Linux},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 30.2 (Org mode 9.7.39)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+\section{Información General}
+\label{sec:org857ddcd}
+
+\begin{itemize}
+\item \textbf{Semana:} Semana XX
+\item \textbf{Materia:} Administración de Sistemas Unix/Linux
+\item \textbf{Docente:} Luis Enrique Serrano Gutiérrez
+\item \textbf{Equipo:}
+
+\begin{itemize}
+\item Arreguín Salgado Gael Emiliano
+\item López Pérez Mariana
+\item Nieto Gallegos Isaac Julián
+\end{itemize}
+\end{itemize}
+
+Durante esta semana se trabajó con tecnologías y herramientas fundamentales para la administración avanzada de sistemas Linux, enfocándonos principalmente en comprender cómo el sistema operativo abstrae, organiza y administra recursos críticos como almacenamiento, servicios de red, sincronización, permisos y procesos internos.
+
+A lo largo de las prácticas se observó cómo Linux mantiene una filosofía basada en modularidad y automatización, permitiendo que múltiples tecnologías colaboren entre sí de forma transparente.
+
+Más allá de aprender únicamente comandos, el objetivo principal fue entender la lógica detrás de cada herramienta, su impacto sobre el sistema y las implicaciones administrativas y de seguridad que conlleva su configuración.
+
+La práctica permitió reforzar conceptos relacionados con almacenamiento, sistemas de archivos, servicios de red y administración dinámica de recursos. También se exploró cómo muchas herramientas modernas funcionan mediante capas de abstracción que desacoplan el hardware físico de la administración lógica, facilitando escalabilidad, automatización y tolerancia a fallos.
+\subsection{Responsabilidades}
+\label{sec:orga087be4}
+
+\begin{itemize}
+\item \textbf{Gael Emiliano:} Investigación técnica de herramientas utilizadas en laboratorio, documentación de comandos avanzados y explicación de procesos administrativos relacionados con almacenamiento, sincronización y servicios del sistema.
+\item \textbf{Mariana:} Captura detallada de temas vistos en clase y ampliación conceptual relacionada con automatización, seguridad y administración de recursos.
+\item \textbf{Isaac Julián:} Corrección técnica, integración final del archivo Org Mode, revisión de sintaxis y compilación del documento final.
+\end{itemize}
+
+\newpage
+\section{Tema principal de la semana}
+\label{sec:org5f7fd25}
+
+\subsection{Conceptos nuevos}
+\label{sec:orgcd7407e}
+
+\subsubsection{Introducción general}
+\label{sec:orge4dfee9}
+
+Uno de los aspectos más importantes trabajados durante esta semana fue comprender cómo Linux administra servicios críticos mediante herramientas especializadas que interactúan directamente con el kernel, el sistema de archivos y los mecanismos internos de comunicación entre procesos.
+
+A diferencia de otros sistemas operativos donde muchas tareas administrativas dependen de interfaces gráficas, Linux permite controlar prácticamente todos los componentes mediante comandos, archivos de configuración y servicios ejecutados en segundo plano.
+
+Esta filosofía proporciona:
+
+\begin{itemize}
+\item Mayor control administrativo.
+\item Automatización avanzada.
+\item Configuraciones reproducibles.
+\item Flexibilidad operativa.
+\item Mejor capacidad de auditoría.
+\item Escalabilidad administrativa.
+\end{itemize}
+
+Linux no busca ocultar el funcionamiento interno del sistema; al contrario, proporciona herramientas para administrarlo directamente.
+\subsubsection{Funcionamiento interno}
+\label{sec:orgbf02312}
+
+Durante las prácticas se observó que muchas herramientas modernas funcionan mediante capas de abstracción.
+
+Esto significa que:
+
+\begin{itemize}
+\item El usuario administra recursos lógicos.
+\item Linux traduce operaciones hacia hardware físico.
+\item El kernel coordina acceso, seguridad y sincronización.
+\item Los servicios funcionan como intermediarios especializados.
+\end{itemize}
+
+Gracias a esto es posible:
+
+\begin{itemize}
+\item Redimensionar almacenamiento dinámicamente.
+\item Compartir recursos de red.
+\item Automatizar montajes.
+\item Sincronizar relojes.
+\item Delegar privilegios administrativos.
+\item Monitorear procesos en tiempo real.
+\end{itemize}
+
+Todo esto puede realizarse sin detener completamente el sistema, lo cual representa una ventaja importante en entornos empresariales.
+\subsubsection{Automatización y administración}
+\label{sec:org4767934}
+
+Uno de los conceptos más reforzados fue la automatización de tareas administrativas.
+Linux utiliza:
+
+\begin{itemize}
+\item Demonios.
+\item Servicios systemd.
+\item Archivos de configuración.
+\item Herramientas CLI.
+\item Políticas de permisos.
+\item Scripts administrativos.
+\end{itemize}
+
+Esto permite reducir intervención manual y mantener estabilidad operativa.
+
+La automatización resulta especialmente importante en:
+
+\begin{itemize}
+\item Servidores empresariales.
+\item Infraestructura de red.
+\item Sistemas distribuidos.
+\item Ambientes virtualizados.
+\item Plataformas cloud.
+\item Centros de datos.
+\end{itemize}
+
+La automatización no busca reemplazar al administrador, sino permitir configuraciones más consistentes y reproducibles.
+
+\newpage
+\section{Herramientas y comandos importantes}
+\label{sec:orgc4e0c86}
+
+\subsection{Administración del sistema}
+\label{sec:org3624b25}
+
+\begin{verbatim}
+systemctl status
+systemctl restart
+systemctl enable
+\end{verbatim}
+
+Estos comandos permiten administrar servicios dentro del sistema Linux utilizando systemd.
+
+Funciones principales:
+
+\begin{itemize}
+\item Consultar estado de servicios.
+\item Reiniciar demonios.
+\item Habilitar servicios al arranque.
+\item Monitorear fallos.
+\item Verificar disponibilidad de servicios.
+\end{itemize}
+
+\texttt{systemctl} se ha convertido en una de las herramientas centrales de administración moderna en Linux.
+\subsection{Monitoreo y auditoría}
+\label{sec:org7d6d556}
+
+\begin{verbatim}
+top
+htop
+journalctl
+\end{verbatim}
+
+Estas herramientas permiten monitorear:
+
+\begin{itemize}
+\item Consumo de CPU.
+\item Uso de memoria RAM.
+\item Logs del sistema.
+\item Actividad de servicios.
+\item Procesos problemáticos.
+\item Estado general del sistema.
+\end{itemize}
+
+El monitoreo constante resulta fundamental para mantener estabilidad y detectar anomalías antes de que generen fallos mayores.
+\subsubsection{top}
+\label{sec:org73c4f34}
+
+\texttt{top} permite visualizar procesos en tiempo real y observar consumo de recursos.
+
+Es especialmente útil para:
+
+\begin{itemize}
+\item Detectar procesos con alto consumo.
+\item Revisar carga del sistema.
+\item Monitorear memoria.
+\item Identificar cuellos de botella.
+\end{itemize}
+\subsubsection{htop}
+\label{sec:orgde0f1c6}
+
+\texttt{htop} es una versión más moderna e interactiva de \texttt{top}.
+
+Ventajas principales:
+
+\begin{itemize}
+\item Interfaz más intuitiva.
+\item Navegación sencilla.
+\item Visualización más clara.
+\item Mejor administración de procesos.
+\end{itemize}
+\subsubsection{journalctl}
+\label{sec:org3dd6e82}
+
+\texttt{journalctl} permite revisar logs generados por systemd.
+
+Ejemplo:
+
+\begin{verbatim}
+journalctl -xe
+\end{verbatim}
+
+Esto facilita diagnóstico y auditoría del sistema.
+\subsection{Administración de almacenamiento}
+\label{sec:org91ce56f}
+
+\begin{verbatim}
+lsblk
+df -h
+mount
+umount
+\end{verbatim}
+
+Estas herramientas permiten:
+
+\begin{itemize}
+\item Visualizar discos y particiones.
+\item Verificar espacio disponible.
+\item Montar sistemas de archivos.
+\item Desmontar recursos activos.
+\item Identificar dispositivos conectados.
+\end{itemize}
+
+Se reforzó la idea de que Linux representa dispositivos mediante archivos dentro de \texttt{/dev}.
+\subsubsection{lsblk}
+\label{sec:org3fb2a01}
+
+\texttt{lsblk} muestra estructura de discos, particiones y dispositivos de almacenamiento.
+
+\begin{verbatim}
+lsblk
+\end{verbatim}
+\subsubsection{df -h}
+\label{sec:org6b44b6a}
+
+\texttt{df -h} permite revisar espacio utilizado y disponible en sistemas de archivos montados.
+
+\begin{verbatim}
+df -h
+\end{verbatim}
+\subsubsection{mount y umount}
+\label{sec:orgce3e9c6}
+
+\texttt{mount} conecta sistemas de archivos al árbol local de directorios.
+
+\texttt{umount} permite desmontarlos correctamente.
+
+Esto es fundamental para administración de recursos locales y remotos.
+\subsection{Administración de permisos}
+\label{sec:org2ffc371}
+
+\begin{verbatim}
+sudo
+visudo
+chmod
+chown
+\end{verbatim}
+
+La administración correcta de permisos es uno de los pilares fundamentales de seguridad dentro de Linux.
+
+Se enfatizó especialmente que:
+
+\begin{itemize}
+\item Cada privilegio otorgado tiene implicaciones de seguridad.
+\item El principio de mínimo privilegio debe mantenerse.
+\item La automatización no debe comprometer control administrativo.
+\item Los permisos definen acceso a recursos críticos.
+\end{itemize}
+\subsubsection{chmod}
+\label{sec:org5d0759a}
+
+\texttt{chmod} permite modificar permisos de archivos y directorios.
+
+\begin{verbatim}
+chmod 755 archivo
+\end{verbatim}
+\subsubsection{chown}
+\label{sec:org4cb3c76}
+
+\texttt{chown} permite modificar propietario y grupo asociado a archivos.
+
+\begin{verbatim}
+chown usuario:grupo archivo
+\end{verbatim}
+\subsubsection{sudo y visudo}
+\label{sec:orgac2c667}
+
+\texttt{sudo} permite ejecutar tareas administrativas de manera controlada.
+
+\texttt{visudo} permite modificar \texttt{/etc/sudoers} verificando sintaxis antes de guardar.
+
+\newpage
+\section{Conceptos de repaso}
+\label{sec:orgc430f38}
+
+\begin{itemize}
+\item Linux utiliza arquitectura modular basada en herramientas especializadas.
+\item El kernel funciona como intermediario entre hardware y software.
+\item Los sistemas de archivos abstraen organización física de datos.
+\item Los servicios funcionan mediante demonios ejecutados en segundo plano.
+\item El almacenamiento moderno utiliza capas lógicas desacopladas del hardware físico.
+\item Los permisos y usuarios son fundamentales para mantener estabilidad y seguridad.
+\item La automatización permite reducir errores administrativos.
+\end{itemize}
+\section{Máximas}
+\label{sec:orge55c9d9}
+
+\begin{itemize}
+\item “En Linux, automatizar no significa perder control; significa administrar el sistema con precisión.”
+\item “Cada servicio ejecutándose en segundo plano representa una responsabilidad administrativa.”
+\item “El kernel no improvisa: cada recurso del sistema pasa por políticas, permisos y planificación.”
+\item “La diferencia entre un usuario común y un administrador no es ejecutar más comandos; es entender las consecuencias de ejecutarlos.”
+\item “Linux abstrae el hardware para que el administrador piense en servicios, no en limitaciones físicas.”
+\item “Todo sistema estable depende más de buenas configuraciones que de hardware poderoso.”
+\end{itemize}
+\section{Sección libre}
+\label{sec:org523e7fa}
+
+\begin{itemize}
+\item Linux permite automatizar prácticamente cualquier tarea administrativa mediante scripts y servicios.
+\item Los demonios trabajan constantemente administrando recursos críticos.
+\item Los archivos dentro de \texttt{/etc} representan gran parte de la configuración persistente del sistema.
+\item Muchas tecnologías modernas de Linux priorizan escalabilidad y tolerancia a fallos.
+\item Las herramientas CLI ofrecen mayor precisión administrativa que muchas interfaces gráficas tradicionales.
+\item El monitoreo continuo es esencial para mantener disponibilidad y estabilidad.
+\end{itemize}
+
+\newpage
+\section{Realimentación y reflexión de aprendizajes}
+\label{sec:orgf7bc584}
+
+Durante esta semana se logró comprender con mayor profundidad cómo Linux organiza internamente la administración de recursos críticos y cómo múltiples tecnologías trabajan coordinadamente para mantener estabilidad, seguridad y automatización dentro del sistema operativo.
+
+Uno de los aspectos más importantes observados fue que muchas herramientas aparentemente simples esconden gran complejidad interna relacionada con sincronización, permisos, abstracción de hardware y administración dinámica de recursos.
+
+Esto permitió comprender que administrar Linux no consiste únicamente en memorizar comandos, sino en entender cómo interactúan entre sí los distintos componentes del sistema.
+
+También se reforzó la importancia de la automatización y del monitoreo continuo dentro de ambientes profesionales. Servicios como systemd, herramientas de auditoría y configuraciones persistentes permiten mantener sistemas funcionando durante largos periodos sin intervención manual constante.
+
+Finalmente, las prácticas ayudaron a desarrollar una visión más cercana a la administración real de servidores Linux, donde estabilidad, disponibilidad y seguridad dependen directamente de la calidad de las configuraciones realizadas por el administrador del sistema.
+
+En conjunto, la semana permitió reforzar la idea de que Linux es un sistema operativo diseñado para administración precisa, automatización avanzada y escalabilidad en ambientes profesionales.
+\end{document}
